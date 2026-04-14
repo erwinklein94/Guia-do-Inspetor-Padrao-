@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>Guia do Inspetor Padrão</title>
-
     <meta property="og:title" content="Guia do Inspetor Padrão">
     <meta property="og:description" content="Coordenação de Qualidade e Homologação dos Materiais de Via Permanente - Rumo">
     <meta property="og:type" content="website">
@@ -81,7 +80,7 @@
             z-index: 1;
         }
 
-        /* MARCA D'ÁGUA NO FUNDO (TRANSPORTE) */
+        /* MARCA D'ÁGUA NO FUNDO */
         #main-layout::before {
             content: "";
             position: fixed;
@@ -164,7 +163,6 @@
             color: white;
         }
         
-        /* Botões na parte inferior da sidebar */
         .sidebar-bottom {
             margin-top: auto;
             display: flex;
@@ -203,8 +201,6 @@
             background: rgba(211, 47, 47, 0.4);
             color: white;
         }
-
-        /* Crédito no final da Sidebar */
         .sidebar-credit {
             text-align: center;
             font-size: 0.7rem;
@@ -231,17 +227,11 @@
         }
         .content-section.active { display: block; }
 
-        /* TÍTULOS E PROCEDIMENTOS */
         h1 { margin-bottom: 25px; color: var(--cor-rumo-bg); font-size: 1.8rem; }
         body.dark h1 { color: #80cbc4; }
-        .proc-title {
-            color: #78909C; 
-            font-weight: 400;
-            font-size: 0.85em;
-        }
+        .proc-title { color: #78909C; font-weight: 400; font-size: 0.85em; }
         body.dark .proc-title { color: #B0BEC5; }
 
-        /* CARD DE INSERÇÃO DE DADOS */
         .card {
             background: var(--cor-rumo-panel);
             border-radius: 12px;
@@ -265,12 +255,8 @@
             z-index: -1;
             pointer-events: none;
         }
-        body.dark .card::before {
-            filter: invert(1);
-            opacity: 0.02;
-        }
+        body.dark .card::before { filter: invert(1); opacity: 0.02; }
         
-        /* Botão para mostrar sidebar */
         #toggle-sidebar-btn {
             position: fixed;
             top: 20px;
@@ -291,7 +277,6 @@
         }
         body.dark #toggle-sidebar-btn { background: #00332A; }
         
-        /* ESTILOS DE FORMULÁRIO */
         .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; width: 100%; }
         .form-group label { font-weight: bold; font-size: 0.85rem; color: #666; }
         body.dark .form-group label { color: #bbb; }
@@ -337,6 +322,10 @@
             cursor: pointer;
             margin-top: 10px;
         }
+        .btn-analisar:disabled {
+            background-color: #9e9e9e;
+            cursor: not-allowed;
+        }
         .resultado-box {
             margin-top: 25px;
             padding: 25px;
@@ -351,15 +340,7 @@
         .resultado-box.reparar { background-color: #FFF3E0; color: #E65100; border: 2px solid #FFE0B2; }
         .resultado-box.aceitavel { background-color: #E8F5E9; color: #2E7D32; border: 2px solid #C8E6C9; }
         .resultado-box.refugo { background-color: #FFEBEE; color: #C62828; border: 2px solid #FFCDD2; }
-        .resultado-box .details {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            border-top: 1px dashed #ccc;
-            padding-top: 15px;
-            color: #444;
-        }
-        body.dark .resultado-box .details { color: #bbb; border-color: #555; }
-        .error-msg { color: #d32f2f; font-size: 0.85rem; margin-top: 10px; display: none; }
+        .error-msg { color: #d32f2f; font-size: 0.85rem; margin-top: 15px; display: none; font-weight: bold; }
         
         .aviso-normativo {
             text-align: center;
@@ -374,15 +355,9 @@
         }
         body.dark .aviso-normativo { color: #aaa; background: rgba(255,255,255,0.05); }
 
-        /* === AJUSTES DE RESPONSIVIDADE === */
         @media (max-width: 768px) {
             aside { 
-                position: fixed; 
-                height: 100vh; 
-                z-index: 1000; 
-                left: 0; 
-                top: 0; 
-                width: 280px; 
+                position: fixed; height: 100vh; z-index: 1000; left: 0; top: 0; width: 280px; 
             }
             main { padding: 80px 20px 20px 20px; width: 100%; }
             .menu-item { padding: 12px 20px; }
@@ -399,9 +374,10 @@
             <img src="https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg" alt="Rumo" style="width: 150px; margin-bottom: 15px; filter: brightness(0.2);">
             <div class="login-subtitle">Coordenação de Qualidade e Homologação dos Materiais de Via Permanente</div>
             <p style="font-weight: bold; margin-bottom: 20px;">Guia do Inspetor Padrão</p>
+            
             <input type="email" id="user-email" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px;" placeholder="seu-email@rumolog.com">
-            <button class="btn-analisar" onclick="validarAcesso()">ENTRAR</button>
-            <p id="error-msg" class="error-msg">Acesso restrito para @rumolog.com ou @ext.rumolog.com</p>
+            <button class="btn-analisar" id="btn-login-email" onclick="validarAcesso()">RECEBER LINK DE ACESSO</button>
+            <p id="error-msg" class="error-msg">Acesso restrito para e-mails corporativos da Rumo.</p>
         </div>
     </div>
 
@@ -413,30 +389,16 @@
                 
                 <div class="menu-header">Guia do Inspetor Padrão</div>
                 
-                <div class="menu-item active" onclick="navegar('sec-amv')">
-                    AMV & Componentes
-                </div>
-                <div class="menu-item" onclick="navegar('sec-brita')">
-                    Brita
-                </div>
-                <div class="menu-item" onclick="navegar('sec-concreto')">
-                    Dormente de Concreto
-                </div>
-                <div class="menu-item" onclick="navegar('sec-madeira')">
-                    Dormente de Madeira
-                </div>
-                <div class="menu-item" onclick="navegar('sec-sub')">
-                    Subcomponentes
-                </div>
+                <div class="menu-item active" onclick="navegar('sec-amv')">AMV & Componentes</div>
+                <div class="menu-item" onclick="navegar('sec-brita')">Brita</div>
+                <div class="menu-item" onclick="navegar('sec-concreto')">Dormente de Concreto</div>
+                <div class="menu-item" onclick="navegar('sec-madeira')">Dormente de Madeira</div>
+                <div class="menu-item" onclick="navegar('sec-sub')">Subcomponentes</div>
             </div>
 
             <div class="sidebar-bottom">
-                <button onclick="toggleDarkMode()" class="dark-toggle">
-                    🌙 Alternar Modo Escuro
-                </button>
-                <button onclick="fazerLogout()" class="logout-btn">
-                    🚪 Sair do Sistema
-                </button>
+                <button onclick="toggleDarkMode()" class="dark-toggle">🌙 Alternar Modo Escuro</button>
+                <button onclick="fazerLogout()" class="logout-btn">🚪 Sair do Sistema</button>
                 <div class="sidebar-credit">Desenvolvido por Erwin Klein</div>
             </div>
         </aside>
@@ -468,42 +430,36 @@
                             <input type="number" id="val-amv-ponta" step="0.1" placeholder="Ex: 3.5">
                         </div>
                     </div>
-
                     <div class="dimensoes-grid" id="amv-inputs-rolete" style="display: none;">
                         <div class="form-group">
                             <label>Altura máx do rolete em relação à base da agulha (mm):</label>
                             <input type="number" id="val-amv-altura-rolete" step="0.1" placeholder="Ex: 1.5">
                         </div>
                     </div>
-                    
                     <div class="dimensoes-grid" id="amv-inputs-coxin" style="display: none;">
                         <div class="form-group">
                             <label>Dureza constatada no coxin (Shore A):</label>
                             <input type="number" id="val-amv-coxin" step="1" placeholder="Ex: 90">
                         </div>
                     </div>
-
                     <div class="dimensoes-grid" id="amv-inputs-jacare_canal" style="display: none;">
                         <div class="form-group">
                             <label>Profundidade do Canal (mm):</label>
                             <input type="number" id="val-amv-jacare-canal" step="0.1" placeholder="Ex: 53.0">
                         </div>
                     </div>
-
                     <div class="dimensoes-grid" id="amv-inputs-jacare_dureza" style="display: none;">
                         <div class="form-group">
                             <label>Dureza Brinell na área de impacto (HB):</label>
                             <input type="number" id="val-amv-jacare-dureza" step="1" placeholder="Ex: 360">
                         </div>
                     </div>
-                    
                     <div class="dimensoes-grid" id="amv-inputs-fixacao_concreto" style="display: none;">
                         <div class="form-group">
                             <label>Pressão do Grampo Eclip-2009 constatada (kgf):</label>
                             <input type="number" id="val-amv-fixacao" step="1" placeholder="Ex: 1200">
                         </div>
                     </div>
-
                     <div class="dimensoes-grid" id="amv-inputs-cilindro" style="display: none;">
                         <div class="form-group">
                             <label>Pressão de travamento constatada (kgf):</label>
@@ -514,7 +470,6 @@
                             <input type="number" id="val-amv-tempo" step="0.1" placeholder="Ex: 11">
                         </div>
                     </div>
-
                     <div class="dimensoes-grid" id="amv-inputs-batefica" style="display: none;">
                         <div class="form-group">
                             <label>Deslocamento verificado das agulhas (mm):</label>
@@ -523,7 +478,6 @@
                     </div>
 
                     <button class="btn-analisar" id="btn-amv" style="display: none;" onclick="analisarAMV()">VERIFICAR CONFORMIDADE</button>
-
                     <div id="resultado-box-amv" class="resultado-box"></div>
                     <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Documentos atualizados em 14/04/2026</div>
                 </div>
@@ -547,34 +501,22 @@
                         <input type="checkbox" id="brita-presenca-finos">
                         <label for="brita-presenca-finos">Presença visível de argila, areia ou matéria orgânica (Lastro Contaminado)?</label>
                     </div>
-
                     <div class="dimensoes-grid" id="brita-inputs-lote" style="display: none;">
                         <div class="form-group">
                             <label>Percentual de Britas Não-Cúbicas (%) constatado:</label>
                             <input type="number" id="val-brita-nao-cubicas" step="0.1" placeholder="Ex: 12.5">
                         </div>
                     </div>
-
                     <div id="brita-inputs-pedra" style="display: none;">
                         <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">
                             <strong>a:</strong> Maior distância | <strong>b:</strong> Distância média | <strong>c:</strong> Menor distância
                         </p>
                         <div class="dimensoes-grid">
-                            <div class="form-group">
-                                <label>Dimensão A (cm):</label>
-                                <input type="number" id="val-brita-a" step="0.1">
-                            </div>
-                            <div class="form-group">
-                                <label>Dimensão B (cm):</label>
-                                <input type="number" id="val-brita-b" step="0.1">
-                            </div>
-                            <div class="form-group">
-                                <label>Dimensão C (cm):</label>
-                                <input type="number" id="val-brita-c" step="0.1">
-                            </div>
+                            <div class="form-group"><label>Dimensão A (cm):</label><input type="number" id="val-brita-a" step="0.1"></div>
+                            <div class="form-group"><label>Dimensão B (cm):</label><input type="number" id="val-brita-b" step="0.1"></div>
+                            <div class="form-group"><label>Dimensão C (cm):</label><input type="number" id="val-brita-c" step="0.1"></div>
                         </div>
                     </div>
-
                     <div id="brita-inputs-granulometria" style="display: none;">
                         <div class="form-group" style="margin-bottom:20px;">
                             <label>Aplicação do Lastro (Tipo de Dormente):</label>
@@ -595,7 +537,6 @@
                     </div>
 
                     <button class="btn-analisar" id="btn-brita" style="display: none;" onclick="analisarBrita()">VERIFICAR CONFORMIDADE</button>
-
                     <div id="resultado-box-brita" class="resultado-box"></div>
                     <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Documentos atualizados em 14/04/2026</div>
                 </div>
@@ -624,7 +565,6 @@
                         <input type="checkbox" id="aco-exposto">
                         <label for="aco-exposto">Exposição de Armadura / Aço?</label>
                     </div>
-
                     <div class="dimensoes-grid" id="dimensoes-inputs" style="display: none;">
                         <div class="form-group" id="div-profundidade"><label>Profundidade (mm):</label><input type="number" id="val-profundidade" step="0.1"></div>
                         <div class="form-group" id="div-comprimento"><label>Comprimento (mm):</label><input type="number" id="val-comprimento" step="0.1"></div>
@@ -634,7 +574,6 @@
                     </div>
 
                     <button class="btn-analisar" onclick="analisarDefeito()">VERIFICAR CONFORMIDADE</button>
-
                     <div id="resultado-box-concreto" class="resultado-box"></div>
                     <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Documentos atualizados em 14/04/2026</div>
                 </div>
@@ -660,18 +599,9 @@
                                 <option value="2">2ª Classe (Média Resistência)</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>Teor de Umidade Constatado (%):</label>
-                            <input type="number" id="val-mad-umidade" step="0.1" placeholder="Ex: 25">
-                        </div>
-                        <div class="form-group">
-                            <label>Densidade / Massa Aparente (kg/m³):</label>
-                            <input type="number" id="val-mad-densidade" step="1" placeholder="Ex: 780">
-                        </div>
-                        <div class="form-group">
-                            <label>Retenção CCA/CCB Constatada (kg/m³):</label>
-                            <input type="number" id="val-mad-retencao" step="0.1" placeholder="Ex: 10.5">
-                        </div>
+                        <div class="form-group"><label>Teor de Umidade Constatado (%):</label><input type="number" id="val-mad-umidade" step="0.1" placeholder="Ex: 25"></div>
+                        <div class="form-group"><label>Densidade Aparente (kg/m³):</label><input type="number" id="val-mad-densidade" step="1" placeholder="Ex: 780"></div>
+                        <div class="form-group"><label>Retenção CCA/CCB (kg/m³):</label><input type="number" id="val-mad-retencao" step="0.1" placeholder="Ex: 10.5"></div>
                     </div>
 
                     <div id="mad-inputs-defeito" style="display: none;">
@@ -688,33 +618,18 @@
 
                         <div class="checkbox-group" id="mad-check-fixacao" style="display: none;">
                             <input type="checkbox" id="mad-zona-fixacao">
-                            <label for="mad-zona-fixacao">Defeito localizado na Zona de Fixação?</label>
+                            <label for="mad-zona-fixacao">Defeito na Zona de Fixação?</label>
                         </div>
 
                         <div class="dimensoes-grid" id="mad-dims-racha" style="display: none;">
-                            <div class="form-group">
-                                <label>Comprimento (cm):</label>
-                                <input type="number" id="val-mad-comp-racha" step="0.1">
-                            </div>
-                            <div class="form-group">
-                                <label>Abertura/Largura (mm):</label>
-                                <input type="number" id="val-mad-abert-racha" step="0.1">
-                            </div>
-                            <div class="form-group" id="mad-div-prof-racha" style="display: none;">
-                                <label>Profundidade (cm):</label>
-                                <input type="number" id="val-mad-prof-racha" step="0.1">
-                            </div>
+                            <div class="form-group"><label>Comprimento (cm):</label><input type="number" id="val-mad-comp-racha" step="0.1"></div>
+                            <div class="form-group"><label>Abertura/Largura (mm):</label><input type="number" id="val-mad-abert-racha" step="0.1"></div>
+                            <div class="form-group" id="mad-div-prof-racha" style="display: none;"><label>Profundidade (cm):</label><input type="number" id="val-mad-prof-racha" step="0.1"></div>
                         </div>
 
                         <div class="dimensoes-grid" id="mad-dims-furos" style="display: none;">
-                            <div class="form-group">
-                                <label>Diâmetro do Furo/Nó (cm):</label>
-                                <input type="number" id="val-mad-diam-furo" step="0.1">
-                            </div>
-                            <div class="form-group">
-                                <label>Profundidade do Furo/Nó (cm):</label>
-                                <input type="number" id="val-mad-prof-furo" step="0.1">
-                            </div>
+                            <div class="form-group"><label>Diâmetro do Furo/Nó (cm):</label><input type="number" id="val-mad-diam-furo" step="0.1"></div>
+                            <div class="form-group"><label>Profundidade do Furo/Nó (cm):</label><input type="number" id="val-mad-prof-furo" step="0.1"></div>
                         </div>
 
                         <div class="dimensoes-grid" id="mad-dims-empenamento" style="display: none;">
@@ -728,18 +643,13 @@
                                     <option value="2.80">2,80 m</option>
                                     <option value="3.00">3,00 m</option>
                                     <option value="3.20">3,20 m</option>
-                                    <option value="4.00">4,00 m (ou mais)</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label>Flecha Constatada (cm):</label>
-                                <input type="number" id="val-mad-flecha" step="0.1">
-                            </div>
+                            <div class="form-group"><label>Flecha Constatada (cm):</label><input type="number" id="val-mad-flecha" step="0.1"></div>
                         </div>
                     </div>
 
                     <button class="btn-analisar" id="btn-madeira" style="display: none;" onclick="analisarMadeira()">VERIFICAR CONFORMIDADE</button>
-
                     <div id="resultado-box-madeira" class="resultado-box"></div>
                     <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Documentos atualizados em 14/04/2026</div>
                 </div>
@@ -778,16 +688,124 @@
                     </div>
 
                     <button class="btn-analisar" id="btn-sub" style="display: none;" onclick="analisarSub()">VERIFICAR CONFORMIDADE</button>
-
                     <div id="resultado-box-sub" class="resultado-box"></div>
                     <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Documentos atualizados em 14/04/2026</div>
                 </div>
             </section>
-
         </main>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // As suas chaves reais do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVUi-Ec7pSiWhdsZK3iF0iHT4kevyH2oo",
+            authDomain: "inspecao-rumo.firebaseapp.com",
+            projectId: "inspecao-rumo",
+            storageBucket: "inspecao-rumo.firebasestorage.app",
+            messagingSenderId: "999417271935",
+            appId: "1:999417271935:web:6c61d6ba86b90a6dd0514a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const msgErro = document.getElementById('error-msg');
+        const inputEmail = document.getElementById('user-email');
+        const btnLogin = document.getElementById('btn-login-email');
+
+        // 1. VERIFICA SE ESTÁ VOLTANDO DO E-MAIL
+        if (isSignInWithEmailLink(auth, window.location.href)) {
+            let email = window.localStorage.getItem('emailParaSignIn');
+            if (!email) {
+                email = window.prompt('Confirme o seu e-mail corporativo para liberar o acesso:');
+            }
+            signInWithEmailLink(auth, email, window.location.href)
+                .then((result) => {
+                    window.localStorage.removeItem('emailParaSignIn');
+                    window.liberarAcessoGlob();
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                })
+                .catch((error) => {
+                    console.error("Erro no login:", error);
+                    mostrarMensagem("Link expirado ou inválido. Tente enviar novamente.", "#d32f2f");
+                });
+        }
+
+        // 2. MANTÉM A SESSÃO ATIVA SE JÁ ESTIVER LOGADO
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const email = user.email.toLowerCase();
+                if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com')) {
+                    window.liberarAcessoGlob();
+                } else {
+                    window.fazerLogout();
+                }
+            }
+        });
+
+        // 3. FUNÇÃO QUE O BOTÃO HTML CHAMA PARA ENVIAR O E-MAIL
+        window.validarAcesso = function() {
+            const email = inputEmail.value.trim().toLowerCase();
+            msgErro.style.display = 'none';
+
+            if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com')) {
+                btnLogin.innerText = "Enviando link...";
+                btnLogin.disabled = true;
+
+                const actionCodeSettings = {
+                    url: window.location.href, 
+                    handleCodeInApp: true,
+                };
+
+                sendSignInLinkToEmail(auth, email, actionCodeSettings)
+                    .then(() => {
+                        window.localStorage.setItem('emailParaSignIn', email);
+                        mostrarMensagem("✅ Link seguro enviado! Verifique sua caixa de entrada (e o Spam).", "#2E7D32");
+                        btnLogin.innerText = "LINK ENVIADO";
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        mostrarMensagem("Erro ao enviar o e-mail. Recarregue a página e tente novamente.", "#d32f2f");
+                        btnLogin.innerText = "RECEBER LINK DE ACESSO";
+                        btnLogin.disabled = false;
+                    });
+            } else {
+                mostrarMensagem("Acesso restrito para @rumolog.com ou @ext.rumolog.com", "#d32f2f");
+            }
+        };
+
+        // 4. FUNÇÃO GLOBAL DE LOGOUT
+        window.fazerLogout = function() {
+            if (confirm("Deseja realmente sair do sistema?")) {
+                signOut(auth).then(() => {
+                    localStorage.removeItem('rumoInspeccaoDados');
+                    window.location.reload();
+                });
+            }
+        };
+
+        function mostrarMensagem(texto, cor) {
+            msgErro.innerText = texto;
+            msgErro.style.color = cor;
+            msgErro.style.display = 'block';
+        }
+    </script>
+
+
     <script>
+        window.liberarAcessoGlob = function() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-layout').style.display = 'flex';
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.add('hidden');
+                document.getElementById('toggle-sidebar-btn').style.display = 'flex';
+            }
+            carregarDadosLocal();
+        };
+
         function ocultarSidebarMobile() {
             if (window.innerWidth <= 768) {
                 document.getElementById('sidebar').classList.add('hidden');
@@ -795,35 +813,13 @@
             }
         }
 
-        function validarAcesso() {
-            const email = document.getElementById('user-email').value.trim().toLowerCase();
-            if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com')) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-layout').style.display = 'flex';
-                salvarDadosLocal();
-                ocultarSidebarMobile();
-            } else {
-                document.getElementById('error-msg').style.display = 'block';
-            }
-        }
-
-        function fazerLogout() {
-            if (confirm("Deseja realmente sair e limpar os dados locais?")) {
-                localStorage.removeItem('rumoInspeccaoDados');
-                window.location.reload();
-            }
-        }
-
         function navegar(idSecao) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            
             const secao = document.getElementById(idSecao);
             if (secao) secao.classList.add('active');
-            
             const itemClicado = event.currentTarget;
             itemClicado.classList.add('active');
-            
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.add('hidden');
             document.getElementById('toggle-sidebar-btn').style.display = 'flex';
@@ -863,13 +859,11 @@
         function atualizarCampos() {
             const tipo = document.getElementById('tipo-defeito').value;
             const local = document.getElementById('localizacao').value;
-            
             document.getElementById('dimensoes-inputs').style.display = 'none';
             document.getElementById('container-aco').style.display = 'none';
             document.querySelectorAll('#dimensoes-inputs .form-group').forEach(d => d.style.display = 'none');
             
             if (!local) return;
-            
             document.getElementById('dimensoes-inputs').style.display = 'grid';
             
             if (tipo === 'vazio') {
@@ -909,77 +903,40 @@
             if (tipo === 'vazio') {
                 if (local === 'apoio') {
                     paginaRef = 'Página 8 (Tabela 1)';
-                    if (prof <= 2 && comp <= 3 && larg <= 3) {
-                        dimensoesBase = 'Profundidade ≤2 mm | Comprimento ≤3 mm | Largura ≤3 mm';
-                    } else if (prof <= 5 && comp <= 10 && larg <= 10) {
-                        statusClass = 'reparar'; titulo = '🔧 REPARAR';
-                        dimensoesBase = 'Profundidade 3-5 mm | Comprimento 4-10 mm | Largura 4-10 mm';
-                    } else {
-                        statusClass = 'refugo'; titulo = '❌ REFUGO';
-                        dimensoesBase = 'Profundidade >6 mm | Comprimento >11 mm | Largura >11 mm';
-                    }
+                    if (prof <= 2 && comp <= 3 && larg <= 3) dimensoesBase = 'Profundidade ≤2 mm | Comprimento ≤3 mm | Largura ≤3 mm';
+                    else if (prof <= 5 && comp <= 10 && larg <= 10) { statusClass = 'reparar'; titulo = '🔧 REPARAR'; dimensoesBase = 'Profundidade 3-5 mm | Comprimento 4-10 mm | Largura 4-10 mm'; }
+                    else { statusClass = 'refugo'; titulo = '❌ REFUGO'; dimensoesBase = 'Profundidade >6 mm | Comprimento >11 mm | Largura >11 mm'; }
                 }
                 else if (local === 'fora_apoio') {
                     paginaRef = 'Página 11 (Tabela 2)';
-                    if (prof <= 5 && comp <= 5 && larg <= 5) {
-                        dimensoesBase = 'Profundidade ≤5 mm | Comprimento ≤5 mm | Altura ≤5 mm';
-                    } else if (prof <= 10 && comp <= 20 && larg <= 20) {
-                        statusClass = 'reparar'; titulo = '🔧 REPARAR';
-                        dimensoesBase = 'Profundidade 6-10 mm | Comprimento 6-20 mm | Altura 6-20 mm';
-                    } else {
-                        statusClass = 'refugo'; titulo = '❌ REFUGO';
-                        dimensoesBase = 'Profundidade >11 mm | Comprimento >21 mm | Altura >21 mm';
-                    }
+                    if (prof <= 5 && comp <= 5 && larg <= 5) dimensoesBase = 'Profundidade ≤5 mm | Comprimento ≤5 mm | Altura ≤5 mm';
+                    else if (prof <= 10 && comp <= 20 && larg <= 20) { statusClass = 'reparar'; titulo = '🔧 REPARAR'; dimensoesBase = 'Profundidade 6-10 mm | Comprimento 6-20 mm | Altura 6-20 mm'; }
+                    else { statusClass = 'refugo'; titulo = '❌ REFUGO'; dimensoesBase = 'Profundidade >11 mm | Comprimento >21 mm | Altura >21 mm'; }
                 }
                 else if (local === 'testeira') {
                     paginaRef = 'Página 15-16';
-                    if (acoExposto && prof >= 31) {
-                        statusClass = 'refugo'; titulo = '❌ REFUGO';
-                        dimensoesBase = 'Exposição máxima tolerável: 30 mm';
-                    } else if (!acoExposto && prof <= 50) {
-                        statusClass = 'reparar'; titulo = '🔧 REPARAR';
-                        dimensoesBase = 'Profundidade máxima reparável: 50 mm';
-                    } else {
-                        statusClass = 'refugo'; titulo = '❌ REFUGO';
-                        dimensoesBase = 'Profundidade >51 mm ou continuidade >51 mm';
-                    }
+                    if (acoExposto && prof >= 31) { statusClass = 'refugo'; titulo = '❌ REFUGO'; dimensoesBase = 'Exposição máxima tolerável: 30 mm'; }
+                    else if (!acoExposto && prof <= 50) { statusClass = 'reparar'; titulo = '🔧 REPARAR'; dimensoesBase = 'Profundidade máxima reparável: 50 mm'; }
+                    else { statusClass = 'refugo'; titulo = '❌ REFUGO'; dimensoesBase = 'Profundidade >51 mm ou continuidade >51 mm'; }
                 }
             }
             else if (tipo === 'quebra') {
                 paginaRef = local === 'lat_sup' ? 'Página 17 (Tabela 3)' : 'Página 19 (Tabela 4)';
-                if (acoExposto) {
-                    statusClass = 'refugo'; titulo = '❌ REFUGO';
-                    dimensoesBase = 'Qualquer exposição de armadura ativa = refugo';
-                } else if (prof <= 10 && comp <= 49 && larg <= 29) {
-                    dimensoesBase = 'Prof. ≤10 mm | Comp. ≤49 mm | Alt. ≤29 mm';
-                } else if (prof <= 20 && comp <= 200 && larg <= 150) {
-                    statusClass = 'reparar'; titulo = '🔧 REPARAR';
-                    dimensoesBase = 'Prof. 11-20 mm | Comp. 50-200 mm | Alt. 30-150 mm';
-                } else {
-                    statusClass = 'refugo'; titulo = '❌ REFUGO';
-                    dimensoesBase = 'Prof. >21 mm | Comp. >201 mm | Alt. >151 mm';
-                }
+                if (acoExposto) { statusClass = 'refugo'; titulo = '❌ REFUGO'; dimensoesBase = 'Qualquer exposição de armadura ativa = refugo'; }
+                else if (prof <= 10 && comp <= 49 && larg <= 29) dimensoesBase = 'Prof. ≤10 mm | Comp. ≤49 mm | Alt. ≤29 mm';
+                else if (prof <= 20 && comp <= 200 && larg <= 150) { statusClass = 'reparar'; titulo = '🔧 REPARAR'; dimensoesBase = 'Prof. 11-20 mm | Comp. 50-200 mm | Alt. 30-150 mm'; }
+                else { statusClass = 'refugo'; titulo = '❌ REFUGO'; dimensoesBase = 'Prof. >21 mm | Comp. >201 mm | Alt. >151 mm'; }
             }
             else if (tipo === 'fissura') {
                 paginaRef = 'Página 22-24 (Tabela 5)';
-                if (local === 'ombreira') {
-                    statusClass = 'refugo'; titulo = '❌ REFUGO';
-                    dimensoesBase = 'Qualquer fissura na ombreira = refugo';
-                } else if (local === 'lateral' || local === 'transversal') {
-                    if (esp <= 0.10 && comp <= 10) {
-                        dimensoesBase = 'Espessura ≤0,10 mm | Comprimento ≤10 mm';
-                    } else if (esp <= 0.50 && comp <= 100) {
-                        statusClass = 'reparar'; titulo = '🔧 REPARAR';
-                        dimensoesBase = 'Espessura 0,15-0,50 mm | Comprimento 11-100 mm';
-                    } else {
-                        statusClass = 'refugo'; titulo = '❌ REFUGO';
-                        dimensoesBase = 'Espessura ≥0,55 mm | Comprimento >101 mm';
-                    }
+                if (local === 'ombreira') { statusClass = 'refugo'; titulo = '❌ REFUGO'; dimensoesBase = 'Qualquer fissura na ombreira = refugo'; }
+                else if (local === 'lateral' || local === 'transversal') {
+                    if (esp <= 0.10 && comp <= 10) dimensoesBase = 'Espessura ≤0,10 mm | Comprimento ≤10 mm';
+                    else if (esp <= 0.50 && comp <= 100) { statusClass = 'reparar'; titulo = '🔧 REPARAR'; dimensoesBase = 'Espessura 0,15-0,50 mm | Comprimento 11-100 mm'; }
+                    else { statusClass = 'refugo'; titulo = '❌ REFUGO'; dimensoesBase = 'Espessura ≥0,55 mm | Comprimento >101 mm'; }
                 }
             }
-
-            const textoFinal = `${titulo}\n\n📏 Dimensões base:\n${dimensoesBase}\n\n📄 Procedimento: PO-SPE-160\n🔖 Ref Específica: ${paginaRef}`;
-            animarTexto(box, textoFinal, statusClass);
+            animarTexto(box, `${titulo}\n\n📏 Dimensões base:\n${dimensoesBase}\n\n📄 Procedimento: PO-SPE-160\n🔖 Ref Específica: ${paginaRef}`, statusClass);
         }
 
         // ====================== AMV ======================
@@ -1002,107 +959,58 @@
             let statusClass = 'aceitavel', titulo = '✅ CONFORME', dimensoesBase = '', paginaRef = '';
             
             if (comp === 'agulha') {
-                const ponta = getVal('val-amv-ponta');
-                paginaRef = 'ETMs 0005, 0007, 0008, 0009';
-                if (ponta <= 3.9) {
-                    dimensoesBase = 'Ponta de agulha dentro da tolerância.\n(Nominal AREMA: 3.1mm + Tolerância: 0.8mm)';
-                } else {
-                    statusClass = 'refugo'; titulo = '❌ NÃO CONFORME';
-                    dimensoesBase = 'Ponta de agulha acima da tolerância máxima permitida (3.9mm). Desgaste excessivo.';
-                }
+                const ponta = getVal('val-amv-ponta'); paginaRef = 'ETMs 0005, 0007, 0008, 0009';
+                if (ponta <= 3.9) dimensoesBase = 'Ponta de agulha dentro da tolerância.\n(Nominal AREMA: 3.1mm + Tolerância: 0.8mm)';
+                else { statusClass = 'refugo'; titulo = '❌ NÃO CONFORME'; dimensoesBase = 'Ponta de agulha acima da tolerância máxima permitida (3.9mm). Desgaste excessivo.'; }
             }
             else if (comp === 'rolete') {
-                const altura = getVal('val-amv-altura-rolete');
-                paginaRef = 'EM-SPE-072 (Item 5.2)';
-                if (altura <= 2.0) {
-                    dimensoesBase = 'Altura do rolete Viga I atende aos requisitos (≤ 2.0mm em relação à base inferior da agulha).';
-                } else {
-                    statusClass = 'reparar'; titulo = '🔧 NECESSITA CALIBRAÇÃO';
-                    dimensoesBase = 'Altura superior a 2.0 mm.\nNecessário ajuste fino para calibração do rolete.';
-                }
+                const altura = getVal('val-amv-altura-rolete'); paginaRef = 'EM-SPE-072 (Item 5.2)';
+                if (altura <= 2.0) dimensoesBase = 'Altura do rolete Viga I atende aos requisitos (≤ 2.0mm em relação à base inferior da agulha).';
+                else { statusClass = 'reparar'; titulo = '🔧 NECESSITA CALIBRAÇÃO'; dimensoesBase = 'Altura superior a 2.0 mm.\nNecessário ajuste fino para calibração do rolete.'; }
             }
             else if (comp === 'coxin') {
-                const dureza = getVal('val-amv-coxin');
-                paginaRef = 'EM-SPE-072 (Item 5.3.1)';
-                if (dureza >= 88 && dureza <= 92) {
-                    dimensoesBase = 'Dureza Shore A do coxin atende aos requisitos (88 a 92).';
-                } else {
-                    statusClass = 'refugo'; titulo = '❌ NÃO CONFORME';
-                    dimensoesBase = 'Dureza fora da tolerância exigida (Min: 88 | Max: 92 Shore A).';
-                }
+                const dureza = getVal('val-amv-coxin'); paginaRef = 'EM-SPE-072 (Item 5.3.1)';
+                if (dureza >= 88 && dureza <= 92) dimensoesBase = 'Dureza Shore A do coxin atende aos requisitos (88 a 92).';
+                else { statusClass = 'refugo'; titulo = '❌ NÃO CONFORME'; dimensoesBase = 'Dureza fora da tolerância exigida (Min: 88 | Max: 92 Shore A).'; }
             }
             else if (comp === 'jacare_canal') {
-                const prof = getVal('val-amv-jacare-canal');
-                paginaRef = 'ETMs 0005, 0007, 0008, 0009';
-                if (prof >= 51.0 && prof <= 55.0) {
-                    dimensoesBase = 'Profundidade do canal no núcleo do jacaré conforme (53 ± 2 mm).';
-                } else {
-                    statusClass = 'reparar'; titulo = '🔧 NECESSITA AJUSTE/REPARO';
-                    dimensoesBase = 'Profundidade fora da tolerância exigida (Min: 51 mm | Max: 55 mm).';
-                }
+                const prof = getVal('val-amv-jacare-canal'); paginaRef = 'ETMs 0005, 0007, 0008, 0009';
+                if (prof >= 51.0 && prof <= 55.0) dimensoesBase = 'Profundidade do canal no núcleo do jacaré conforme (53 ± 2 mm).';
+                else { statusClass = 'reparar'; titulo = '🔧 NECESSITA AJUSTE/REPARO'; dimensoesBase = 'Profundidade fora da tolerância exigida (Min: 51 mm | Max: 55 mm).'; }
             }
             else if (comp === 'jacare_dureza') {
-                const dureza = getVal('val-amv-jacare-dureza');
-                paginaRef = 'ETMs 0008, 0009';
-                if (dureza >= 352 && dureza <= 418) {
-                    dimensoesBase = 'Dureza Brinell nas áreas de impacto atende aos requisitos (352 a 418 HB).';
-                } else {
-                    statusClass = 'refugo'; titulo = '❌ NÃO CONFORME';
-                    dimensoesBase = 'Dureza fora da tolerância exigida para o núcleo de aço manganês.\n(Min: 352 HB | Max: 418 HB).';
-                }
+                const dureza = getVal('val-amv-jacare-dureza'); paginaRef = 'ETMs 0008, 0009';
+                if (dureza >= 352 && dureza <= 418) dimensoesBase = 'Dureza Brinell nas áreas de impacto atende aos requisitos (352 a 418 HB).';
+                else { statusClass = 'refugo'; titulo = '❌ NÃO CONFORME'; dimensoesBase = 'Dureza fora da tolerância exigida para o núcleo de aço manganês.\n(Min: 352 HB | Max: 418 HB).'; }
             }
             else if (comp === 'fixacao_concreto') {
-                const pressao = getVal('val-amv-fixacao');
-                paginaRef = 'ENG-DSV-VP-ETM-A0019 (Item 2.3.4)';
-                if (pressao >= 900 && pressao <= 1500) {
-                    dimensoesBase = 'Pressão do grampo Eclip-2009 atende aos requisitos de homologação.\n(Exigido: 1200 ± 300 kgf)';
-                } else {
-                    statusClass = 'reparar'; titulo = '🔧 VERIFICAR FIXAÇÃO';
-                    dimensoesBase = 'Pressão do grampo fora da faixa de segurança (900 a 1500 kgf).';
-                }
+                const pressao = getVal('val-amv-fixacao'); paginaRef = 'ENG-DSV-VP-ETM-A0019 (Item 2.3.4)';
+                if (pressao >= 900 && pressao <= 1500) dimensoesBase = 'Pressão do grampo Eclip-2009 atende aos requisitos.\n(Exigido: 1200 ± 300 kgf)';
+                else { statusClass = 'reparar'; titulo = '🔧 VERIFICAR FIXAÇÃO'; dimensoesBase = 'Pressão do grampo fora da faixa de segurança (900 a 1500 kgf).'; }
             }
             else if (comp === 'cilindro') {
-                const pressao = getVal('val-amv-pressao');
-                const tempo = getVal('val-amv-tempo');
-                paginaRef = 'EM-SPE-026';
-                if (pressao >= 500 && tempo >= 10 && tempo <= 12) {
-                    dimensoesBase = 'Pressão e tempo de acionamento em conformidade.\n(Pressão Mín: 500 kgf | Tempo: 10s a 12s)';
-                } else {
-                    statusClass = 'reparar'; titulo = '🔧 REGULAR CILINDRO';
-                    dimensoesBase = 'Parâmetros fora da norma estabelecida.\nRequisitos: Pressão mín 500 kgf e Tempo 10s a 12s.';
-                }
+                const pressao = getVal('val-amv-pressao'); const tempo = getVal('val-amv-tempo'); paginaRef = 'EM-SPE-026';
+                if (pressao >= 500 && tempo >= 10 && tempo <= 12) dimensoesBase = 'Pressão e tempo de acionamento em conformidade.\n(Pressão Mín: 500 kgf | Tempo: 10s a 12s)';
+                else { statusClass = 'reparar'; titulo = '🔧 REGULAR CILINDRO'; dimensoesBase = 'Parâmetros fora da norma estabelecida.\nRequisitos: Pressão mín 500 kgf e Tempo 10s a 12s.'; }
             }
             else if (comp === 'batefica') {
-                const deslocamento = getVal('val-amv-deslocamento');
-                paginaRef = 'EM-SPE-017';
-                if (deslocamento >= 100 && deslocamento <= 121) {
-                    dimensoesBase = 'Deslocamento da agulha pelo aparelho bate-fica operando adequadamente.\n(Faixa ideal: 100 mm a 121 mm)';
-                } else {
-                    statusClass = 'reparar'; titulo = '🔧 NECESSITA AJUSTE';
-                    dimensoesBase = 'Deslocamento fora da tolerância (100 mm a 121 mm).\nNecessário verificar a cruzeta de ajuste fino.';
-                }
+                const deslocamento = getVal('val-amv-deslocamento'); paginaRef = 'EM-SPE-017';
+                if (deslocamento >= 100 && deslocamento <= 121) dimensoesBase = 'Deslocamento da agulha operando adequadamente.\n(Faixa ideal: 100 mm a 121 mm)';
+                else { statusClass = 'reparar'; titulo = '🔧 NECESSITA AJUSTE'; dimensoesBase = 'Deslocamento fora da tolerância (100 mm a 121 mm).\nNecessário verificar a cruzeta de ajuste fino.'; }
             }
-
-            const textoFinal = `${titulo}\n\n📏 Análise:\n${dimensoesBase}\n\n📄 Procedimento: Lote de Manuais ETM-AMV\n🔖 Ref Específica: ${paginaRef}`;
-            animarTexto(box, textoFinal, statusClass);
+            animarTexto(box, `${titulo}\n\n📏 Análise:\n${dimensoesBase}\n\n📄 Procedimento: Lote de Manuais ETM-AMV\n🔖 Ref Específica: ${paginaRef}`, statusClass);
         }
 
         // ====================== MADEIRA ======================
         function atualizarCamposMadeira() {
             const cat = document.getElementById('mad-categoria').value;
-            
             document.getElementById('mad-inputs-fisico').style.display = 'none';
             document.getElementById('mad-inputs-defeito').style.display = 'none';
             document.getElementById('btn-madeira').style.display = 'none';
             document.getElementById('resultado-box-madeira').style.display = 'none';
 
-            if (cat === 'fisico') {
-                document.getElementById('mad-inputs-fisico').style.display = 'grid';
-                document.getElementById('btn-madeira').style.display = 'block';
-            } else if (cat === 'defeito') {
-                document.getElementById('mad-inputs-defeito').style.display = 'block';
-                atualizarDefeitoMadeira();
-            }
+            if (cat === 'fisico') { document.getElementById('mad-inputs-fisico').style.display = 'grid'; document.getElementById('btn-madeira').style.display = 'block'; }
+            else if (cat === 'defeito') { document.getElementById('mad-inputs-defeito').style.display = 'block'; atualizarDefeitoMadeira(); }
         }
 
         function atualizarDefeitoMadeira() {
@@ -1115,91 +1023,60 @@
             document.getElementById('btn-madeira').style.display = 'none';
 
             if (!tipo) return;
-
-            if (tipo === 'racha_topo') {
-                document.getElementById('mad-check-fixacao').style.display = 'flex';
-                document.getElementById('mad-dims-racha').style.display = 'grid';
-            } else if (tipo === 'racha_centro') {
-                document.getElementById('mad-check-fixacao').style.display = 'flex';
-                document.getElementById('mad-dims-racha').style.display = 'grid';
-                document.getElementById('mad-div-prof-racha').style.display = 'flex';
-            } else if (tipo === 'furos_nos') {
-                document.getElementById('mad-check-fixacao').style.display = 'flex';
-                document.getElementById('mad-dims-furos').style.display = 'grid';
-            } else if (tipo === 'empenamento') {
-                document.getElementById('mad-dims-empenamento').style.display = 'grid';
-            }
+            if (tipo === 'racha_topo') { document.getElementById('mad-check-fixacao').style.display = 'flex'; document.getElementById('mad-dims-racha').style.display = 'grid'; }
+            else if (tipo === 'racha_centro') { document.getElementById('mad-check-fixacao').style.display = 'flex'; document.getElementById('mad-dims-racha').style.display = 'grid'; document.getElementById('mad-div-prof-racha').style.display = 'flex'; }
+            else if (tipo === 'furos_nos') { document.getElementById('mad-check-fixacao').style.display = 'flex'; document.getElementById('mad-dims-furos').style.display = 'grid'; }
+            else if (tipo === 'empenamento') { document.getElementById('mad-dims-empenamento').style.display = 'grid'; }
             document.getElementById('btn-madeira').style.display = 'block';
         }
 
         function analisarMadeira() {
             const cat = document.getElementById('mad-categoria').value;
             const box = document.getElementById('resultado-box-madeira');
-            let statusClass = 'aceitavel', titulo = '✅ CONFORME', detalhes = '', paginaRef = 'Limites Normativos (Tolerâncias)';
+            let statusClass = 'aceitavel', titulo = '✅ CONFORME', detalhes = '', paginaRef = 'Limites Normativos';
 
             if (cat === 'fisico') {
                 const classe = document.getElementById('mad-classe').value;
-                const umidade = getVal('val-mad-umidade');
-                const densidade = getVal('val-mad-densidade');
-                const retencao = getVal('val-mad-retencao');
-
+                const umidade = getVal('val-mad-umidade'); const densidade = getVal('val-mad-densidade'); const retencao = getVal('val-mad-retencao');
                 let erros = [];
                 if (umidade > 30) erros.push('Teor de umidade excede o máximo permitido de 30%.');
-                if (classe === '1' && densidade > 0 && densidade < 750) erros.push('Massa aparente abaixo do mínimo para 1ª Classe (750 kg/m³).');
-                if (classe === '2' && densidade > 0 && densidade < 600) erros.push('Massa aparente abaixo do mínimo para 2ª Classe (600 kg/m³).');
-                if (retencao > 0 && retencao < 9.6) erros.push('Retenção de preservativo CCA/CCB abaixo do mínimo exigido de 9.6 kg/m³.');
-
+                if (classe === '1' && densidade > 0 && densidade < 750) erros.push('Massa aparente abaixo do mínimo (750 kg/m³).');
+                if (classe === '2' && densidade > 0 && densidade < 600) erros.push('Massa aparente abaixo do mínimo (600 kg/m³).');
+                if (retencao > 0 && retencao < 9.6) erros.push('Retenção de preservativo abaixo do mínimo (9.6 kg/m³).');
                 if (erros.length > 0) { statusClass = 'refugo'; titulo = '❌ NÃO CONFORME'; detalhes = erros.join('\n'); }
-                else { detalhes = 'Propriedades físicas e de impregnação preservativa dentro dos limites normativos.'; }
-
+                else detalhes = 'Propriedades físicas e de impregnação dentro dos limites.';
             } else if (cat === 'defeito') {
                 const tipo = document.getElementById('mad-tipo-defeito').value;
                 const naFixacao = document.getElementById('mad-zona-fixacao').checked;
-
-                if (naFixacao && tipo !== 'empenamento') {
-                    statusClass = 'refugo'; titulo = '❌ REFUGO'; detalhes = 'É proibida a presença de fendas, rachaduras, nós cariados ou furos de broca na zona de fixação.';
-                } else {
+                if (naFixacao && tipo !== 'empenamento') { statusClass = 'refugo'; titulo = '❌ REFUGO'; detalhes = 'Proibido fendas/furos na zona de fixação.'; }
+                else {
                     if (tipo === 'racha_topo') {
-                        const comp = getVal('val-mad-comp-racha');
-                        const abert = getVal('val-mad-abert-racha');
-                        if (comp > 15 || abert > 2) { statusClass = 'refugo'; titulo = '❌ REFUGO'; detalhes = 'Fenda de topo excede os limites máximos permitidos (Comp. máx: 15cm | Abertura máx: 2mm).'; }
-                        else { detalhes = 'Fenda de topo dentro das tolerâncias.'; }
+                        const comp = getVal('val-mad-comp-racha'); const abert = getVal('val-mad-abert-racha');
+                        if (comp > 15 || abert > 2) { statusClass = 'refugo'; titulo = '❌ REFUGO'; detalhes = 'Fenda de topo excede limites (Comp máx: 15cm | Abertura máx: 2mm).'; }
+                        else detalhes = 'Fenda de topo dentro das tolerâncias.';
                     } else if (tipo === 'racha_centro') {
-                        const comp = getVal('val-mad-comp-racha');
-                        const abert = getVal('val-mad-abert-racha');
-                        const prof = getVal('val-mad-prof-racha');
-                        if (comp > 15 || abert > 2 || prof > 2) { statusClass = 'refugo'; titulo = '❌ REFUGO'; detalhes = 'Rachadura de centro excede os limites máximos permitidos (Comp: 15cm | Abertura: 2mm | Prof: 2cm).'; }
-                        else { detalhes = 'Rachadura central dentro das tolerâncias normativas.'; }
+                        const comp = getVal('val-mad-comp-racha'); const abert = getVal('val-mad-abert-racha'); const prof = getVal('val-mad-prof-racha');
+                        if (comp > 15 || abert > 2 || prof > 2) { statusClass = 'refugo'; titulo = '❌ REFUGO'; detalhes = 'Rachadura central excede limites (15cm x 2mm x 2cm).'; }
+                        else detalhes = 'Rachadura central dentro das tolerâncias.';
                     } else if (tipo === 'furos_nos') {
-                        const diam = getVal('val-mad-diam-furo');
-                        const prof = getVal('val-mad-prof-furo');
-                        if (diam > 2.5 || prof >= 5) { statusClass = 'refugo'; titulo = '❌ REFUGO'; detalhes = 'Dimensões excedem o limite estabelecido (Diâmetro máx: 2.5cm | Profundidade máx: < 5cm).'; }
-                        else { detalhes = 'Furo de broca ou nó cariado dentro das tolerâncias.'; }
+                        const diam = getVal('val-mad-diam-furo'); const prof = getVal('val-mad-prof-furo');
+                        if (diam > 2.5 || prof >= 5) { statusClass = 'refugo'; titulo = '❌ REFUGO'; detalhes = 'Furo/nó excede limites (Diam máx: 2.5cm | Prof máx: < 5cm).'; }
+                        else detalhes = 'Furo/Nó dentro das tolerâncias.';
                     } else if (tipo === 'empenamento') {
                         const compDorm = parseFloat(document.getElementById('val-mad-comp-dormente').value);
-                        const flecha = getVal('val-mad-flecha');
-                        const flechaMax = compDorm / 2.0;
-
-                        if (flecha > flechaMax) { statusClass = 'refugo'; titulo = '❌ REFUGO'; detalhes = `Flecha constatada (${flecha} cm) excede o limite máximo permitido de ${flechaMax.toFixed(1)} cm para dormentes de ${compDorm.toFixed(2)}m de comprimento.`; }
-                        else { detalhes = `Empenamento/Arqueamento dentro do limite aceitável (Máx: ${flechaMax.toFixed(1)} cm para a respectiva viga).`; }
+                        const flecha = getVal('val-mad-flecha'); const flechaMax = compDorm / 2.0;
+                        if (flecha > flechaMax) { statusClass = 'refugo'; titulo = '❌ REFUGO'; detalhes = `Flecha (${flecha}cm) excede o limite de ${flechaMax.toFixed(1)}cm.`; }
+                        else detalhes = `Empenamento aceitável (Máx: ${flechaMax.toFixed(1)}cm).`;
                     }
                 }
             }
-
-            const textoFinal = `${titulo}\n\n📏 Análise:\n${detalhes}\n\n📄 Procedimento: ENG-DSV-VP-ETM-D006\n🔖 Ref Específica: ${paginaRef}`;
-            animarTexto(box, textoFinal, statusClass);
+            animarTexto(box, `${titulo}\n\n📏 Análise:\n${detalhes}\n\n📄 Procedimento: ENG-DSV-VP-ETM-D006\n🔖 Ref Específica: ${paginaRef}`, statusClass);
         }
 
         // ====================== BRITA ======================
         function atualizarCamposBrita() {
             const cat = document.getElementById('brita-categoria').value;
-            document.getElementById('brita-check-visual').style.display = 'none';
-            document.getElementById('brita-inputs-lote').style.display = 'none';
-            document.getElementById('brita-inputs-pedra').style.display = 'none';
-            document.getElementById('brita-inputs-granulometria').style.display = 'none';
-            document.getElementById('btn-brita').style.display = 'none';
-            document.getElementById('resultado-box-brita').style.display = 'none';
-
+            document.getElementById('brita-check-visual').style.display = 'none'; document.getElementById('brita-inputs-lote').style.display = 'none'; document.getElementById('brita-inputs-pedra').style.display = 'none'; document.getElementById('brita-inputs-granulometria').style.display = 'none'; document.getElementById('btn-brita').style.display = 'none'; document.getElementById('resultado-box-brita').style.display = 'none';
             if (cat === 'visual') { document.getElementById('brita-check-visual').style.display = 'flex'; document.getElementById('btn-brita').style.display = 'block'; }
             else if (cat === 'forma_lote') { document.getElementById('brita-inputs-lote').style.display = 'grid'; document.getElementById('btn-brita').style.display = 'block'; }
             else if (cat === 'forma_pedra') { document.getElementById('brita-inputs-pedra').style.display = 'block'; document.getElementById('btn-brita').style.display = 'block'; }
@@ -1212,72 +1089,61 @@
             let statusClass = 'aceitavel', titulo = '✅ CONFORME', detalhes = '', paginaRef = 'MAN-VP-L-MTE-LT-0003';
 
             if (cat === 'visual') {
-                const temFinos = document.getElementById('brita-presenca-finos').checked;
-                if (temFinos) { statusClass = 'refugo'; titulo = '❌ NÃO ACEITAR (REFUGO)'; detalhes = 'Lastro Contaminado: Presença visível de materiais finos (argila, areia, matéria orgânica, etc).'; }
-                else { detalhes = 'Inspeção visual em conformidade. Ausência de contaminantes visíveis.'; }
+                if (document.getElementById('brita-presenca-finos').checked) { statusClass = 'refugo'; titulo = '❌ NÃO ACEITAR'; detalhes = 'Lastro Contaminado: Presença visível de materiais finos.'; }
+                else detalhes = 'Inspeção visual em conformidade.';
             } else if (cat === 'forma_lote') {
-                const percNaoCubicas = getVal('val-brita-nao-cubicas');
-                if (percNaoCubicas > 15) { statusClass = 'refugo'; titulo = '❌ NÃO ACEITAR (REFUGO)'; detalhes = `Amostra possui ${percNaoCubicas}% de britas não-cúbicas (lamelares/alongadas), excedendo o limite máximo de 15%.`; }
-                else { detalhes = `Índice de britas não-cúbicas (${percNaoCubicas}%) está dentro da tolerância permitida (≤ 15%).`; }
+                const perc = getVal('val-brita-nao-cubicas');
+                if (perc > 15) { statusClass = 'refugo'; titulo = '❌ NÃO ACEITAR'; detalhes = `Amostra possui ${perc}% de britas não-cúbicas (limite: 15%).`; }
+                else detalhes = `Índice de britas não-cúbicas (${perc}%) dentro da tolerância.`;
             } else if (cat === 'forma_pedra') {
-                const a = getVal('val-brita-a'); const b = getVal('val-brita-b'); const c = getVal('val-brita-c');
+                const a = getVal('val-brita-a'), b = getVal('val-brita-b'), c = getVal('val-brita-c');
                 if (a > 0 && b > 0) {
-                    const relBA = parseFloat((b / a).toFixed(1)); const relCB = parseFloat((c / b).toFixed(1));
-                    let forma = '';
-                    if (relBA >= 0.5 && relCB >= 0.5) forma = 'Cúbica';
-                    else if (relBA < 0.5 && relCB >= 0.5) forma = 'Alongada';
-                    else if (relBA >= 0.5 && relCB < 0.5) forma = 'Lamelar';
-                    else forma = 'Alongada-lamelar';
-
-                    if (forma === 'Cúbica') detalhes = `Relação b/a: ${relBA} | Relação c/b: ${relCB}\nForma classificada como: **${forma}** (Aceitável).`;
-                    else { statusClass = 'reparar'; titulo = '⚠️ ATENÇÃO (NÃO-CÚBICA)'; detalhes = `Relação b/a: ${relBA} | Relação c/b: ${relCB}\nForma classificada como: **${forma}**.\n(O lote será recusado se formas não-cúbicas excederem 15%).`; }
-                } else { detalhes = 'Insira valores válidos para as dimensões A, B e C.'; statusClass = 'reparar'; }
+                    const relBA = parseFloat((b/a).toFixed(1)), relCB = parseFloat((c/b).toFixed(1));
+                    let forma = (relBA >= 0.5 && relCB >= 0.5) ? 'Cúbica' : (relBA < 0.5 && relCB >= 0.5) ? 'Alongada' : (relBA >= 0.5 && relCB < 0.5) ? 'Lamelar' : 'Alongada-lamelar';
+                    if (forma === 'Cúbica') detalhes = `Forma classificada como: **${forma}** (Aceitável).`;
+                    else { statusClass = 'reparar'; titulo = '⚠️ ATENÇÃO'; detalhes = `Forma: **${forma}**. O lote será recusado se exceder 15%.`; }
+                } else { detalhes = 'Insira valores válidos.'; statusClass = 'reparar'; }
             } else if (cat === 'granulometria') {
-                const tipoDorm = document.getElementById('brita-tipo-dormente').value;
-                const g63 = getVal('val-brita-g63'); const g50 = getVal('val-brita-g50'); const g38 = getVal('val-brita-g38');
-                const g25 = getVal('val-brita-g25'); const g19 = getVal('val-brita-g19'); const g12 = getVal('val-brita-g12');
+                const tipo = document.getElementById('brita-tipo-dormente').value;
+                const g63=getVal('val-brita-g63'), g50=getVal('val-brita-g50'), g38=getVal('val-brita-g38'), g25=getVal('val-brita-g25'), g19=getVal('val-brita-g19'), g12=getVal('val-brita-g12');
                 let erros = [];
-
-                if (tipoDorm === 'geral') {
-                    if (g63 !== 0) erros.push(`Peneira 63,5mm: Retenção deve ser 0% (Atual: ${g63}%)`);
-                    if (g50 < 0 || g50 > 10) erros.push(`Peneira 50,0mm: Limite de 0% a 10% (Atual: ${g50}%)`);
-                    if (g38 < 10 || g38 > 40) erros.push(`Peneira 38,0mm: Limite de 10% a 40% (Atual: ${g38}%)`);
-                    if (g25 < 65 || g25 > 90) erros.push(`Peneira 25,0mm: Limite de 65% a 90% (Atual: ${g25}%)`);
-                    if (g19 < 90 || g19 > 100) erros.push(`Peneira 19,0mm: Limite de 90% a 100% (Atual: ${g19}%)`);
-                    if (g12 < 95 || g12 > 100) erros.push(`Peneira 12,7mm: Limite de 95% a 100% (Atual: ${g12}%)`);
+                if(tipo==='geral') {
+                    if(g63!==0) erros.push(`Peneira 63,5mm: Limite 0% (Atual: ${g63}%)`);
+                    if(g50<0||g50>10) erros.push(`Peneira 50,0mm: Limite 0-10% (Atual: ${g50}%)`);
+                    if(g38<10||g38>40) erros.push(`Peneira 38,0mm: Limite 10-40% (Atual: ${g38}%)`);
+                    if(g25<65||g25>90) erros.push(`Peneira 25,0mm: Limite 65-90% (Atual: ${g25}%)`);
+                    if(g19<90||g19>100) erros.push(`Peneira 19,0mm: Limite 90-100% (Atual: ${g19}%)`);
+                    if(g12<95||g12>100) erros.push(`Peneira 12,7mm: Limite 95-100% (Atual: ${g12}%)`);
                 } else {
-                    if (g63 !== 0) erros.push(`Peneira 63,5mm: Retenção deve ser 0% (Atual: ${g63}%)`);
-                    if (g50 < 0 || g50 > 5) erros.push(`Peneira 50,0mm: Limite de 0% a 5% (Atual: ${g50}%)`);
-                    if (g38 < 30 || g38 > 65) erros.push(`Peneira 38,0mm: Limite de 30% a 65% (Atual: ${g38}%)`);
-                    if (g25 < 70 || g25 > 85) erros.push(`Peneira 25,0mm: Limite de 70% a 85% (Atual: ${g25}%)`);
-                    if (g19 < 85 || g19 > 95) erros.push(`Peneira 19,0mm: Limite de 85% a 95% (Atual: ${g19}%)`);
-                    if (g12 < 90 || g12 > 100) erros.push(`Peneira 12,7mm: Limite de 90% a 100% (Atual: ${g12}%)`);
+                    if(g63!==0) erros.push(`Peneira 63,5mm: Limite 0% (Atual: ${g63}%)`);
+                    if(g50<0||g50>5) erros.push(`Peneira 50,0mm: Limite 0-5% (Atual: ${g50}%)`);
+                    if(g38<30||g38>65) erros.push(`Peneira 38,0mm: Limite 30-65% (Atual: ${g38}%)`);
+                    if(g25<70||g25>85) erros.push(`Peneira 25,0mm: Limite 70-85% (Atual: ${g25}%)`);
+                    if(g19<85||g19>95) erros.push(`Peneira 19,0mm: Limite 85-95% (Atual: ${g19}%)`);
+                    if(g12<90||g12>100) erros.push(`Peneira 12,7mm: Limite 90-100% (Atual: ${g12}%)`);
                 }
-
-                if (erros.length > 0) { statusClass = 'refugo'; titulo = '❌ NÃO ACEITAR (REFUGO)'; detalhes = 'Amostra fora da faixa granulométrica exigida:\n' + erros.join('\n'); }
-                else { detalhes = 'Percentuais retidos acumulados em total conformidade com a tabela granulométrica.'; }
+                if (erros.length > 0) { statusClass = 'refugo'; titulo = '❌ NÃO ACEITAR'; detalhes = 'Fora da faixa granulométrica:\n' + erros.join('\n'); }
+                else detalhes = 'Granulometria em total conformidade.';
             }
-
-            const textoFinal = `${titulo}\n\n📏 Análise:\n${detalhes}\n\n📄 Procedimento: ${paginaRef}\n🔖 Ref Específica: Cartilha de Brita`;
-            animarTexto(box, textoFinal, statusClass);
+            animarTexto(box, `${titulo}\n\n📏 Análise:\n${detalhes}\n\n📄 Procedimento: ${paginaRef}\n🔖 Ref Específica: Cartilha de Brita`, statusClass);
         }
 
         // ====================== SUBCOMPONENTES ======================
         const subDados = {
-            "pal_branca_tr68": { title: "Palmilha Branca TR68 FAST-CLIP (SAP:109105)", ref: "ENG-DVP-D183 / INF-FX-0003", m: [{l:"Medida 1 (mm)", min:187.5, max:191.5}, {l:"Medida 2 (mm)", min:151.0, max:155.0}, {l:"Medida 3 (mm)", min:111.5, max:114.5}, {l:"Medida 4 (mm)", min:5.5, max:7.5}] },
-            "pal_verde_uic60": { title: "Palmilha Verde UIC60 (SAP:127543)", ref: "ENG-DVP-D135 / INF-FX-0003", m: [{l:"Medida 1 (mm)", min:148.5, max:150.0}, {l:"Medida 2 (mm)", min:113.0, max:114.0}, {l:"Medida 3 (mm)", min:7.05, max:7.55}] },
-            "iso_verde_3510w": { title: "Isolador Lateral Verde 3510W (SAP:127551)", ref: "ENG-DVP-D136", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:9.6, max:10.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
-            "iso_amarelo_3510w": { title: "Isolador Lateral Amarelo 3510W (SAP:147554)", ref: "ENG-DVP-D136", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:9.6, max:10.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
-            "iso_preto_3502w": { title: "Isolador Lateral Preto 3502W (SAP:147555)", ref: "ENG-DVP-D084", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:7.6, max:8.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
-            "iso_branco_pandrol": { title: "Isolador Lateral Branco 8mm 13158-D (SAP:121107)", ref: "ENG-DVP-D084", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:7.6, max:8.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
-            "iso_branco_3502w": { title: "Isolador Lateral Branco 3502W (SAP:121107)", ref: "ENG-DVP-D084", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:7.6, max:8.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
-            "usp_getzner": { title: "UNDER SLEEPER PAD USP (SAP:126980)", ref: "ENG-DVP-D131", m: [{l:"Comprimento (mm)", min:1360.0, max:1390.0}, {l:"Largura (mm)", min:225.0, max:245.0}, {l:"Espessura (mm)", min:7.0, max:11.0}] },
-            "grampo_capa_branca": { title: "Grampo W c/ isolador Capa Branca 1605P (SAP:99604)", ref: "ENG-DVP-T040", m: [{l:"Medida 1 (mm)", min:106.5, max:111.0}, {l:"Medida 2 (mm)", min:15.75, max:16.25}, {l:"Medida 3 (mm)", min:74.5, max:79.0}] },
-            "grampo_iso_frontal": { title: "Grampo W c/ isolador frontal (SAP:99604)", ref: "ENG-DVP-T040", m: [{l:"Medida 1 (mm)", min:106.5, max:111.0}, {l:"Medida 2 (mm)", min:15.75, max:16.25}, {l:"Medida 3 (mm)", min:74.5, max:79.0}] },
-            "ombreira_eclip": { title: "Ombreira E-CLIP HFOB02 (SAP:127542)", ref: "ENG-DVP-D139", m: [{l:"Medida 1 (mm)", min:73.5, max:76.5}, {l:"Medida 2 (mm) [>= 24]", min:24.0, max:999999}] },
-            "ombreira_fastclip": { title: "Ombreira FAST-CLIP HFOB08 (SAP:127406B)", ref: "ENG-DVP-D074", m: [{l:"Medida 1 (mm)", min:99.75, max:102.25}, {l:"Medida 2 (mm)", min:58.7, max:60.7}, {l:"Medida 3 (mm)", min:95.9, max:98.1}, {l:"Medida 4 (mm)", min:70.3, max:72.5}, {l:"Medida 5 (mm)", min:34.9, max:36.7}] },
-            "pal_verde_almofada": { title: "Palmilha Verde Almofada 6980 (SAP:127543)", ref: "ENG-DVP-D135", m: [{l:"Medida 1 (mm)", min:148.5, max:150.0}, {l:"Medida 2 (mm)", min:113.0, max:114.0}, {l:"Medida 3 (mm)", min:7.05, max:7.55}] },
-            "pal_branca_almofada": { title: "Palmilha Branca Almofada 7552 (SAP:109105)", ref: "ENG-DVP-D183", m: [{l:"Medida 1 (mm)", min:187.5, max:191.5}, {l:"Medida 2 (mm)", min:151.0, max:155.0}, {l:"Medida 3 (mm)", min:111.5, max:114.5}, {l:"Medida 4 (mm)", min:5.5, max:7.5}] }
+            "pal_branca_tr68": { title: "Palmilha Branca TR68 (SAP:109105)", ref: "ENG-DVP-D183", m: [{l:"Medida 1", min:187.5, max:191.5}, {l:"Medida 2", min:151.0, max:155.0}, {l:"Medida 3", min:111.5, max:114.5}, {l:"Medida 4", min:5.5, max:7.5}] },
+            "pal_verde_uic60": { title: "Palmilha Verde UIC60 (SAP:127543)", ref: "ENG-DVP-D135", m: [{l:"Medida 1", min:148.5, max:150.0}, {l:"Medida 2", min:113.0, max:114.0}, {l:"Medida 3", min:7.05, max:7.55}] },
+            "iso_verde_3510w": { title: "Isolador Verde 3510W (SAP:127551)", ref: "ENG-DVP-D136", m: [{l:"Medida 1", min:61.5, max:63.0}, {l:"Medida 2", min:9.6, max:10.2}, {l:"Medida 3", min:7.4, max:8.0}] },
+            "iso_amarelo_3510w": { title: "Isolador Amarelo 3510W (SAP:147554)", ref: "ENG-DVP-D136", m: [{l:"Medida 1", min:61.5, max:63.0}, {l:"Medida 2", min:9.6, max:10.2}, {l:"Medida 3", min:7.4, max:8.0}] },
+            "iso_preto_3502w": { title: "Isolador Preto 3502W (SAP:147555)", ref: "ENG-DVP-D084", m: [{l:"Medida 1", min:61.5, max:63.0}, {l:"Medida 2", min:7.6, max:8.2}, {l:"Medida 3", min:7.4, max:8.0}] },
+            "iso_branco_pandrol": { title: "Isolador Branco 8mm 13158-D (SAP:121107)", ref: "ENG-DVP-D084", m: [{l:"Medida 1", min:61.5, max:63.0}, {l:"Medida 2", min:7.6, max:8.2}, {l:"Medida 3", min:7.4, max:8.0}] },
+            "iso_branco_3502w": { title: "Isolador Branco 3502W (SAP:121107)", ref: "ENG-DVP-D084", m: [{l:"Medida 1", min:61.5, max:63.0}, {l:"Medida 2", min:7.6, max:8.2}, {l:"Medida 3", min:7.4, max:8.0}] },
+            "usp_getzner": { title: "USP (SAP:126980)", ref: "ENG-DVP-D131", m: [{l:"Comprimento", min:1360.0, max:1390.0}, {l:"Largura", min:225.0, max:245.0}, {l:"Espessura", min:7.0, max:11.0}] },
+            "grampo_capa_branca": { title: "Grampo W Capa Branca (SAP:99604)", ref: "ENG-DVP-T040", m: [{l:"Medida 1", min:106.5, max:111.0}, {l:"Medida 2", min:15.75, max:16.25}, {l:"Medida 3", min:74.5, max:79.0}] },
+            "grampo_iso_frontal": { title: "Grampo W iso frontal (SAP:99604)", ref: "ENG-DVP-T040", m: [{l:"Medida 1", min:106.5, max:111.0}, {l:"Medida 2", min:15.75, max:16.25}, {l:"Medida 3", min:74.5, max:79.0}] },
+            "ombreira_eclip": { title: "Ombreira E-CLIP (SAP:127542)", ref: "ENG-DVP-D139", m: [{l:"Medida 1", min:73.5, max:76.5}, {l:"Medida 2", min:24.0, max:999999}] },
+            "ombreira_fastclip": { title: "Ombreira FAST-CLIP (SAP:127406B)", ref: "ENG-DVP-D074", m: [{l:"Medida 1", min:99.75, max:102.25}, {l:"Medida 2", min:58.7, max:60.7}, {l:"Medida 3", min:95.9, max:98.1}, {l:"Medida 4", min:70.3, max:72.5}, {l:"Medida 5", min:34.9, max:36.7}] },
+            "pal_verde_almofada": { title: "Palmilha Verde Almofada (SAP:127543)", ref: "ENG-DVP-D135", m: [{l:"Medida 1", min:148.5, max:150.0}, {l:"Medida 2", min:113.0, max:114.0}, {l:"Medida 3", min:7.05, max:7.55}] },
+            "pal_branca_almofada": { title: "Palmilha Branca Almofada (SAP:109105)", ref: "ENG-DVP-D183", m: [{l:"Medida 1", min:187.5, max:191.5}, {l:"Medida 2", min:151.0, max:155.0}, {l:"Medida 3", min:111.5, max:114.5}, {l:"Medida 4", min:5.5, max:7.5}] }
         };
 
         function atualizarCamposSub() {
@@ -1286,25 +1152,17 @@
             const btn = document.getElementById('btn-sub');
             const box = document.getElementById('resultado-box-sub');
 
-            box.style.display = 'none';
-            container.style.display = 'none';
-            btn.style.display = 'none';
-            for(let i=1; i<=5; i++) {
-                document.getElementById(`sub-div-m${i}`).style.display = 'none';
-                document.getElementById(`val-sub-m${i}`).value = '';
-            }
-
+            box.style.display = 'none'; container.style.display = 'none'; btn.style.display = 'none';
+            for(let i=1; i<=5; i++) { document.getElementById(`sub-div-m${i}`).style.display = 'none'; document.getElementById(`val-sub-m${i}`).value = ''; }
             if (!cat || !subDados[cat]) return;
 
             const item = subDados[cat];
             item.m.forEach((medida, index) => {
                 const i = index + 1;
-                document.getElementById(`sub-lbl-m${i}`).innerText = medida.l;
+                document.getElementById(`sub-lbl-m${i}`).innerText = medida.l + " (mm):";
                 document.getElementById(`sub-div-m${i}`).style.display = 'flex';
             });
-
-            container.style.display = 'grid';
-            btn.style.display = 'block';
+            container.style.display = 'grid'; btn.style.display = 'block';
         }
 
         function analisarSub() {
@@ -1319,69 +1177,42 @@
             item.m.forEach((medida, index) => {
                 const i = index + 1;
                 const val = parseFloat(document.getElementById(`val-sub-m${i}`).value) || 0;
-                
                 if(val < medida.min || val > medida.max) {
-                    if (medida.max === 999999) {
-                        erros.push(`- ${medida.l}: ${val}mm (Tolerância: Min ${medida.min}mm)`);
-                    } else {
-                        erros.push(`- ${medida.l}: ${val}mm (Tolerância: ${medida.min} a ${medida.max} mm)`);
-                    }
+                    if (medida.max === 999999) erros.push(`- ${medida.l}: ${val}mm (Min ${medida.min}mm)`);
+                    else erros.push(`- ${medida.l}: ${val}mm (Tol: ${medida.min} a ${medida.max} mm)`);
                 }
             });
 
-            if (erros.length > 0) {
-                statusClass = 'refugo'; titulo = '❌ NÃO CONFORME';
-                detalhes = 'O subcomponente apresenta medidas fora das tolerâncias normativas:\n' + erros.join('\n');
-            } else {
-                detalhes = 'Todas as dimensões inspecionadas estão rigorosamente de acordo com as tolerâncias do desenho técnico.';
-            }
-
-            const textoFinal = `${titulo}\n\n${item.title}\n\n📏 Análise:\n${detalhes}\n\n📄 Desenho Técnico: ${item.ref}`;
-            animarTexto(box, textoFinal, statusClass);
+            if (erros.length > 0) { statusClass = 'refugo'; titulo = '❌ NÃO CONFORME'; detalhes = 'Medidas fora das tolerâncias:\n' + erros.join('\n'); }
+            else detalhes = 'Todas as dimensões estão de acordo com o desenho técnico.';
+            animarTexto(box, `${titulo}\n\n${item.title}\n\n📏 Análise:\n${detalhes}\n\n📄 Desenho: ${item.ref}`, statusClass);
         }
 
-        // ====================== ANIMAÇÃO MÁQUINA DE ESCREVER ======================
+        // ====================== ANIMAÇÃO & STORAGE ======================
         function animarTexto(box, textoFinal, statusClass) {
             box.className = `resultado-box ${statusClass}`;
-            box.style.display = 'block';
-            box.innerHTML = '';
-            
+            box.style.display = 'block'; box.innerHTML = '';
             const aviso = box.nextElementSibling;
-            if(aviso && aviso.classList.contains('aviso-normativo')) {
-                aviso.style.display = 'none';
-            }
+            if(aviso && aviso.classList.contains('aviso-normativo')) aviso.style.display = 'none';
             
-            let i = 0;
-            const startTime = Date.now();
-            const speed = 20;
-
+            let i = 0; const speed = 20;
             function digitar() {
                 if (i < textoFinal.length) {
                     box.innerHTML += textoFinal.charAt(i) === '\n' ? '<br>' : textoFinal.charAt(i);
-                    i++;
-                    setTimeout(digitar, speed);
-                } else {
-                    if(aviso && aviso.classList.contains('aviso-normativo')) {
-                        aviso.style.display = 'block';
-                    }
-                    const elapsed = Date.now() - startTime;
-                    if (elapsed < 2000) setTimeout(() => {}, 2000 - elapsed);
+                    i++; setTimeout(digitar, speed);
+                } else if(aviso && aviso.classList.contains('aviso-normativo')) {
+                    aviso.style.display = 'block';
                 }
             }
             digitar();
         }
 
-        // ====================== LOCAL STORAGE ======================
         function salvarDadosLocal() {
             const inputs = document.querySelectorAll('input, select');
             const dados = {};
             inputs.forEach(input => {
-                if (input.id) {
-                    if (input.type === 'checkbox') {
-                        dados[input.id] = input.checked;
-                    } else {
-                        dados[input.id] = input.value;
-                    }
+                if (input.id && input.id !== 'user-email') { // Não salva o e-mail no cache normal
+                    dados[input.id] = input.type === 'checkbox' ? input.checked : input.value;
                 }
             });
             localStorage.setItem('rumoInspeccaoDados', JSON.stringify(dados));
@@ -1391,69 +1222,25 @@
             const dadosSalvos = localStorage.getItem('rumoInspeccaoDados');
             if (dadosSalvos) {
                 const dados = JSON.parse(dadosSalvos);
-                
                 for (const id in dados) {
                     const input = document.getElementById(id);
-                    if (input) {
-                        if (input.type === 'checkbox') {
-                            input.checked = dados[id];
-                        } else {
-                            input.value = dados[id];
-                        }
-                    }
+                    if (input) { if (input.type === 'checkbox') input.checked = dados[id]; else input.value = dados[id]; }
                 }
-
-                if (dados['tipo-defeito']) {
-                    atualizarOpcoes();
-                    if (dados['localizacao']) {
-                        document.getElementById('localizacao').value = dados['localizacao'];
-                        atualizarCampos();
-                    }
-                }
-                
-                if (dados['amv-componente']) {
-                    atualizarCamposAMV();
-                }
-                
-                if (dados['mad-categoria']) {
-                    atualizarCamposMadeira();
-                    if (dados['mad-tipo-defeito']) {
-                        document.getElementById('mad-tipo-defeito').value = dados['mad-tipo-defeito'];
-                        atualizarDefeitoMadeira();
-                    }
-                }
-
-                if (dados['brita-categoria']) {
-                    atualizarCamposBrita();
-                }
-
-                if (dados['sub-categoria']) {
-                    atualizarCamposSub();
-                    for(let i=1; i<=5; i++) {
-                        if(dados[`val-sub-m${i}`]) {
-                            document.getElementById(`val-sub-m${i}`).value = dados[`val-sub-m${i}`];
-                        }
-                    }
-                }
-
-                const email = dados['user-email'] || '';
-                if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com')) {
-                    document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('main-layout').style.display = 'flex';
-                    ocultarSidebarMobile();
-                }
+                if (dados['tipo-defeito']) { atualizarOpcoes(); if (dados['localizacao']) { document.getElementById('localizacao').value = dados['localizacao']; atualizarCampos(); } }
+                if (dados['amv-componente']) atualizarCamposAMV();
+                if (dados['mad-categoria']) { atualizarCamposMadeira(); if (dados['mad-tipo-defeito']) { document.getElementById('mad-tipo-defeito').value = dados['mad-tipo-defeito']; atualizarDefeitoMadeira(); } }
+                if (dados['brita-categoria']) atualizarCamposBrita();
+                if (dados['sub-categoria']) { atualizarCamposSub(); for(let i=1; i<=5; i++) if(dados[`val-sub-m${i}`]) document.getElementById(`val-sub-m${i}`).value = dados[`val-sub-m${i}`]; }
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            carregarDadosLocal();
             const inputs = document.querySelectorAll('input, select');
             inputs.forEach(input => {
                 input.addEventListener('input', salvarDadosLocal);
                 input.addEventListener('change', salvarDadosLocal);
             });
         });
-
     </script>
 </body>
 </html>
