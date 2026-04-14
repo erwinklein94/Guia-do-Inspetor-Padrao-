@@ -111,6 +111,10 @@
             overflow: hidden;
             padding: 0;
         }
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+        }
         .sidebar-logo {
             width: 140px;
             margin: 0 auto 10px;
@@ -154,7 +158,12 @@
             color: white;
         }
         
-        /* Botão Dark Theme na sidebar */
+        /* Botões na parte inferior da sidebar */
+        .sidebar-bottom {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+        }
         .dark-toggle {
             margin: 15px 25px;
             padding: 10px 15px;
@@ -169,13 +178,32 @@
             gap: 8px;
             justify-content: center;
         }
+        .logout-btn {
+            margin: 0 25px 15px;
+            padding: 10px 15px;
+            background: rgba(211, 47, 47, 0.15);
+            border: 1px solid rgba(211, 47, 47, 0.3);
+            border-radius: 8px;
+            color: #ff8a80;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            transition: 0.3s;
+        }
+        .logout-btn:hover {
+            background: rgba(211, 47, 47, 0.4);
+            color: white;
+        }
 
         /* Crédito no final da Sidebar */
         .sidebar-credit {
             text-align: center;
             font-size: 0.7rem;
             color: rgba(255, 255, 255, 0.4);
-            margin-top: 20px;
+            margin-top: 10px;
             padding-bottom: 10px;
         }
         
@@ -373,32 +401,38 @@
 
     <div id="main-layout">
         <aside id="sidebar">
-            <img src="https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg" alt="Rumo" class="sidebar-logo">
-            <div class="sidebar-subtitle">Coordenação de Qualidade e Homologação dos Materiais de Via Permanente</div>
-            
-            <div class="menu-header">Guia do Inspetor Padrão</div>
-            
-            <div class="menu-item active" onclick="navegar('sec-amv')">
-                AMV & Componentes
-            </div>
-            <div class="menu-item" onclick="navegar('sec-brita')">
-                Brita
-            </div>
-            <div class="menu-item" onclick="navegar('sec-concreto')">
-                Dormente de Concreto
-            </div>
-            <div class="menu-item" onclick="navegar('sec-madeira')">
-                Dormente de Madeira
-            </div>
-            <div class="menu-item" onclick="navegar('sec-sub')">
-                Subcomponentes
+            <div class="sidebar-top">
+                <img src="https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg" alt="Rumo" class="sidebar-logo">
+                <div class="sidebar-subtitle">Coordenação de Qualidade e Homologação dos Materiais de Via Permanente</div>
+                
+                <div class="menu-header">Guia do Inspetor Padrão</div>
+                
+                <div class="menu-item active" onclick="navegar('sec-amv')">
+                    AMV & Componentes
+                </div>
+                <div class="menu-item" onclick="navegar('sec-brita')">
+                    Brita
+                </div>
+                <div class="menu-item" onclick="navegar('sec-concreto')">
+                    Dormente de Concreto
+                </div>
+                <div class="menu-item" onclick="navegar('sec-madeira')">
+                    Dormente de Madeira
+                </div>
+                <div class="menu-item" onclick="navegar('sec-sub')">
+                    Subcomponentes
+                </div>
             </div>
 
-            <button onclick="toggleDarkMode()" class="dark-toggle">
-                🌙 Alternar Modo Escuro
-            </button>
-            
-            <div class="sidebar-credit">Desenvolvido por Erwin Klein</div>
+            <div class="sidebar-bottom">
+                <button onclick="toggleDarkMode()" class="dark-toggle">
+                    🌙 Alternar Modo Escuro
+                </button>
+                <button onclick="fazerLogout()" class="logout-btn">
+                    🚪 Sair do Sistema
+                </button>
+                <div class="sidebar-credit">Desenvolvido por Erwin Klein</div>
+            </div>
         </aside>
 
         <main>
@@ -764,6 +798,13 @@
                 ocultarSidebarMobile();
             } else {
                 document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+
+        function fazerLogout() {
+            if (confirm("Deseja realmente sair e limpar os dados locais?")) {
+                localStorage.removeItem('rumoInspeccaoDados');
+                window.location.reload();
             }
         }
 
