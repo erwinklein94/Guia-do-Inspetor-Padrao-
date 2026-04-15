@@ -98,7 +98,6 @@
         .card { background: var(--bg-panel); border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px var(--shadow-light); position: relative; z-index: 1; overflow: hidden; }
         .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg') center/60% no-repeat; opacity: 0.03; z-index: -1; pointer-events: none; filter: var(--watermark-filter); }
 
-        /* BOTAO MENU ALINHADO */
         #toggle-sidebar-btn { 
             position: fixed; top: 20px; left: 20px; z-index: 9999; 
             background: var(--bg-login); color: white; border: none; 
@@ -148,7 +147,6 @@
         .video-container { position: relative; flex-grow: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         #video-preview, #foto-capturada { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
         
-        /* OVERLAY HTML DA CÂMERA COM 5% OPACIDADE E SOMBRA PROJETADA */
         .overlay-texto { 
             position: absolute; bottom: 20px; left: 20px; right: 20px; 
             background: rgba(0,0,0,0.05); 
@@ -160,7 +158,6 @@
         
         .camera-controls { background: #000; padding: 20px; display: flex; justify-content: center; align-items: center; gap: 20px; z-index: 2; }
         
-        /* BOTAO CAPTURAR MAIS APARENTE */
         .btn-capturar { 
             width: 80px; height: 80px; border-radius: 50%; 
             background: rgba(255, 255, 255, 0.2); border: 5px solid white; 
@@ -170,7 +167,6 @@
         .btn-capturar::after { content: ""; width: 56px; height: 56px; background: white; border-radius: 50%; transition: 0.2s; }
         .btn-capturar:active::after { width: 45px; height: 45px; }
         
-        /* BOTOES PÓS-CAPTURA MAIS APARENTES */
         .botoes-pos-captura { display: flex; gap: 10px; width: 100%; max-width: 450px; margin: 0 auto; }
         .btn-secundario { 
             background: #333; color: white; border: none; padding: 16px; 
@@ -914,51 +910,58 @@
             canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            const padding = 20;
-            const lineHeight = 26; // Fonte reduzida para caber melhor na foto
+            // Escala dinâmica para adaptar a qualquer resolução de câmera de celular
+            // Base 500 para forçar fontes menores em relação ao tamanho total
+            const scale = canvas.width / 500; 
+
+            const padding = 15 * scale;
+            const lineHeight = 16 * scale; // Linhas mais juntas
             const dataStr = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR');
             
             const linhas = laudoAtualTexto.split('\n').filter(l => l.trim() !== '');
             const linhasFiltradas = linhas.slice(0, 10);
 
             const boxHeight = (linhasFiltradas.length + 2.5) * lineHeight + padding * 2;
-            const startY = canvas.height - boxHeight - 20;
+            const startY = canvas.height - boxHeight - (20 * scale);
 
             // Fundo escuro com 5% de opacidade
             context.fillStyle = "rgba(0, 0, 0, 0.05)";
             context.beginPath();
-            context.roundRect(20, startY, canvas.width - 40, boxHeight, 15);
+            context.roundRect(10 * scale, startY, canvas.width - (20 * scale), boxHeight, 10 * scale);
             context.fill();
 
-            // Borda amarela à esquerda (Estilo Rumo)
+            // Borda amarela à esquerda
             context.fillStyle = "#FFD600";
             context.beginPath();
-            context.roundRect(20, startY, 8, boxHeight, [15, 0, 0, 15]);
+            context.roundRect(10 * scale, startY, 6 * scale, boxHeight, [10 * scale, 0, 0, 10 * scale]);
             context.fill();
 
-            // Sombra para garantir leitura em fundo transparente
-            context.shadowColor = "rgba(0, 0, 0, 0.9)";
-            context.shadowBlur = 5;
-            context.shadowOffsetX = 2;
-            context.shadowOffsetY = 2;
+            // Sombra preta densa para leitura perfeita
+            context.shadowColor = "rgba(0, 0, 0, 1)";
+            context.shadowBlur = 4;
+            context.shadowOffsetX = 1.5;
+            context.shadowOffsetY = 1.5;
 
-            context.fillStyle = "white";
             context.textAlign = "left";
             
-            let textY = startY + padding + 15;
-            context.font = "bold 22px sans-serif"; // Título menor
-            context.fillText(`INSPEÇÃO RUMO - ${categoriaAtual}`, 45, textY);
+            // max-width impede que o texto vaze da tela se for muito longo
+            const maxWidth = canvas.width - (35 * scale); 
             
-            textY += 25;
-            context.font = "16px sans-serif";
+            let textY = startY + padding + (12 * scale);
+            context.fillStyle = "white";
+            context.font = "bold " + Math.floor(15 * scale) + "px sans-serif";
+            context.fillText(`INSPEÇÃO RUMO - ${categoriaAtual}`, 25 * scale, textY, maxWidth);
+            
+            textY += 16 * scale;
+            context.font = Math.floor(11 * scale) + "px sans-serif";
             context.fillStyle = "#FFD600";
-            context.fillText(dataStr, 45, textY);
-            textY += 35;
+            context.fillText(dataStr, 25 * scale, textY, maxWidth);
+            textY += 24 * scale;
 
             context.fillStyle = "white";
-            context.font = "bold 18px sans-serif"; // Texto do laudo menor
+            context.font = "bold " + Math.floor(12 * scale) + "px sans-serif"; 
             linhasFiltradas.forEach(linha => {
-                context.fillText(linha, 45, textY);
+                context.fillText(linha, 25 * scale, textY, maxWidth);
                 textY += lineHeight;
             });
 
