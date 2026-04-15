@@ -112,6 +112,33 @@
         .checkbox-group { display: flex; align-items: center; gap: 12px; background: var(--bg-input); padding: 15px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; }
         .dimensoes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: var(--bg-input); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 15px; }
 
+        /* --- DASHBOARD STYLES (REPORT SEMANAL) --- */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--bg-input); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 2px 8px var(--shadow-light); }
+        .stat-value { font-size: 2.2rem; font-weight: bold; color: var(--text-title); margin: 10px 0; }
+        .stat-label { font-size: 0.8rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value.success { color: #2E7D32; }
+        .stat-value.danger { color: #C62828; }
+        .stat-value.warning { color: #F57C00; }
+        body.dark .stat-value.success { color: #81C784; }
+        body.dark .stat-value.danger { color: #E57373; }
+        body.dark .stat-value.warning { color: #FFB74D; }
+        
+        .chart-container { background: var(--bg-input); padding: 25px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 15px; box-shadow: 0 2px 8px var(--shadow-light);}
+        .chart-bar-row { display: flex; align-items: center; margin-bottom: 12px; gap: 15px; }
+        .chart-label { width: 120px; font-size: 0.85rem; font-weight: bold; color: var(--text-main); text-align: right; }
+        .chart-bar-bg { flex-grow: 1; background: #E0E0E0; height: 16px; border-radius: 8px; overflow: hidden; position: relative; }
+        body.dark .chart-bar-bg { background: #424242; }
+        .chart-bar-fill { height: 100%; background: var(--text-title); border-radius: 8px; transition: width 1s ease-in-out; }
+        .chart-bar-fill.danger { background: #C62828; }
+        .chart-bar-fill.success { background: #2E7D32; }
+        .chart-bar-fill.warning { background: #F57C00; }
+        body.dark .chart-bar-fill.danger { background: #E57373; }
+        body.dark .chart-bar-fill.success { background: #81C784; }
+        body.dark .chart-bar-fill.warning { background: #FFB74D; }
+        .chart-value { width: 50px; font-size: 0.9rem; font-weight: bold; color: var(--text-main); }
+        /* ----------------------------------------- */
+
         .btn-analisar { width: 100%; padding: 16px; background-color: var(--bg-login); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; }
         .btn-analisar:hover { filter: brightness(1.2); }
         
@@ -233,11 +260,15 @@
                 <img src="https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg" alt="Rumo" class="sidebar-logo">
                 <div class="sidebar-subtitle">Coordenação de Qualidade e Homologação dos Materiais de Via Permanente</div>
                 <div class="menu-header">Guia do Inspetor Padrão</div>
-                <div class="menu-item active" onclick="navegar(this, 'sec-amv')">AMV & Componentes</div>
+                
+                <div class="menu-item" onclick="navegar(this, 'sec-amv')">AMV & Componentes</div>
                 <div class="menu-item" onclick="navegar(this, 'sec-brita')">Brita</div>
                 <div class="menu-item" onclick="navegar(this, 'sec-concreto')">Dormente de Concreto</div>
                 <div class="menu-item" onclick="navegar(this, 'sec-madeira')">Dormente de Madeira</div>
                 <div class="menu-item" onclick="navegar(this, 'sec-sub')">Subcomponentes</div>
+                
+                <div style="border-top: 1px solid rgba(255,255,255,0.2); margin: 15px 25px; box-shadow: 0 1px 0 rgba(0,0,0,0.5);"></div>
+                <div class="menu-item active" onclick="navegar(this, 'sec-report')">📊 Report Semanal</div>
             </div>
             <div class="sidebar-bottom">
                 <button onclick="fazerLogout()" class="logout-btn">🚪 Sair do Sistema</button>
@@ -249,7 +280,39 @@
         <main>
             <button id="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
 
-            <section id="sec-amv" class="content-section active">
+            <section id="sec-report" class="content-section active">
+                <h1>Report Semanal <span class="proc-title">— Indicadores de Qualidade</span></h1>
+                <div class="card">
+                    <div class="dimensoes-grid">
+                        <div class="form-group">
+                            <label>Selecione a Semana:</label>
+                            <select id="report-semana" onchange="atualizarReport()">
+                                <option value="15">Semana 15</option>
+                                <option value="14">Semana 14</option>
+                                <option value="13">Semana 13</option>
+                                <option value="12">Semana 12</option>
+                                <option value="11">Semana 11</option>
+                                <option value="10">Semana 10</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Selecione a Área de Inspeção:</label>
+                            <select id="report-area" onchange="atualizarReport()">
+                                <option value="">Selecione para visualizar...</option>
+                                <option value="amv">AMV & Componentes</option>
+                                <option value="concreto">Dormente de Concreto</option>
+                                <option value="madeira">Dormente de Madeira</option>
+                                <option value="lastro">Lastro / Brita</option>
+                                <option value="sub">Subcomponentes / RNCs</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="report-content" class="escondido" style="margin-top: 30px;">
+                        </div>
+                </div>
+            </section>
+            <section id="sec-amv" class="content-section">
                 <h1>AMV (Aparelhos de Mudança de Via) <span class="proc-title">— Lote ETM-AMV</span></h1>
                 <div class="card">
                     <div class="form-group">
@@ -549,6 +612,287 @@
         }
         function toggleSidebar() { document.getElementById('sidebar').classList.remove('hidden'); hideEl('toggle-sidebar-btn'); }
 
+        // === REPORT SEMANAL (DADOS DOS DASHBOARDS) ===
+        const dadosReport = {
+            "15": {
+                "amv": `
+                    <div class="dashboard-grid">
+                        <div class="stat-card"><div class="stat-label">Peças Inspecionadas</div><div class="stat-value">11</div></div>
+                        <div class="stat-card"><div class="stat-label">Solicitação de Ajustes</div><div class="stat-value warning">9</div></div>
+                        <div class="stat-card"><div class="stat-label">Reprovadas</div><div class="stat-value danger">0</div></div>
+                        <div class="stat-card"><div class="stat-label">Aderência de Inspeção</div><div class="stat-value success">100%</div></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-title); text-align: center;">Peças Inspecionadas por Fornecedor</h3>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Ibrafer</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 81%;"></div></div>
+                            <div class="chart-value">9</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">BR Parts</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 19%;"></div></div>
+                            <div class="chart-value">2</div>
+                        </div>
+                    </div>
+                `,
+                "concreto": `
+                    <div class="dashboard-grid">
+                        <div class="stat-card"><div class="stat-label">Total Fabricado</div><div class="stat-value">3687</div></div>
+                        <div class="stat-card"><div class="stat-label">Aprovados</div><div class="stat-value success">3626</div></div>
+                        <div class="stat-card"><div class="stat-label">Reprovados</div><div class="stat-value danger">61</div></div>
+                        <div class="stat-card"><div class="stat-label">Tx Aprovação (Sem. 15)</div><div class="stat-value success">95.3%</div></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-title); text-align: center;">Reprovas no Detalhado (Cavan)</h3>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Vazios</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 67.2%;"></div></div>
+                            <div class="chart-value">41</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Outros</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 18%;"></div></div>
+                            <div class="chart-value">11</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Trincas</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 11.4%;"></div></div>
+                            <div class="chart-value">7</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Quebras / USP</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 3.2%;"></div></div>
+                            <div class="chart-value">2</div>
+                        </div>
+                    </div>
+                `,
+                "madeira": `
+                    <div class="dashboard-grid">
+                        <div class="stat-card"><div class="stat-label">Inspecionados</div><div class="stat-value">1365</div></div>
+                        <div class="stat-card"><div class="stat-label">Aprovados</div><div class="stat-value success">1294</div></div>
+                        <div class="stat-card"><div class="stat-label">Reprovados</div><div class="stat-value danger">71</div></div>
+                        <div class="stat-card"><div class="stat-label">Tx Aprovação (Sem. 15)</div><div class="stat-value success">95%</div></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-title); text-align: center;">Peças Reprovadas por Fornecedor</h3>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Pandolfi Madeiras</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 67.6%;"></div></div>
+                            <div class="chart-value">48</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Tres Guri</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 32.4%;"></div></div>
+                            <div class="chart-value">23</div>
+                        </div>
+                    </div>
+                `,
+                "lastro": `
+                    <div class="dashboard-grid">
+                        <div class="stat-card"><div class="stat-label">Ensaios Realizados</div><div class="stat-value">52</div></div>
+                        <div class="stat-card"><div class="stat-label">Ensaios Aprovados</div><div class="stat-value success">48</div></div>
+                        <div class="stat-card"><div class="stat-label">Reprovados</div><div class="stat-value danger">4</div></div>
+                        <div class="stat-card"><div class="stat-label">Tx Aprovação (Sem. 15)</div><div class="stat-value success">92%</div></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-title); text-align: center;">Quantidade de Ensaios por Tipo (Aprovados vs Reprovados)</h3>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Granulometria</div>
+                            <div class="chart-bar-bg">
+                                <div class="chart-bar-fill success" style="width: 92.3%; float: left; border-radius: 8px 0 0 8px;"></div>
+                                <div class="chart-bar-fill danger" style="width: 7.7%; float: left; border-radius: 0 8px 8px 0;"></div>
+                            </div>
+                            <div class="chart-value">39</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">F. Fragmentos</div>
+                            <div class="chart-bar-bg">
+                                <div class="chart-bar-fill success" style="width: 92.3%; float: left; border-radius: 8px 0 0 8px;"></div>
+                                <div class="chart-bar-fill danger" style="width: 7.7%; float: left; border-radius: 0 8px 8px 0;"></div>
+                            </div>
+                            <div class="chart-value">13</div>
+                        </div>
+                    </div>
+                `,
+                "sub": `
+                    <div class="dashboard-grid">
+                        <div class="stat-card"><div class="stat-label">Total de Registros (RNCs)</div><div class="stat-value">20</div></div>
+                        <div class="stat-card"><div class="stat-label">Concluídos</div><div class="stat-value success">17</div></div>
+                        <div class="stat-card"><div class="stat-label">Em Andamento</div><div class="stat-value warning">1</div></div>
+                        <div class="stat-card"><div class="stat-label">Cancelados</div><div class="stat-value danger">2</div></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-title); text-align: center;">Registros por Fornecedor (Top 1)</h3>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Pandolfi</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill warning" style="width: 100%;"></div></div>
+                            <div class="chart-value">19</div>
+                        </div>
+                    </div>
+                `
+            },
+            "14": {
+                "amv": `
+                    <div class="dashboard-grid">
+                        <div class="stat-card"><div class="stat-label">Peças Inspecionadas</div><div class="stat-value">40</div></div>
+                        <div class="stat-card"><div class="stat-label">Solicitação de Ajustes</div><div class="stat-value warning">7</div></div>
+                        <div class="stat-card"><div class="stat-label">Reprovadas</div><div class="stat-value danger">0</div></div>
+                        <div class="stat-card"><div class="stat-label">Aderência de Inspeção</div><div class="stat-value success">100%</div></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-title); text-align: center;">Peças Inspecionadas por Fornecedor</h3>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">BR Parts</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 100%;"></div></div>
+                            <div class="chart-value">40</div>
+                        </div>
+                    </div>
+                `,
+                "concreto": `
+                    <div class="dashboard-grid">
+                        <div class="stat-card"><div class="stat-label">Total Fabricado</div><div class="stat-value">4660</div></div>
+                        <div class="stat-card"><div class="stat-label">Aprovados</div><div class="stat-value success">4452</div></div>
+                        <div class="stat-card"><div class="stat-label">Reprovados</div><div class="stat-value danger">208</div></div>
+                        <div class="stat-card"><div class="stat-label">Tx Aprovação (Sem. 14)</div><div class="stat-value success">95.54%</div></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-title); text-align: center;">Reprovas no Detalhado (Cavan)</h3>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Trincas</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 87.5%;"></div></div>
+                            <div class="chart-value">182</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Quebras</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 4.8%;"></div></div>
+                            <div class="chart-value">10</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Vazios</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 4.8%;"></div></div>
+                            <div class="chart-value">10</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Ombreiras / Outros</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 2.8%;"></div></div>
+                            <div class="chart-value">6</div>
+                        </div>
+                    </div>
+                `,
+                "madeira": `
+                    <div class="dashboard-grid">
+                        <div class="stat-card"><div class="stat-label">Inspecionados</div><div class="stat-value">1782</div></div>
+                        <div class="stat-card"><div class="stat-label">Aprovados</div><div class="stat-value success">1476</div></div>
+                        <div class="stat-card"><div class="stat-label">Reprovados</div><div class="stat-value danger">306</div></div>
+                        <div class="stat-card"><div class="stat-label">Tx Aprovação (Sem. 14)</div><div class="stat-value warning">86%</div></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-title); text-align: center;">Peças Reprovadas por Fornecedor</h3>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Pandolfi</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 69.6%;"></div></div>
+                            <div class="chart-value">213</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Larssen</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 20.6%;"></div></div>
+                            <div class="chart-value">63</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Ricken</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 6.2%;"></div></div>
+                            <div class="chart-value">19</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Tres Guri</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill danger" style="width: 3.6%;"></div></div>
+                            <div class="chart-value">11</div>
+                        </div>
+                    </div>
+                `,
+                "lastro": `
+                    <div class="dashboard-grid">
+                        <div class="stat-card"><div class="stat-label">Ensaios Realizados</div><div class="stat-value">24</div></div>
+                        <div class="stat-card"><div class="stat-label">Ensaios Aprovados</div><div class="stat-value success">24</div></div>
+                        <div class="stat-card"><div class="stat-label">Reprovados</div><div class="stat-value danger">0</div></div>
+                        <div class="stat-card"><div class="stat-label">Tx Aprovação (Sem. 14)</div><div class="stat-value success">100%</div></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-title); text-align: center;">Quantidade de Ensaios por Tipo</h3>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Granulometria</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill success" style="width: 100%;"></div></div>
+                            <div class="chart-value">18</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">F. Fragmentos</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill success" style="width: 100%;"></div></div>
+                            <div class="chart-value">6</div>
+                        </div>
+                    </div>
+                `,
+                "sub": `
+                    <div class="dashboard-grid">
+                        <div class="stat-card"><div class="stat-label">Total de Registros (RNCs)</div><div class="stat-value">78</div></div>
+                        <div class="stat-card"><div class="stat-label">Concluídos</div><div class="stat-value success">63</div></div>
+                        <div class="stat-card"><div class="stat-label">Em Andamento</div><div class="stat-value warning">10</div></div>
+                        <div class="stat-card"><div class="stat-label">Cancelados</div><div class="stat-value danger">5</div></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-title); text-align: center;">Registros Abertos por Fornecedor (Top 5)</h3>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Pandolfi</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill warning" style="width: 100%;"></div></div>
+                            <div class="chart-value">17</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Larssen</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill warning" style="width: 88%;"></div></div>
+                            <div class="chart-value">15</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Ricken</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill warning" style="width: 64%;"></div></div>
+                            <div class="chart-value">11</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">F. Garcia</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill warning" style="width: 47%;"></div></div>
+                            <div class="chart-value">8</div>
+                        </div>
+                        <div class="chart-bar-row">
+                            <div class="chart-label">Tratanorte</div>
+                            <div class="chart-bar-bg"><div class="chart-bar-fill warning" style="width: 29%;"></div></div>
+                            <div class="chart-value">5</div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function atualizarReport() {
+            const semana = document.getElementById('report-semana').value;
+            const area = document.getElementById('report-area').value;
+            const container = document.getElementById('report-content');
+            
+            if (area) {
+                if (dadosReport[semana] && dadosReport[semana][area]) {
+                    container.innerHTML = dadosReport[semana][area];
+                } else {
+                    container.innerHTML = `
+                        <div class="stat-card" style="text-align:center; padding: 40px; grid-column: 1 / -1;">
+                            <h3 style="color:var(--text-title); margin-bottom: 10px;">Dados da Semana ${semana} não disponíveis ainda.</h3>
+                            <p style="color:var(--text-muted); font-size: 0.95rem;">Por favor, envie as imagens atualizadas do dashboard para que o sistema possa processá-las.</p>
+                        </div>
+                    `;
+                }
+                showEl('report-content');
+            } else {
+                hideEl('report-content');
+            }
+        }
+
         // === AJUDA VISUAL ===
         const descricoesAjuda = {
             'agulha': { titulo: 'Ponta da Agulha (Perfil 5100)', desc: 'Meça a espessura da ponta da agulha a exatos 15mm do início da usinagem. O desgaste não pode exceder o estipulado na norma AREMA.' },
@@ -566,7 +910,7 @@
         }
         function fecharAjuda() { hideEl('modal-ajuda-visual'); }
 
-        // === INTERFACE ===
+        // === INTERFACE GERAL ===
         function atualizarInterface(modulo) {
             hideEl(`resultado-box-${modulo.split('_')[0]}`);
             hideEl(`botoes-acao-${modulo.split('_')[0]}`);
@@ -578,7 +922,7 @@
             } 
             else if (modulo === 'brita') {
                 const cat = document.getElementById('brita-categoria').value;
-                hideEl('brita-check-visual'); hideEl('brita-inputs-lote'); hideEl('brita-inputs-pedra'); hideEl('brita-inputs-granulometria'); hideEl('brita-inputs-lab'); hideEl('btn-brita');
+                hideEl('brita-check-visual'); hideEl('brita-inputs-lote'); hideEl('brita-inputs-granulometria'); hideEl('brita-inputs-lab'); hideEl('btn-brita');
                 
                 if(cat === 'visual') { showEl('brita-check-visual', 'flex'); showEl('btn-brita'); }
                 else if (cat === 'forma_lote') { showEl('brita-inputs-lote', 'grid'); showEl('btn-brita'); }
@@ -783,14 +1127,12 @@
                 else dim = 'Inspeção visual em conformidade. Sem contaminantes.';
             } else if (cat === 'forma_lote') {
                 const perc = getVal('val-brita-nao-cubicas');
-                // Norma exige max 15% (Table 2 general)
                 const limitNaoCubica = 15; 
                 if (perc > limitNaoCubica) { status = 'refugo'; titulo = '❌ NÃO ACEITAR (REFUGO)'; dim = `Amostra possui ${perc}% de britas não-cúbicas (Max: ${limitNaoCubica}%).`; acao = '🚫 AÇÃO: Lote reprovado. Solicitar nova britagem.'; }
                 else dim = `Índice de britas não-cúbicas (${perc}%) dentro da tolerância (≤ ${limitNaoCubica}%).`;
             } else if (cat === 'granulometria') {
                 const g3 = getVal('val-brita-g3'), g250 = getVal('val-brita-g250'), g150 = getVal('val-brita-g150'), g075 = getVal('val-brita-g075'), g050 = getVal('val-brita-g050');
                 let erros = [];
-                // AREMA 24 (Table 1)
                 if (g3 !== 0) erros.push(`- 3": deve ser 0% (Atual: ${g3}%)`);
                 if (g250 < 0 || g250 > 10) erros.push(`- 2.1/2": 0% a 10% (Atual: ${g250}%)`);
                 if (g150 < 40 || g150 > 75) erros.push(`- 1.1/2": 40% a 75% (Atual: ${g150}%)`);
@@ -802,7 +1144,7 @@
             } else if (cat === 'laboratorio') {
                 const la = getVal('val-brita-losangeles'), pulv = getVal('val-brita-pulverulento'), arg = getVal('val-brita-argila');
                 let erros = [];
-                const limitLA = (lito === 'granito') ? 35 : 30; // Granito 35, Basalto/Calcario 30
+                const limitLA = (lito === 'granito') ? 35 : 30;
                 
                 if (la > limitLA) erros.push(`- Abrasão Los Angeles: ${la}% (Max p/ ${lito}: ${limitLA}%)`);
                 if (pulv > 1) erros.push(`- Mat. Pulverulento: ${pulv}% (Max: 1%)`);
@@ -834,17 +1176,14 @@
                 const tipo = document.getElementById('mad-tipo-defeito').value;
                 const naFixacao = document.getElementById('mad-zona-fixacao').checked;
 
-                // Defeitos Não Aceitáveis (Refugo Direto)
                 if (tipo === 'podre') { status = 'refugo'; titulo = '❌ REFUGO'; dim = 'Dormente com aspecto de apodrecimento.'; acao = '🚫 AÇÃO: Refugo Sumário (Defeito não aceitável).'; }
                 else if (tipo === 'casca') { status = 'refugo'; titulo = '❌ REFUGO'; dim = 'Presença de casca na madeira.'; acao = '🚫 AÇÃO: Refugo Sumário (Defeito não aceitável).'; }
                 else if (tipo === 'anti_rachante') { status = 'refugo'; titulo = '❌ REFUGO'; dim = 'Proteção anti-rachante ausente ou menor que 70% na face do dormente.'; acao = '🚫 AÇÃO: Retornar ao fornecedor (Defeito não aceitável).'; }
                 else if (tipo === 'amarracao') { status = 'refugo'; titulo = '❌ REFUGO'; dim = 'Amarração deficiente (menos de 3 fitas ou sem pontaletes).'; acao = '🚫 AÇÃO: Recusar descarga do fardo (Defeito não aceitável).'; }
-                // Defeitos Aceitáveis e Restrições
                 else if (tipo === 'dimensoes') {
                     const c = getVal('val-mad-dim-comp'), l = getVal('val-mad-dim-larg'), a = getVal('val-mad-dim-alt');
                     const nc = getVal('val-mad-nom-comp'), nl = getVal('val-mad-nom-larg'), na = getVal('val-mad-nom-alt');
                     let e = [];
-                    // Tolerâncias: Comp: +0.05m / -0.00m; Larg: ±2cm; Altura: ±1cm
                     if (c < nc || c > (nc + 0.05)) e.push(`Comprimento fora (Aferido: ${c}m | Nom: ${nc}m | Tol: +5cm / -0cm)`);
                     if (l < (nl - 2) || l > (nl + 2)) e.push(`Largura fora (Aferido: ${l}cm | Nom: ${nl}cm | Tol: ±2cm)`);
                     if (a < (na - 1) || a > (na + 1)) e.push(`Altura fora (Aferido: ${a}cm | Nom: ${na}cm | Tol: ±1cm)`);
@@ -888,7 +1227,7 @@
                         else dim = 'Furo de broca ou nó cariado dentro das tolerâncias.';
                     } else if (tipo === 'empenamento') {
                         const compDorm = parseFloat(document.getElementById('val-mad-comp-dormente').value), flecha = getVal('val-mad-flecha');
-                        const flechaMax = compDorm / 2.0; // Fórmula da norma
+                        const flechaMax = compDorm / 2.0;
                         if (flecha > flechaMax) { status = 'refugo'; titulo = '❌ REFUGO'; dim = `Flecha (${flecha} cm) excede o limite de ${flechaMax.toFixed(1)} cm para viga de ${compDorm.toFixed(2)}m.`; acao = '🚫 AÇÃO: Segregar dormente para descarte.'; }
                         else dim = `Empenamento/Arqueamento dentro do limite aceitável (Máx: ${flechaMax.toFixed(1)} cm).`;
                     }
@@ -999,11 +1338,10 @@
             canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Ajuste dinâmico (+12%) baseado na largura do vídeo
             const baseUnit = canvas.width;
-            const fontSizeTitle = baseUnit * 0.028;  // (Aumento de 12%)
-            const fontSizeDate = baseUnit * 0.0168;  // (Aumento de 12%)
-            const fontSizeBody = baseUnit * 0.02016; // (Aumento de 12%)
+            const fontSizeTitle = baseUnit * 0.028;
+            const fontSizeDate = baseUnit * 0.0168;
+            const fontSizeBody = baseUnit * 0.02016;
             const padding = baseUnit * 0.02;
             const lineHeight = fontSizeBody * 1.5;
 
@@ -1013,50 +1351,41 @@
             const linhasFiltradas = linhas.slice(0, 10);
 
             const boxHeight = (linhasFiltradas.length * lineHeight) + fontSizeTitle + fontSizeDate + (padding * 4);
-            
-            // Centralizar na horizontal e deixar na parte inferior (com margem)
-            const boxWidth = baseUnit * 0.94; // 94% da tela
-            const startX = baseUnit * 0.03;   // 3% da borda
+            const boxWidth = baseUnit * 0.94;
+            const startX = baseUnit * 0.03;
             const startY = canvas.height - boxHeight - (baseUnit * 0.03);
 
-            // Fundo escuro com 5% de opacidade
             context.fillStyle = "rgba(0, 0, 0, 0.05)";
             context.beginPath();
             context.roundRect(startX, startY, boxWidth, boxHeight, 15);
             context.fill();
 
-            // Borda amarela à esquerda
             context.fillStyle = "#FFD600";
             context.beginPath();
             context.roundRect(startX, startY, baseUnit * 0.01, boxHeight, [15, 0, 0, 15]);
             context.fill();
 
-            // Sombra forte para garantir leitura perfeita
             context.shadowColor = "rgba(0, 0, 0, 1)";
             context.shadowBlur = 6;
             context.shadowOffsetX = 2;
             context.shadowOffsetY = 2;
 
-            // Centraliza o texto dentro do Canvas
             context.textAlign = "center";
             const textCenterX = canvas.width / 2;
             const maxWidth = boxWidth - (padding * 2);
             
             let textY = startY + padding + fontSizeTitle;
             
-            // Título
             context.fillStyle = "white";
             context.font = "bold " + Math.floor(fontSizeTitle) + "px sans-serif";
             context.fillText(`INSPEÇÃO RUMO - ${categoriaAtual}`, textCenterX, textY, maxWidth);
             
-            // Data
             textY += fontSizeTitle + (padding / 2);
             context.font = Math.floor(fontSizeDate) + "px sans-serif";
             context.fillStyle = "#FFD600";
             context.fillText(dataStr, textCenterX, textY, maxWidth);
             textY += padding;
 
-            // Corpo do laudo
             context.fillStyle = "white";
             context.font = "bold " + Math.floor(fontSizeBody) + "px sans-serif"; 
             linhasFiltradas.forEach(linha => {
@@ -1140,8 +1469,11 @@
                 }
                 
                 if(dados['tipo-defeito']) atualizarOpcoes();
-                ['amv-componente', 'mad-categoria', 'brita-categoria', 'sub-categoria'].forEach(id => {
-                    if(dados[id]) document.getElementById(id).dispatchEvent(new Event('change'));
+                ['amv-componente', 'mad-categoria', 'brita-categoria', 'sub-categoria', 'report-semana', 'report-area'].forEach(id => {
+                    if(dados[id]) {
+                        const elem = document.getElementById(id);
+                        if (elem) elem.dispatchEvent(new Event('change'));
+                    }
                 });
 
                 if (dados['sessao_ativa']) {
