@@ -153,8 +153,8 @@
             color: white; padding: 12px 15px; border-radius: 8px; 
             font-size: 0.8rem; z-index: 2; pointer-events: none; 
             border-left: 4px solid var(--accent);
-            text-shadow: 1px 1px 5px rgba(0,0,0,1);
-            text-align: center; /* ALINHADO AO CENTRO */
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
+            text-align: center;
         }
         
         .camera-controls { background: #000; padding: 20px; display: flex; justify-content: center; align-items: center; gap: 20px; z-index: 2; }
@@ -911,11 +911,11 @@
             canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Ajuste dinâmico baseado na largura do vídeo (tamanhos 30% a 40% menores do que antes)
+            // Ajuste dinâmico aumentado em 12% conforme solicitado
             const baseUnit = canvas.width;
-            const fontSizeTitle = baseUnit * 0.025; 
-            const fontSizeDate = baseUnit * 0.015;
-            const fontSizeBody = baseUnit * 0.018;
+            const fontSizeTitle = baseUnit * 0.028;  // Era 0.025 (aumento de 12%)
+            const fontSizeDate = baseUnit * 0.0168;  // Era 0.015 (aumento de 12%)
+            const fontSizeBody = baseUnit * 0.02016; // Era 0.018 (aumento de 12%)
             const padding = baseUnit * 0.02;
             const lineHeight = fontSizeBody * 1.5;
 
