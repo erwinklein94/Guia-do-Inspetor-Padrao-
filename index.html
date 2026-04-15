@@ -400,8 +400,8 @@
             <div class="login-subtitle">Coordenação de Qualidade e Homologação dos Materiais de Via Permanente</div>
             <p style="font-weight: bold; margin-bottom: 20px;">Guia do Inspetor Padrão</p>
             <input type="email" id="user-email" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px;" placeholder="seu-email@rumolog.com">
-            <button class="btn-analisar" id="btn-login-email" onclick="validarAcesso()">RECEBER LINK DE ACESSO</button>
-            <p id="error-msg" class="error-msg"></p>
+            <button class="btn-analisar" onclick="validarAcesso()">ENTRAR</button>
+            <p id="error-msg" class="error-msg">Acesso restrito para @rumolog.com ou @ext.rumolog.com</p>
         </div>
     </div>
 
@@ -788,18 +788,29 @@
     </div>
 
     <script>
-        // Função chamada pelo Firebase quando o login for bem-sucedido
-        window.liberarAcessoGlob = function() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-layout').style.display = 'flex';
-            ocultarSidebarMobile();
-            carregarDadosLocal();
-        };
-
         function ocultarSidebarMobile() {
             if (window.innerWidth <= 768) {
                 document.getElementById('sidebar').classList.add('hidden');
                 document.getElementById('toggle-sidebar-btn').style.display = 'flex';
+            }
+        }
+
+        function validarAcesso() {
+            const email = document.getElementById('user-email').value.trim().toLowerCase();
+            if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com')) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-layout').style.display = 'flex';
+                salvarDadosLocal();
+                ocultarSidebarMobile();
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+
+        function fazerLogout() {
+            if (confirm("Deseja realmente sair e limpar os dados locais?")) {
+                localStorage.removeItem('rumoInspeccaoDados');
+                window.location.reload();
             }
         }
 
@@ -1253,20 +1264,20 @@
 
         // ====================== SUBCOMPONENTES ======================
         const subDados = {
-            "pal_branca_tr68": { title: "Palmilha Branca TR68 FAST-CLIP (WIRKLICH - SAP:109105)", ref: "ENG-DVP-D183 / INF-FX-0003", m: [{l:"Medida 1 (mm)", min:187.5, max:191.5}, {l:"Medida 2 (mm)", min:151.0, max:155.0}, {l:"Medida 3 (mm)", min:111.5, max:114.5}, {l:"Medida 4 (mm)", min:5.5, max:7.5}] },
-            "pal_verde_uic60": { title: "Palmilha Verde UIC60 (WIRKLICH - SAP:127543)", ref: "ENG-DVP-D135 / INF-FX-0003", m: [{l:"Medida 1 (mm)", min:148.5, max:150.0}, {l:"Medida 2 (mm)", min:113.0, max:114.0}, {l:"Medida 3 (mm)", min:7.05, max:7.55}] },
-            "iso_verde_3510w": { title: "Isolador Lateral Verde 3510W (WIRKLICH - SAP:127551)", ref: "ENG-DVP-D136", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:9.6, max:10.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
-            "iso_amarelo_3510w": { title: "Isolador Lateral Amarelo 3510W (WIRKLICH - SAP:147554)", ref: "ENG-DVP-D136", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:9.6, max:10.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
-            "iso_preto_3502w": { title: "Isolador Lateral Preto 3502W (WIRKLICH - SAP:147555)", ref: "ENG-DVP-D084", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:7.6, max:8.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
-            "iso_branco_pandrol": { title: "Isolador Lateral Branco 8mm 13158-D (PANDROL - SAP:121107)", ref: "ENG-DVP-D084", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:7.6, max:8.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
-            "iso_branco_3502w": { title: "Isolador Lateral Branco 3502W (WIRKLICH - SAP:121107)", ref: "ENG-DVP-D084", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:7.6, max:8.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
-            "usp_getzner": { title: "UNDER SLEEPER PAD - USP (GETZNER - SAP:126980)", ref: "ENG-DVP-D131", m: [{l:"Comprimento (mm)", min:1360.0, max:1390.0}, {l:"Largura (mm)", min:225.0, max:245.0}, {l:"Espessura (mm)", min:7.0, max:11.0}] },
-            "grampo_capa_branca": { title: "Grampo W c/ isolador Capa Branca 1605P (PANDROL - SAP:99604)", ref: "ENG-DVP-T040", m: [{l:"Medida 1 (mm)", min:106.5, max:111.0}, {l:"Medida 2 (mm)", min:15.75, max:16.25}, {l:"Medida 3 (mm)", min:74.5, max:79.0}] },
-            "grampo_iso_frontal": { title: "Grampo W c/ isolador frontal (CONDUTEC - SAP:99604)", ref: "ENG-DVP-T040", m: [{l:"Medida 1 (mm)", min:106.5, max:111.0}, {l:"Medida 2 (mm)", min:15.75, max:16.25}, {l:"Medida 3 (mm)", min:74.5, max:79.0}] },
-            "ombreira_eclip": { title: "Ombreira E-CLIP HFOB02 (HIPPER FREIOS - SAP:127542)", ref: "ENG-DVP-D139", m: [{l:"Medida 1 (mm)", min:73.5, max:76.5}, {l:"Medida 2 (mm) [>= 24]", min:24.0, max:999999}] },
-            "ombreira_fastclip": { title: "Ombreira FAST-CLIP HFOB08 (HIPPER FREIOS - SAP:127406B)", ref: "ENG-DVP-D074", m: [{l:"Medida 1 (mm)", min:99.75, max:102.25}, {l:"Medida 2 (mm)", min:58.7, max:60.7}, {l:"Medida 3 (mm)", min:95.9, max:98.1}, {l:"Medida 4 (mm)", min:70.3, max:72.5}, {l:"Medida 5 (mm)", min:34.9, max:36.7}] },
-            "pal_verde_almofada": { title: "Palmilha Verde Almofada 6980 (PANDROL - SAP:127543)", ref: "ENG-DVP-D135", m: [{l:"Medida 1 (mm)", min:148.5, max:150.0}, {l:"Medida 2 (mm)", min:113.0, max:114.0}, {l:"Medida 3 (mm)", min:7.05, max:7.55}] },
-            "pal_branca_almofada": { title: "Palmilha Branca Almofada 7552 (PANDROL - SAP:109105)", ref: "ENG-DVP-D183", m: [{l:"Medida 1 (mm)", min:187.5, max:191.5}, {l:"Medida 2 (mm)", min:151.0, max:155.0}, {l:"Medida 3 (mm)", min:111.5, max:114.5}, {l:"Medida 4 (mm)", min:5.5, max:7.5}] }
+            "pal_branca_tr68": { title: "Palmilha Branca TR68 FAST-CLIP (SAP:109105)", ref: "ENG-DVP-D183 / INF-FX-0003", m: [{l:"Medida 1 (mm)", min:187.5, max:191.5}, {l:"Medida 2 (mm)", min:151.0, max:155.0}, {l:"Medida 3 (mm)", min:111.5, max:114.5}, {l:"Medida 4 (mm)", min:5.5, max:7.5}] },
+            "pal_verde_uic60": { title: "Palmilha Verde UIC60 (SAP:127543)", ref: "ENG-DVP-D135 / INF-FX-0003", m: [{l:"Medida 1 (mm)", min:148.5, max:150.0}, {l:"Medida 2 (mm)", min:113.0, max:114.0}, {l:"Medida 3 (mm)", min:7.05, max:7.55}] },
+            "iso_verde_3510w": { title: "Isolador Lateral Verde 3510W (SAP:127551)", ref: "ENG-DVP-D136", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:9.6, max:10.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
+            "iso_amarelo_3510w": { title: "Isolador Lateral Amarelo 3510W (SAP:147554)", ref: "ENG-DVP-D136", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:9.6, max:10.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
+            "iso_preto_3502w": { title: "Isolador Lateral Preto 3502W (SAP:147555)", ref: "ENG-DVP-D084", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:7.6, max:8.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
+            "iso_branco_pandrol": { title: "Isolador Lateral Branco 8mm 13158-D (SAP:121107)", ref: "ENG-DVP-D084", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:7.6, max:8.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
+            "iso_branco_3502w": { title: "Isolador Lateral Branco 3502W (SAP:121107)", ref: "ENG-DVP-D084", m: [{l:"Medida 1 (mm)", min:61.5, max:63.0}, {l:"Medida 2 (mm)", min:7.6, max:8.2}, {l:"Medida 3 (mm)", min:7.4, max:8.0}] },
+            "usp_getzner": { title: "UNDER SLEEPER PAD USP (SAP:126980)", ref: "ENG-DVP-D131", m: [{l:"Comprimento (mm)", min:1360.0, max:1390.0}, {l:"Largura (mm)", min:225.0, max:245.0}, {l:"Espessura (mm)", min:7.0, max:11.0}] },
+            "grampo_capa_branca": { title: "Grampo W c/ isolador Capa Branca 1605P (SAP:99604)", ref: "ENG-DVP-T040", m: [{l:"Medida 1 (mm)", min:106.5, max:111.0}, {l:"Medida 2 (mm)", min:15.75, max:16.25}, {l:"Medida 3 (mm)", min:74.5, max:79.0}] },
+            "grampo_iso_frontal": { title: "Grampo W c/ isolador frontal (SAP:99604)", ref: "ENG-DVP-T040", m: [{l:"Medida 1 (mm)", min:106.5, max:111.0}, {l:"Medida 2 (mm)", min:15.75, max:16.25}, {l:"Medida 3 (mm)", min:74.5, max:79.0}] },
+            "ombreira_eclip": { title: "Ombreira E-CLIP HFOB02 (SAP:127542)", ref: "ENG-DVP-D139", m: [{l:"Medida 1 (mm)", min:73.5, max:76.5}, {l:"Medida 2 (mm) [>= 24]", min:24.0, max:999999}] },
+            "ombreira_fastclip": { title: "Ombreira FAST-CLIP HFOB08 (SAP:127406B)", ref: "ENG-DVP-D074", m: [{l:"Medida 1 (mm)", min:99.75, max:102.25}, {l:"Medida 2 (mm)", min:58.7, max:60.7}, {l:"Medida 3 (mm)", min:95.9, max:98.1}, {l:"Medida 4 (mm)", min:70.3, max:72.5}, {l:"Medida 5 (mm)", min:34.9, max:36.7}] },
+            "pal_verde_almofada": { title: "Palmilha Verde Almofada 6980 (SAP:127543)", ref: "ENG-DVP-D135", m: [{l:"Medida 1 (mm)", min:148.5, max:150.0}, {l:"Medida 2 (mm)", min:113.0, max:114.0}, {l:"Medida 3 (mm)", min:7.05, max:7.55}] },
+            "pal_branca_almofada": { title: "Palmilha Branca Almofada 7552 (SAP:109105)", ref: "ENG-DVP-D183", m: [{l:"Medida 1 (mm)", min:187.5, max:191.5}, {l:"Medida 2 (mm)", min:151.0, max:155.0}, {l:"Medida 3 (mm)", min:111.5, max:114.5}, {l:"Medida 4 (mm)", min:5.5, max:7.5}] }
         };
 
         function atualizarCamposSub() {
@@ -1360,12 +1371,12 @@
             digitar();
         }
 
-        // ====================== LOCAL STORAGE (Salva o rascunho do formulário) ======================
+        // ====================== LOCAL STORAGE ======================
         function salvarDadosLocal() {
             const inputs = document.querySelectorAll('input, select');
             const dados = {};
             inputs.forEach(input => {
-                if (input.id && input.id !== 'user-email') { // NÃO SALVAR O E-MAIL AQUI PARA NÃO DAR CONFLITO COM O FIREBASE
+                if (input.id) {
                     if (input.type === 'checkbox') {
                         dados[input.id] = input.checked;
                     } else {
@@ -1424,125 +1435,25 @@
                         }
                     }
                 }
+
+                const email = dados['user-email'] || '';
+                if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com')) {
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('main-layout').style.display = 'flex';
+                    ocultarSidebarMobile();
+                }
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            carregarDadosLocal();
             const inputs = document.querySelectorAll('input, select');
             inputs.forEach(input => {
                 input.addEventListener('input', salvarDadosLocal);
                 input.addEventListener('change', salvarDadosLocal);
             });
         });
-    </script>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        // CHAVES DO SEU PROJETO FIREBASE
-        const firebaseConfig = {
-            apiKey: "AIzaSyAVUi-Ec7pSiWhdsZK3iF0iHT4kevyH2oo",
-            authDomain: "inspecao-rumo.firebaseapp.com",
-            projectId: "inspecao-rumo",
-            storageBucket: "inspecao-rumo.firebasestorage.app",
-            messagingSenderId: "999417271935",
-            appId: "1:999417271935:web:6c61d6ba86b90a6dd0514a"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        const msgErro = document.getElementById('error-msg');
-        const inputEmail = document.getElementById('user-email');
-        const btnLogin = document.getElementById('btn-login-email');
-
-        // 1. VERIFICAR SE O USUÁRIO ESTÁ RETORNANDO DO LINK DE E-MAIL
-        if (isSignInWithEmailLink(auth, window.location.href)) {
-            let email = window.localStorage.getItem('emailParaSignIn');
-            if (!email) {
-                email = window.prompt('Por favor, confirme seu e-mail corporativo para liberar o acesso:');
-            }
-            signInWithEmailLink(auth, email, window.location.href)
-                .then((result) => {
-                    window.localStorage.removeItem('emailParaSignIn');
-                    if(typeof window.liberarAcessoGlob === 'function') {
-                        window.liberarAcessoGlob();
-                    }
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                })
-                .catch((error) => {
-                    console.error("Erro no login:", error);
-                    msgErro.innerText = "Link expirado ou inválido. Tente enviar novamente.";
-                    msgErro.style.color = "#d32f2f";
-                    msgErro.style.display = 'block';
-                });
-        }
-
-        // 2. MANTER A SESSÃO ATIVA (PULAR TELA DE LOGIN SE JÁ LOGOU ANTES)
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const email = user.email.toLowerCase();
-                // Bloqueio de Segurança para garantir que só a Rumo acesse
-                if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com') || email === 'erwinklein94@gmail.com') {
-                    if(typeof window.liberarAcessoGlob === 'function') {
-                        window.liberarAcessoGlob();
-                    }
-                } else {
-                    window.fazerLogout();
-                }
-            }
-        });
-
-        // 3. FUNÇÃO QUE ENVIA O E-MAIL (Mágica acontece aqui)
-        window.validarAcesso = async function() {
-            const email = inputEmail.value.trim().toLowerCase();
-            msgErro.style.display = 'none';
-
-            if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com') || email === 'erwinklein94@gmail.com') {
-                btnLogin.innerText = "Enviando link...";
-                btnLogin.disabled = true;
-
-                // O truque para não acumular lixo na URL
-                const urlLimpa = window.location.origin + window.location.pathname;
-
-                const actionCodeSettings = {
-                    url: urlLimpa, 
-                    handleCodeInApp: true,
-                };
-
-                try {
-                    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-                    window.localStorage.setItem('emailParaSignIn', email);
-                    msgErro.innerText = "✅ Link seguro enviado! Verifique sua caixa de entrada (e o Spam).";
-                    msgErro.style.color = "#2E7D32";
-                    msgErro.style.display = 'block';
-                    btnLogin.innerText = "LINK ENVIADO";
-                } catch (error) {
-                    console.error("ERRO FIREBASE:", error.code, error.message);
-                    // Rastreio de erro na tela para depuração
-                    msgErro.innerText = "Erro ao enviar: " + error.code + ". Recarregue a página.";
-                    msgErro.style.color = "#d32f2f";
-                    msgErro.style.display = 'block';
-                    btnLogin.innerText = "RECEBER LINK DE ACESSO";
-                    btnLogin.disabled = false;
-                }
-            } else {
-                msgErro.innerText = "Acesso restrito para @rumolog.com ou @ext.rumolog.com";
-                msgErro.style.color = "#d32f2f";
-                msgErro.style.display = 'block';
-            }
-        };
-
-        // 4. FUNÇÃO DE LOGOUT
-        window.fazerLogout = function() {
-            if (confirm("Deseja realmente sair do sistema e limpar os dados locais?")) {
-                signOut(auth).then(() => {
-                    localStorage.removeItem('rumoInspeccaoDados');
-                    window.location.reload();
-                });
-            }
-        };
     </script>
 </body>
 </html>
