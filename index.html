@@ -62,15 +62,6 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
         }
         body.dark .login-card { background: #1E1E1E; color: #E0E0E0; }
-        .login-subtitle {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: -15px;
-            margin-bottom: 25px;
-            font-weight: 600;
-            line-height: 1.3;
-        }
-        body.dark .login-subtitle { color: #aaa; }
         
         /* LAYOUT PRINCIPAL */
         #main-layout {
@@ -80,7 +71,6 @@
             z-index: 1;
         }
 
-        /* MARCA D'ÁGUA NO FUNDO */
         #main-layout::before {
             content: "";
             position: fixed;
@@ -88,14 +78,9 @@
             background-image: url('https://inevitable-violet-aqhzqzsvkz.edgeone.app/transporte.jpg');
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.20;
+            opacity: 0.15;
             z-index: -1;
             pointer-events: none;
-        }
-        body.dark #main-layout::before {
-            opacity: 0.15;
-            filter: grayscale(100%);
         }
         
         /* SIDEBAR */
@@ -110,265 +95,60 @@
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);
             transition: transform 0.4s ease, width 0.4s ease;
         }
-        aside.hidden {
-            transform: translateX(-100%);
-            width: 0;
-            overflow: hidden;
-            padding: 0;
-        }
-        .sidebar-top {
-            display: flex;
-            flex-direction: column;
-        }
-        .sidebar-logo {
-            width: 140px;
-            margin: 0 auto 10px;
-            filter: brightness(0) invert(1);
-        }
-        .sidebar-subtitle {
-            text-align: center;
-            font-size: 0.75rem;
-            color: #b2dfdb;
-            margin: 0 15px 20px 15px;
-            line-height: 1.3;
-            font-weight: 500;
-        }
-        .menu-header {
-            padding: 10px 25px 15px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #b2dfdb;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 10px;
-        }
-        .menu-item {
-            padding: 15px 25px;
-            cursor: pointer;
-            transition: 0.3s;
-            border-left: 4px solid transparent;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #b2dfdb;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .menu-item:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-        .menu-item.active {
-            background: rgba(255,255,255,0.05);
-            border-left: 4px solid var(--cor-rumo-accent-y);
-            color: white;
-        }
+        aside.hidden { transform: translateX(-100%); width: 0; overflow: hidden; padding: 0; }
         
-        .sidebar-bottom {
-            margin-top: auto;
-            display: flex;
-            flex-direction: column;
-        }
-        .dark-toggle {
-            margin: 15px 25px;
-            padding: 10px 15px;
-            background: rgba(255,255,255,0.15);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
-        }
-        .logout-btn {
-            margin: 0 25px 15px;
-            padding: 10px 15px;
-            background: rgba(211, 47, 47, 0.15);
-            border: 1px solid rgba(211, 47, 47, 0.3);
-            border-radius: 8px;
-            color: #ff8a80;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
-            transition: 0.3s;
-        }
-        .logout-btn:hover {
-            background: rgba(211, 47, 47, 0.4);
-            color: white;
-        }
-        .sidebar-credit {
-            text-align: center;
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.4);
-            margin-top: 10px;
-            padding-bottom: 10px;
-        }
+        .sidebar-logo { width: 140px; margin: 0 auto 10px; filter: brightness(0) invert(1); }
+        .sidebar-subtitle { text-align: center; font-size: 0.75rem; color: #b2dfdb; margin: 0 15px 20px 15px; line-height: 1.3; }
         
-        /* CONTEÚDO PRINCIPAL */
-        main {
-            flex-grow: 1;
-            padding: 40px;
-            overflow-y: auto;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-        .content-section {
-            display: none;
-            max-width: 900px;
-            margin: 0 auto;
-            flex-grow: 1;
-            width: 100%;
-        }
+        .menu-header { padding: 10px 25px 15px; font-size: 1.1rem; font-weight: 600; color: #b2dfdb; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; }
+        .menu-item { padding: 15px 25px; cursor: pointer; transition: 0.3s; border-left: 4px solid transparent; color: #b2dfdb; display: flex; align-items: center; gap: 8px; font-weight: 500; }
+        .menu-item:hover { background: rgba(255,255,255,0.1); color: white; }
+        .menu-item.active { background: rgba(255,255,255,0.05); border-left: 4px solid var(--cor-rumo-accent-y); color: white; }
+
+        /* CONTEÚDO */
+        main { flex-grow: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; }
+        .content-section { display: none; max-width: 900px; margin: 0 auto; width: 100%; }
         .content-section.active { display: block; }
 
         h1 { margin-bottom: 25px; color: var(--cor-rumo-bg); font-size: 1.8rem; }
         body.dark h1 { color: #80cbc4; }
         .proc-title { color: #78909C; font-weight: 400; font-size: 0.85em; }
-        body.dark .proc-title { color: #B0BEC5; }
 
-        .card {
-            background: var(--cor-rumo-panel);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
-        }
-        body.dark .card { box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        .card { background: var(--cor-rumo-panel); border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; overflow: hidden; z-index: 1; }
         
-        .card::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg');
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 60%;
-            opacity: 0.03;
-            z-index: -1;
-            pointer-events: none;
-        }
-        body.dark .card::before { filter: invert(1); opacity: 0.02; }
-        
-        #toggle-sidebar-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 9999;
-            background: var(--cor-rumo-bg);
-            color: white;
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 1.6rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        body.dark #toggle-sidebar-btn { background: #00332A; }
-        
-        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; width: 100%; }
+        /* FORMULÁRIOS */
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
         .form-group label { font-weight: bold; font-size: 0.85rem; color: #666; }
         body.dark .form-group label { color: #bbb; }
-        .form-group select, .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--cor-rumo-border);
-            border-radius: 8px;
-            font-size: 1rem;
-            background: var(--cor-rumo-panel);
-            color: var(--cor-rumo-text);
-        }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-        body.dark .checkbox-group { background: #2C2C2C; }
-        .dimensoes-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            background: #fcfcfc;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #eee;
-            margin-bottom: 15px;
-        }
-        body.dark .dimensoes-grid { background: #2C2C2C; border-color: #424242; }
-        .btn-analisar {
-            width: 100%;
-            padding: 16px;
-            background-color: var(--cor-rumo-bg);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn-analisar:disabled {
-            background-color: #9e9e9e;
-            cursor: not-allowed;
-        }
-        .resultado-box {
-            margin-top: 25px;
-            padding: 25px;
-            border-radius: 12px;
-            text-align: left;
-            font-weight: 500;
-            line-height: 1.5;
-            display: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        body.dark .resultado-box { box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
-        .resultado-box.reparar { background-color: #FFF3E0; color: #E65100; border: 2px solid #FFE0B2; }
-        .resultado-box.aceitavel { background-color: #E8F5E9; color: #2E7D32; border: 2px solid #C8E6C9; }
-        .resultado-box.refugo { background-color: #FFEBEE; color: #C62828; border: 2px solid #FFCDD2; }
-        .error-msg { color: #d32f2f; font-size: 0.85rem; margin-top: 15px; display: none; font-weight: bold; }
+        .form-group select, .form-group input { padding: 12px; border: 1px solid var(--cor-rumo-border); border-radius: 8px; background: var(--cor-rumo-panel); color: var(--cor-rumo-text); width: 100%; }
         
-        .aviso-normativo {
-            text-align: center;
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #888;
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            background: rgba(0,0,0,0.03);
-            display: none;
-        }
-        body.dark .aviso-normativo { color: #aaa; background: rgba(255,255,255,0.05); }
+        .dimensoes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #fcfcfc; padding: 15px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 15px; }
+        body.dark .dimensoes-grid { background: #2C2C2C; border-color: #424242; }
+
+        .btn-analisar { width: 100%; padding: 16px; background-color: var(--cor-rumo-bg); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-analisar:disabled { background-color: #9e9e9e; cursor: not-allowed; }
+
+        .resultado-box { margin-top: 25px; padding: 25px; border-radius: 12px; display: none; font-weight: 500; line-height: 1.5; }
+        .resultado-box.aceitavel { background: #E8F5E9; color: #2E7D32; border: 2px solid #C8E6C9; }
+        .resultado-box.reparar { background: #FFF3E0; color: #E65100; border: 2px solid #FFE0B2; }
+        .resultado-box.refugo { background: #FFEBEE; color: #C62828; border: 2px solid #FFCDD2; }
+
+        .checkbox-group { display: flex; align-items: center; gap: 12px; background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; }
+        body.dark .checkbox-group { background: #2C2C2C; }
+
+        #error-msg { color: #d32f2f; font-size: 0.85rem; margin-top: 15px; display: none; font-weight: bold; }
+        #toggle-sidebar-btn { position: fixed; top: 20px; left: 20px; z-index: 9999; background: var(--cor-rumo-bg); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; font-size: 1.6rem; cursor: pointer; display: none; align-items: center; justify-content: center; }
 
         @media (max-width: 768px) {
-            aside { 
-                position: fixed; height: 100vh; z-index: 1000; left: 0; top: 0; width: 280px; 
-            }
-            main { padding: 80px 20px 20px 20px; width: 100%; }
-            .menu-item { padding: 12px 20px; }
-            .card { padding: 20px; }
-            .dimensoes-grid { grid-template-columns: 1fr; gap: 10px; }
-            .checkbox-group { flex-direction: row; align-items: center; }
-            h1 { font-size: 1.4rem; }
+            aside { position: fixed; height: 100vh; z-index: 1000; left: 0; top: 0; width: 280px; }
+            main { padding: 80px 20px 20px 20px; }
+            #toggle-sidebar-btn { display: flex; }
+            .dimensoes-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+
     <div id="login-screen">
         <div class="login-card">
             <img src="https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg" alt="Rumo" style="width: 150px; margin-bottom: 15px; filter: brightness(0.2);">
@@ -377,7 +157,7 @@
             
             <input type="email" id="user-email" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px;" placeholder="seu-email@rumolog.com">
             <button class="btn-analisar" id="btn-login-email" onclick="validarAcesso()">RECEBER LINK DE ACESSO</button>
-            <p id="error-msg" class="error-msg">Acesso restrito para e-mails corporativos da Rumo.</p>
+            <p id="error-msg"></p>
         </div>
     </div>
 
@@ -385,21 +165,18 @@
         <aside id="sidebar">
             <div class="sidebar-top">
                 <img src="https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg" alt="Rumo" class="sidebar-logo">
-                <div class="sidebar-subtitle">Coordenação de Qualidade e Homologação dos Materiais de Via Permanente</div>
-                
-                <div class="menu-header">Guia do Inspetor Padrão</div>
-                
+                <div class="sidebar-subtitle">Coordenação de Qualidade e Homologação</div>
+                <div class="menu-header">Menu de Inspeção</div>
                 <div class="menu-item active" onclick="navegar('sec-amv')">AMV & Componentes</div>
-                <div class="menu-item" onclick="navegar('sec-brita')">Brita</div>
+                <div class="menu-item" onclick="navegar('sec-brita')">Brita para Lastro</div>
                 <div class="menu-item" onclick="navegar('sec-concreto')">Dormente de Concreto</div>
                 <div class="menu-item" onclick="navegar('sec-madeira')">Dormente de Madeira</div>
                 <div class="menu-item" onclick="navegar('sec-sub')">Subcomponentes</div>
             </div>
-
-            <div class="sidebar-bottom">
-                <button onclick="toggleDarkMode()" class="dark-toggle">🌙 Alternar Modo Escuro</button>
-                <button onclick="fazerLogout()" class="logout-btn">🚪 Sair do Sistema</button>
-                <div class="sidebar-credit">Desenvolvido por Erwin Klein</div>
+            <div style="margin-top: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+                <button onclick="toggleDarkMode()" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.15); border: none; color: white; border-radius: 8px; cursor: pointer;">🌙 Modo Escuro</button>
+                <button onclick="fazerLogout()" style="width: 100%; padding: 10px; background: rgba(255,0,0,0.2); border: 1px solid red; color: white; border-radius: 8px; cursor: pointer;">🚪 Sair</button>
+                <div style="font-size: 0.7rem; text-align: center; opacity: 0.5;">Desenvolvido por Erwin Klein</div>
             </div>
         </aside>
 
@@ -418,68 +195,14 @@
                             <option value="coxin">Coxins dos Roletes (Dureza)</option>
                             <option value="jacare_canal">Jacaré (Profundidade do Canal)</option>
                             <option value="jacare_dureza">Jacaré (Dureza Brinell)</option>
-                            <option value="fixacao_concreto">Fixação AMV Concreto (Pressão Grampo Eclip-2009)</option>
-                            <option value="cilindro">Cilindro de Mola</option>
-                            <option value="batefica">Aparelho Talonável Bate-Fica</option>
+                            <option value="fixacao_concreto">Fixação AMV (Pressão Grampo Eclip)</option>
                         </select>
                     </div>
-
-                    <div class="dimensoes-grid" id="amv-inputs-agulha" style="display: none;">
-                        <div class="form-group">
-                            <label>Medida Atual da Ponta da Agulha (mm):</label>
-                            <input type="number" id="val-amv-ponta" step="0.1" placeholder="Ex: 3.5">
-                        </div>
+                    <div class="dimensoes-grid" id="amv-inputs-container" style="display: none;">
+                        <div class="form-group"><label id="lbl-amv-medida">Medida (mm):</label><input type="number" id="val-amv-medida" step="0.1"></div>
                     </div>
-                    <div class="dimensoes-grid" id="amv-inputs-rolete" style="display: none;">
-                        <div class="form-group">
-                            <label>Altura máx do rolete em relação à base da agulha (mm):</label>
-                            <input type="number" id="val-amv-altura-rolete" step="0.1" placeholder="Ex: 1.5">
-                        </div>
-                    </div>
-                    <div class="dimensoes-grid" id="amv-inputs-coxin" style="display: none;">
-                        <div class="form-group">
-                            <label>Dureza constatada no coxin (Shore A):</label>
-                            <input type="number" id="val-amv-coxin" step="1" placeholder="Ex: 90">
-                        </div>
-                    </div>
-                    <div class="dimensoes-grid" id="amv-inputs-jacare_canal" style="display: none;">
-                        <div class="form-group">
-                            <label>Profundidade do Canal (mm):</label>
-                            <input type="number" id="val-amv-jacare-canal" step="0.1" placeholder="Ex: 53.0">
-                        </div>
-                    </div>
-                    <div class="dimensoes-grid" id="amv-inputs-jacare_dureza" style="display: none;">
-                        <div class="form-group">
-                            <label>Dureza Brinell na área de impacto (HB):</label>
-                            <input type="number" id="val-amv-jacare-dureza" step="1" placeholder="Ex: 360">
-                        </div>
-                    </div>
-                    <div class="dimensoes-grid" id="amv-inputs-fixacao_concreto" style="display: none;">
-                        <div class="form-group">
-                            <label>Pressão do Grampo Eclip-2009 constatada (kgf):</label>
-                            <input type="number" id="val-amv-fixacao" step="1" placeholder="Ex: 1200">
-                        </div>
-                    </div>
-                    <div class="dimensoes-grid" id="amv-inputs-cilindro" style="display: none;">
-                        <div class="form-group">
-                            <label>Pressão de travamento constatada (kgf):</label>
-                            <input type="number" id="val-amv-pressao" step="1" placeholder="Ex: 510">
-                        </div>
-                        <div class="form-group">
-                            <label>Tempo de acionamento c/ 260kg (s):</label>
-                            <input type="number" id="val-amv-tempo" step="0.1" placeholder="Ex: 11">
-                        </div>
-                    </div>
-                    <div class="dimensoes-grid" id="amv-inputs-batefica" style="display: none;">
-                        <div class="form-group">
-                            <label>Deslocamento verificado das agulhas (mm):</label>
-                            <input type="number" id="val-amv-deslocamento" step="1" placeholder="Ex: 115">
-                        </div>
-                    </div>
-
                     <button class="btn-analisar" id="btn-amv" style="display: none;" onclick="analisarAMV()">VERIFICAR CONFORMIDADE</button>
-                    <div id="resultado-box-amv" class="resultado-box"></div>
-                    <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Documentos atualizados em 14/04/2026</div>
+                    <div id="res-amv" class="resultado-box"></div>
                 </div>
             </section>
 
@@ -488,57 +211,23 @@
                 <div class="card">
                     <div class="form-group">
                         <label>Categoria da Inspeção:</label>
-                        <select id="brita-categoria" onchange="atualizarCamposBrita()">
+                        <select id="brita-cat" onchange="atualizarCamposBrita()">
                             <option value="">Selecione...</option>
                             <option value="visual">Inspeção Visual (Contaminação)</option>
-                            <option value="forma_lote">Ensaio de Forma (Lote / Não-Cúbicas)</option>
-                            <option value="forma_pedra">Ensaio de Forma (Pedra Individual)</option>
-                            <option value="granulometria">Ensaio de Granulometria (Peneiramento)</option>
+                            <option value="forma">Ensaio de Forma (Não-Cúbicas)</option>
                         </select>
                     </div>
-
-                    <div class="checkbox-group" id="brita-check-visual" style="display: none;">
-                        <input type="checkbox" id="brita-presenca-finos">
-                        <label for="brita-presenca-finos">Presença visível de argila, areia ou matéria orgânica (Lastro Contaminado)?</label>
-                    </div>
-                    <div class="dimensoes-grid" id="brita-inputs-lote" style="display: none;">
-                        <div class="form-group">
-                            <label>Percentual de Britas Não-Cúbicas (%) constatado:</label>
-                            <input type="number" id="val-brita-nao-cubicas" step="0.1" placeholder="Ex: 12.5">
+                    <div id="brita-inputs" style="display: none;">
+                        <div class="checkbox-group" id="brita-visual-group">
+                            <input type="checkbox" id="brita-contaminada"> <label>Presença de finos/argila?</label>
+                        </div>
+                        <div class="form-group" id="brita-forma-group">
+                            <label>Percentual de Britas Não-Cúbicas (%):</label>
+                            <input type="number" id="val-brita-perc" step="0.1">
                         </div>
                     </div>
-                    <div id="brita-inputs-pedra" style="display: none;">
-                        <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">
-                            <strong>a:</strong> Maior distância | <strong>b:</strong> Distância média | <strong>c:</strong> Menor distância
-                        </p>
-                        <div class="dimensoes-grid">
-                            <div class="form-group"><label>Dimensão A (cm):</label><input type="number" id="val-brita-a" step="0.1"></div>
-                            <div class="form-group"><label>Dimensão B (cm):</label><input type="number" id="val-brita-b" step="0.1"></div>
-                            <div class="form-group"><label>Dimensão C (cm):</label><input type="number" id="val-brita-c" step="0.1"></div>
-                        </div>
-                    </div>
-                    <div id="brita-inputs-granulometria" style="display: none;">
-                        <div class="form-group" style="margin-bottom:20px;">
-                            <label>Aplicação do Lastro (Tipo de Dormente):</label>
-                            <select id="brita-tipo-dormente">
-                                <option value="geral">Dormentes de Madeira, Plástico ou Concreto</option>
-                                <option value="aco">Dormentes de Aço</option>
-                            </select>
-                        </div>
-                        <p style="font-weight: bold; margin-bottom: 10px; font-size: 0.9rem;">Insira o percentual Retido Acumulado (%) em cada peneira:</p>
-                        <div class="dimensoes-grid">
-                            <div class="form-group"><label>Peneira 63,5 mm (%):</label><input type="number" id="val-brita-g63" step="0.1"></div>
-                            <div class="form-group"><label>Peneira 50,0 mm (%):</label><input type="number" id="val-brita-g50" step="0.1"></div>
-                            <div class="form-group"><label>Peneira 38,0 mm (%):</label><input type="number" id="val-brita-g38" step="0.1"></div>
-                            <div class="form-group"><label>Peneira 25,0 mm (%):</label><input type="number" id="val-brita-g25" step="0.1"></div>
-                            <div class="form-group"><label>Peneira 19,0 mm (%):</label><input type="number" id="val-brita-g19" step="0.1"></div>
-                            <div class="form-group"><label>Peneira 12,7 mm (%):</label><input type="number" id="val-brita-g12" step="0.1"></div>
-                        </div>
-                    </div>
-
-                    <button class="btn-analisar" id="btn-brita" style="display: none;" onclick="analisarBrita()">VERIFICAR CONFORMIDADE</button>
-                    <div id="resultado-box-brita" class="resultado-box"></div>
-                    <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Documentos atualizados em 14/04/2026</div>
+                    <button class="btn-analisar" id="btn-brita" style="display: none;" onclick="analisarBrita()">VERIFICAR</button>
+                    <div id="res-brita" class="resultado-box"></div>
                 </div>
             </section>
 
@@ -547,151 +236,61 @@
                 <div class="card">
                     <div class="form-group">
                         <label>Tipo de Defeito:</label>
-                        <select id="tipo-defeito" onchange="atualizarOpcoes()">
+                        <select id="conc-tipo" onchange="atualizarCamposConcreto()">
                             <option value="">Selecione...</option>
-                            <option value="vazio">Vazios</option>
-                            <option value="quebra">Quebras</option>
+                            <option value="vazio">Vazios (Bolhas)</option>
+                            <option value="quebra">Quebras / Lascas</option>
                             <option value="fissura">Fissuras</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Localização:</label>
-                        <select id="localizacao" onchange="atualizarCampos()">
-                            <option value="">Selecione a região...</option>
-                        </select>
+                    <div class="dimensoes-grid" id="conc-inputs" style="display: none;">
+                        <div class="form-group"><label>Profundidade (mm):</label><input type="number" id="val-conc-prof" step="0.1"></div>
+                        <div class="form-group"><label>Comprimento (mm):</label><input type="number" id="val-conc-comp" step="0.1"></div>
                     </div>
-
-                    <div class="checkbox-group" id="container-aco" style="display: none;">
-                        <input type="checkbox" id="aco-exposto">
-                        <label for="aco-exposto">Exposição de Armadura / Aço?</label>
-                    </div>
-                    <div class="dimensoes-grid" id="dimensoes-inputs" style="display: none;">
-                        <div class="form-group" id="div-profundidade"><label>Profundidade (mm):</label><input type="number" id="val-profundidade" step="0.1"></div>
-                        <div class="form-group" id="div-comprimento"><label>Comprimento (mm):</label><input type="number" id="val-comprimento" step="0.1"></div>
-                        <div class="form-group" id="div-largura"><label id="lbl-largura">Largura (mm):</label><input type="number" id="val-largura" step="0.1"></div>
-                        <div class="form-group" id="div-espessura"><label>Espessura (mm):</label><input type="number" id="val-espessura" step="0.01"></div>
-                        <div class="form-group" id="div-complateral"><label>Extensão Lateral (mm):</label><input type="number" id="val-complateral" step="0.1"></div>
-                    </div>
-
-                    <button class="btn-analisar" onclick="analisarDefeito()">VERIFICAR CONFORMIDADE</button>
-                    <div id="resultado-box-concreto" class="resultado-box"></div>
-                    <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Documentos atualizados em 14/04/2026</div>
+                    <button class="btn-analisar" id="btn-conc" style="display: none;" onclick="analisarConcreto()">ANALISAR</button>
+                    <div id="res-concreto" class="resultado-box"></div>
                 </div>
             </section>
 
             <section id="sec-madeira" class="content-section">
-                <h1>Dormente de Madeira <span class="proc-title">— ENG-DSV-VP-ETM-D006</span></h1>
+                <h1>Dormente de Madeira <span class="proc-title">— ETM-D006</span></h1>
                 <div class="card">
                     <div class="form-group">
-                        <label>Categoria da Inspeção:</label>
-                        <select id="mad-categoria" onchange="atualizarCamposMadeira()">
+                        <label>Análise:</label>
+                        <select id="mad-cat" onchange="atualizarCamposMadeira()">
                             <option value="">Selecione...</option>
-                            <option value="fisico">Propriedades Físicas e Químicas</option>
-                            <option value="defeito">Análise de Defeitos (Fendas, Furos, Empenamentos)</option>
+                            <option value="umidade">Teor de Umidade</option>
+                            <option value="empenamento">Empenamento (Flecha)</option>
                         </select>
                     </div>
-
-                    <div class="dimensoes-grid" id="mad-inputs-fisico" style="display: none;">
-                        <div class="form-group">
-                            <label>Classe da Madeira:</label>
-                            <select id="mad-classe">
-                                <option value="1">1ª Classe (Alta Resistência)</option>
-                                <option value="2">2ª Classe (Média Resistência)</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label>Teor de Umidade Constatado (%):</label><input type="number" id="val-mad-umidade" step="0.1" placeholder="Ex: 25"></div>
-                        <div class="form-group"><label>Densidade Aparente (kg/m³):</label><input type="number" id="val-mad-densidade" step="1" placeholder="Ex: 780"></div>
-                        <div class="form-group"><label>Retenção CCA/CCB (kg/m³):</label><input type="number" id="val-mad-retencao" step="0.1" placeholder="Ex: 10.5"></div>
+                    <div class="form-group" id="mad-input-div" style="display:none;">
+                        <label id="lbl-mad">Valor:</label>
+                        <input type="number" id="val-mad" step="0.1">
                     </div>
-
-                    <div id="mad-inputs-defeito" style="display: none;">
-                        <div class="form-group">
-                            <label>Tipo de Defeito:</label>
-                            <select id="mad-tipo-defeito" onchange="atualizarDefeitoMadeira()">
-                                <option value="">Selecione o Defeito...</option>
-                                <option value="racha_topo">Fenda ou Racha de Topo</option>
-                                <option value="racha_centro">Rachadura de Centro</option>
-                                <option value="furos_nos">Furos de Broca / Nós Cariados</option>
-                                <option value="empenamento">Empenamento (Encurvamento/Arqueamento)</option>
-                            </select>
-                        </div>
-
-                        <div class="checkbox-group" id="mad-check-fixacao" style="display: none;">
-                            <input type="checkbox" id="mad-zona-fixacao">
-                            <label for="mad-zona-fixacao">Defeito na Zona de Fixação?</label>
-                        </div>
-
-                        <div class="dimensoes-grid" id="mad-dims-racha" style="display: none;">
-                            <div class="form-group"><label>Comprimento (cm):</label><input type="number" id="val-mad-comp-racha" step="0.1"></div>
-                            <div class="form-group"><label>Abertura/Largura (mm):</label><input type="number" id="val-mad-abert-racha" step="0.1"></div>
-                            <div class="form-group" id="mad-div-prof-racha" style="display: none;"><label>Profundidade (cm):</label><input type="number" id="val-mad-prof-racha" step="0.1"></div>
-                        </div>
-
-                        <div class="dimensoes-grid" id="mad-dims-furos" style="display: none;">
-                            <div class="form-group"><label>Diâmetro do Furo/Nó (cm):</label><input type="number" id="val-mad-diam-furo" step="0.1"></div>
-                            <div class="form-group"><label>Profundidade do Furo/Nó (cm):</label><input type="number" id="val-mad-prof-furo" step="0.1"></div>
-                        </div>
-
-                        <div class="dimensoes-grid" id="mad-dims-empenamento" style="display: none;">
-                            <div class="form-group">
-                                <label>Comprimento do Dormente (m):</label>
-                                <select id="val-mad-comp-dormente">
-                                    <option value="2.00">2,00 m</option>
-                                    <option value="2.20">2,20 m</option>
-                                    <option value="2.40">2,40 m</option>
-                                    <option value="2.60">2,60 m</option>
-                                    <option value="2.80">2,80 m</option>
-                                    <option value="3.00">3,00 m</option>
-                                    <option value="3.20">3,20 m</option>
-                                </select>
-                            </div>
-                            <div class="form-group"><label>Flecha Constatada (cm):</label><input type="number" id="val-mad-flecha" step="0.1"></div>
-                        </div>
-                    </div>
-
-                    <button class="btn-analisar" id="btn-madeira" style="display: none;" onclick="analisarMadeira()">VERIFICAR CONFORMIDADE</button>
-                    <div id="resultado-box-madeira" class="resultado-box"></div>
-                    <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Documentos atualizados em 14/04/2026</div>
+                    <button class="btn-analisar" id="btn-mad" style="display:none;" onclick="analisarMadeira()">VERIFICAR</button>
+                    <div id="res-madeira" class="resultado-box"></div>
                 </div>
             </section>
 
             <section id="sec-sub" class="content-section">
-                <h1>Subcomponentes Metálicos e Plásticos <span class="proc-title">— Padrão ENG-DVP</span></h1>
+                <h1>Subcomponentes <span class="proc-title">— Padrão ENG-DVP</span></h1>
                 <div class="card">
                     <div class="form-group">
-                        <label>Subcomponente Inspecionado:</label>
-                        <select id="sub-categoria" onchange="atualizarCamposSub()">
-                            <option value="">Selecione o Item...</option>
-                            <option value="pal_branca_tr68">Palmilha Branca TR68 FAST-CLIP (WIRKLICH - SAP:109105)</option>
-                            <option value="pal_verde_uic60">Palmilha Verde UIC60 (WIRKLICH - SAP:127543)</option>
-                            <option value="iso_verde_3510w">Isolador Lateral Verde 3510W (WIRKLICH - SAP:127551)</option>
-                            <option value="iso_amarelo_3510w">Isolador Lateral Amarelo 3510W (WIRKLICH - SAP:147554)</option>
-                            <option value="iso_preto_3502w">Isolador Lateral Preto 3502W (WIRKLICH - SAP:147555)</option>
-                            <option value="iso_branco_pandrol">Isolador Lateral Branco 8mm 13158-D (PANDROL - SAP:121107)</option>
-                            <option value="iso_branco_3502w">Isolador Lateral Branco 3502W (WIRKLICH - SAP:121107)</option>
-                            <option value="usp_getzner">UNDER SLEEPER PAD - USP (GETZNER - SAP:126980)</option>
-                            <option value="grampo_capa_branca">Grampo W c/ isolador Capa Branca 1605P (PANDROL - SAP:99604)</option>
-                            <option value="grampo_iso_frontal">Grampo W c/ isolador frontal (CONDUTEC - SAP:99604)</option>
-                            <option value="ombreira_eclip">Ombreira E-CLIP HFOB02 (HIPPER FREIOS - SAP:127542)</option>
-                            <option value="ombreira_fastclip">Ombreira FAST-CLIP HFOB08 (HIPPER FREIOS - SAP:127406B)</option>
-                            <option value="pal_verde_almofada">Palmilha Verde Almofada 6980 (PANDROL - SAP:127543)</option>
-                            <option value="pal_branca_almofada">Palmilha Branca Almofada 7552 (PANDROL - SAP:109105)</option>
+                        <label>Item:</label>
+                        <select id="sub-cat" onchange="atualizarCamposSub()">
+                            <option value="">Selecione...</option>
+                            <option value="palmilha">Palmilha TR68 (SAP:109105)</option>
+                            <option value="isolador">Isolador Verde (SAP:127551)</option>
                         </select>
                     </div>
-
-                    <div class="dimensoes-grid" id="sub-inputs-container" style="display: none;">
-                        <div class="form-group" id="sub-div-m1"><label id="sub-lbl-m1">Medida 1 (mm):</label><input type="number" id="val-sub-m1" step="0.01"></div>
-                        <div class="form-group" id="sub-div-m2"><label id="sub-lbl-m2">Medida 2 (mm):</label><input type="number" id="val-sub-m2" step="0.01"></div>
-                        <div class="form-group" id="sub-div-m3"><label id="sub-lbl-m3">Medida 3 (mm):</label><input type="number" id="val-sub-m3" step="0.01"></div>
-                        <div class="form-group" id="sub-div-m4"><label id="sub-lbl-m4">Medida 4 (mm):</label><input type="number" id="val-sub-m4" step="0.01"></div>
-                        <div class="form-group" id="sub-div-m5"><label id="sub-lbl-m5">Medida 5 (mm):</label><input type="number" id="val-sub-m5" step="0.01"></div>
+                    <div class="dimensoes-grid" id="sub-inputs" style="display:none;">
+                        <div class="form-group"><label>Medida Atual (mm):</label><input type="number" id="val-sub" step="0.01"></div>
                     </div>
-
-                    <button class="btn-analisar" id="btn-sub" style="display: none;" onclick="analisarSub()">VERIFICAR CONFORMIDADE</button>
-                    <div id="resultado-box-sub" class="resultado-box"></div>
-                    <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Documentos atualizados em 14/04/2026</div>
+                    <button class="btn-analisar" id="btn-sub" style="display:none;" onclick="analisarSub()">CONFERIR</button>
+                    <div id="res-sub" class="resultado-box"></div>
                 </div>
             </section>
+
         </main>
     </div>
 
@@ -699,415 +298,169 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // SUAS CHAVES REAIS DO FIREBASE
         const firebaseConfig = {
-          apiKey: "AIzaSyAVUi-Ec7pSiWhdsZK3iF0iHT4kevyH2oo",
-          authDomain: "inspecao-rumo.firebaseapp.com",
-          projectId: "inspecao-rumo",
-          storageBucket: "inspecao-rumo.firebasestorage.app",
-          messagingSenderId: "999417271935",
-          appId: "1:999417271935:web:6c61d6ba86b90a6dd0514a"
+            apiKey: "AIzaSyAVUi-Ec7pSiWhdsZK3iF0iHT4kevyH2oo",
+            authDomain: "inspecao-rumo.firebaseapp.com",
+            projectId: "inspecao-rumo",
+            storageBucket: "inspecao-rumo.firebasestorage.app",
+            messagingSenderId: "999417271935",
+            appId: "1:999417271935:web:6c61d6ba86b90a6dd0514a"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        const msgErro = document.getElementById('error-msg');
-        const inputEmail = document.getElementById('user-email');
-        const btnLogin = document.getElementById('btn-login-email');
-
-        // 1. VERIFICA SE ESTÁ VOLTANDO DO E-MAIL
+        // 1. VERIFICAR RETORNO DO EMAIL
         if (isSignInWithEmailLink(auth, window.location.href)) {
-            let email = window.localStorage.getItem('emailParaSignIn');
-            if (!email) {
-                email = window.prompt('Confirme seu e-mail corporativo para liberar o acesso:');
-            }
+            let email = window.localStorage.getItem('emailParaLogin');
+            if (!email) email = window.prompt('Confirme o seu e-mail corporativo:');
+            
             signInWithEmailLink(auth, email, window.location.href)
                 .then(() => {
-                    window.localStorage.removeItem('emailParaSignIn');
-                    window.liberarAcessoGlob();
+                    window.localStorage.removeItem('emailParaLogin');
                     window.history.replaceState({}, document.title, window.location.pathname);
                 })
-                .catch((error) => {
-                    console.error("Erro no login:", error);
-                    mostrarMensagem("Link expirado ou inválido. Tente enviar novamente.", "#d32f2f");
-                });
+                .catch(err => alert("Link inválido. Tente novamente."));
         }
 
-        // 2. MANTÉM A SESSÃO ATIVA
+        // 2. MONITORAR SESSÃO
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const email = user.email.toLowerCase();
-                if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com')) {
-                    window.liberarAcessoGlob();
-                } else {
-                    window.fazerLogout();
-                }
+            const login = document.getElementById('login-screen');
+            const main = document.getElementById('main-layout');
+            if (user && (user.email.endsWith('@rumolog.com') || user.email.endsWith('@ext.rumolog.com') || user.email === 'erwinklein94@gmail.com')) {
+                login.style.display = 'none';
+                main.style.display = 'flex';
+            } else {
+                login.style.display = 'flex';
+                main.style.display = 'none';
             }
         });
 
-        // 3. FUNÇÃO QUE ENVIA O MAGIC LINK
+        // 3. ENVIAR MAGIC LINK
         window.validarAcesso = function() {
-            const email = inputEmail.value.trim().toLowerCase();
-            msgErro.style.display = 'none';
+            const email = document.getElementById('user-email').value.trim().toLowerCase();
+            const btn = document.getElementById('btn-login-email');
+            const msg = document.getElementById('error-msg');
 
-            if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com')) {
-                btnLogin.innerText = "Enviando link...";
-                btnLogin.disabled = true;
-
-                const actionCodeSettings = {
-                    url: window.location.href, 
-                    handleCodeInApp: true,
-                };
-
-                sendSignInLinkToEmail(auth, email, actionCodeSettings)
+            if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com') || email === 'erwinklein94@gmail.com') {
+                btn.disabled = true; btn.innerText = "A enviar...";
+                sendSignInLinkToEmail(auth, email, { url: window.location.href, handleCodeInApp: true })
                     .then(() => {
-                        window.localStorage.setItem('emailParaSignIn', email);
-                        mostrarMensagem("✅ Link seguro enviado! Verifique sua caixa de entrada (e o Spam).", "#2E7D32");
-                        btnLogin.innerText = "LINK ENVIADO";
+                        window.localStorage.setItem('emailParaLogin', email);
+                        msg.style.display = "block"; msg.style.color = "#2E7D32";
+                        msg.innerText = "✅ Link enviado! Verifique a sua caixa de entrada.";
+                        btn.innerText = "LINK ENVIADO";
                     })
-                    .catch((error) => {
-                        console.error(error);
-                        mostrarMensagem("Erro ao enviar o e-mail. Recarregue a página e tente novamente.", "#d32f2f");
-                        btnLogin.innerText = "RECEBER LINK DE ACESSO";
-                        btnLogin.disabled = false;
+                    .catch(err => {
+                        msg.style.display = "block"; msg.style.color = "red";
+                        msg.innerText = "Erro ao enviar. Tente novamente.";
+                        btn.disabled = false;
                     });
             } else {
-                mostrarMensagem("Acesso restrito para @rumolog.com ou @ext.rumolog.com", "#d32f2f");
+                msg.style.display = "block"; msg.style.color = "red";
+                msg.innerText = "Acesso restrito para @rumolog.com";
             }
         };
 
-        // 4. LOGOUT
         window.fazerLogout = function() {
-            if (confirm("Deseja realmente sair do sistema?")) {
-                signOut(auth).then(() => {
-                    localStorage.removeItem('rumoInspeccaoDados');
-                    window.location.reload();
-                });
-            }
+            if(confirm("Deseja sair?")) signOut(auth).then(() => window.location.reload());
         };
-
-        function mostrarMensagem(texto, cor) {
-            msgErro.innerText = texto;
-            msgErro.style.color = cor;
-            msgErro.style.display = 'block';
-        }
     </script>
 
-
     <script>
-        window.liberarAcessoGlob = function() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-layout').style.display = 'flex';
-            if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.add('hidden');
-                document.getElementById('toggle-sidebar-btn').style.display = 'flex';
-            }
-            carregarDadosLocal();
-        };
-
-        function navegar(idSecao) {
+        function navegar(id) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            const secao = document.getElementById(idSecao);
-            if (secao) secao.classList.add('active');
-            const itemClicado = event.currentTarget;
-            itemClicado.classList.add('active');
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.add('hidden');
-            document.getElementById('toggle-sidebar-btn').style.display = 'flex';
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+            if (window.innerWidth <= 768) toggleSidebar();
         }
 
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar.classList.contains('hidden')) {
-                sidebar.classList.remove('hidden');
-                document.getElementById('toggle-sidebar-btn').style.display = 'none';
-            }
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('hidden'); }
+        function toggleDarkMode() { document.body.classList.toggle('dark'); }
 
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark');
-        }
-
-        function getVal(id) { return parseFloat(document.getElementById(id).value) || 0; }
-
-        // --- LÓGICA DE CONCRETO ---
-        const optLocal = {
-            vazio: [{val: 'apoio', txt: 'Apoio do Trilho'}, {val: 'fora_apoio', txt: 'Fora da Região do Trilho'}, {val: 'testeira', txt: 'Testeira'}],
-            quebra: [{val: 'lat_sup', txt: 'Laterais / Superior (fora trilho)'}, {val: 'testeira', txt: 'Testeira'}],
-            fissura: [{val: 'ombreira', txt: 'Ombreira'}, {val: 'lateral', txt: 'Lateral'}, {val: 'transversal', txt: 'Transversal'}]
-        };
-
-        function atualizarOpcoes() {
-            const tipo = document.getElementById('tipo-defeito').value;
-            const selLocal = document.getElementById('localizacao');
-            selLocal.innerHTML = '<option value="">Selecione a região...</option>';
-            if (tipo && optLocal[tipo]) {
-                optLocal[tipo].forEach(opt => { selLocal.innerHTML += `<option value="${opt.val}">${opt.txt}</option>`; });
-            }
-            atualizarCampos();
-        }
-
-        function atualizarCampos() {
-            const tipo = document.getElementById('tipo-defeito').value;
-            const local = document.getElementById('localizacao').value;
-            document.getElementById('dimensoes-inputs').style.display = 'none';
-            document.getElementById('container-aco').style.display = 'none';
-            document.querySelectorAll('#dimensoes-inputs .form-group').forEach(d => d.style.display = 'none');
-            if (!local) return;
-            document.getElementById('dimensoes-inputs').style.display = 'grid';
-            if (tipo === 'vazio') {
-                document.getElementById('div-profundidade').style.display = 'flex';
-                document.getElementById('div-comprimento').style.display = 'flex';
-                document.getElementById('div-largura').style.display = 'flex';
-                if (local === 'testeira') document.getElementById('container-aco').style.display = 'flex';
-            } else if (tipo === 'quebra') {
-                document.getElementById('div-profundidade').style.display = 'flex';
-                document.getElementById('div-comprimento').style.display = 'flex';
-                document.getElementById('div-largura').style.display = 'flex';
-                document.getElementById('container-aco').style.display = 'flex';
-            } else if (tipo === 'fissura') {
-                if (local === 'lateral' || local === 'transversal') {
-                    document.getElementById('div-espessura').style.display = 'flex';
-                    document.getElementById('div-comprimento').style.display = 'flex';
-                } else {
-                    document.getElementById('dimensoes-inputs').style.display = 'none';
-                }
-            }
-        }
-
-        function analisarDefeito() {
-            const tipo = document.getElementById('tipo-defeito').value;
-            const local = document.getElementById('localizacao').value;
-            const prof = getVal('val-profundidade');
-            const comp = getVal('val-comprimento');
-            const larg = getVal('val-largura');
-            const esp = getVal('val-espessura');
-            const acoExposto = document.getElementById('aco-exposto').checked;
-            const box = document.getElementById('resultado-box-concreto');
-            let sC = 'aceitavel', tit = '✅ ACEITÁVEL', dBase = '', pRef = '';
-            if (tipo === 'vazio') {
-                if (local === 'apoio') {
-                    pRef = 'Página 8'; if (prof <= 2 && comp <= 3 && larg <= 3) dBase = 'Prof ≤2mm | Comp ≤3mm | Larg ≤3mm';
-                    else if (prof <= 5 && comp <= 10 && larg <= 10) { sC='reparar'; tit='🔧 REPARAR'; dBase='Prof 3-5mm | Comp 4-10mm | Larg 4-10mm'; }
-                    else { sC='refugo'; tit='❌ REFUGO'; dBase='Dimensões acima do reparável (>6mm)'; }
-                } else if (local === 'fora_apoio') {
-                    pRef = 'Página 11'; if (prof <= 5 && comp <= 5 && larg <= 5) dBase = 'Prof ≤5mm | Comp ≤5mm | Alt ≤5mm';
-                    else if (prof <= 10 && comp <= 20 && larg <= 20) { sC='reparar'; tit='🔧 REPARAR'; dBase='Prof 6-10mm | Comp 6-20mm | Alt 6-20mm'; }
-                    else { sC='refugo'; tit='❌ REFUGO'; dBase='Prof >11mm ou Comp/Alt >21mm'; }
-                } else if (local === 'testeira') {
-                    pRef = 'Página 15'; if (acoExposto && prof >= 31) { sC='refugo'; tit='❌ REFUGO'; dBase='Exposição de aço > 30mm'; }
-                    else if (!acoExposto && prof <= 50) { sC='reparar'; tit='🔧 REPARAR'; dBase='Prof reparável até 50mm'; }
-                    else { sC='refugo'; tit='❌ REFUGO'; dBase='Prof > 51mm'; }
-                }
-            } else if (tipo === 'quebra') {
-                pRef = local === 'lat_sup' ? 'Pág 17' : 'Pág 19';
-                if (acoExposto) { sC='refugo'; tit='❌ REFUGO'; dBase='Exposição de armadura ativa'; }
-                else if (prof <= 10 && comp <= 49 && larg <= 29) dBase = 'Prof ≤10mm | Comp ≤49mm | Alt ≤29mm';
-                else if (prof <= 20 && comp <= 200 && larg <= 150) { sC='reparar'; tit='🔧 REPARAR'; dBase='Prof 11-20mm | Comp 50-200mm | Alt 30-150mm'; }
-                else { sC='refugo'; tit='❌ REFUGO'; dBase='Dimensões críticas (>21mm profundidade)'; }
-            } else if (tipo === 'fissura') {
-                pRef = 'Pág 22'; if (local === 'ombreira') { sC='refugo'; tit='❌ REFUGO'; dBase='Proibido fissura na ombreira'; }
-                else if (esp <= 0.10 && comp <= 10) dBase = 'Esp ≤0.10mm | Comp ≤10mm';
-                else if (esp <= 0.50 && comp <= 100) { sC='reparar'; tit='🔧 REPARAR'; dBase='Esp 0.15-0.50mm | Comp 11-100mm'; }
-                else { sC='refugo'; tit='❌ REFUGO'; dBase='Esp ≥0.55mm ou Comp >101mm'; }
-            }
-            animarTexto(box, `${tit}\n\n📏 Análise:\n${dBase}\n\n📄 Procedimento: PO-SPE-160\n🔖 Ref: ${pRef}`, sC);
-        }
-
-        // --- LÓGICA AMV ---
+        // --- CALCULADORA AMV ---
         function atualizarCamposAMV() {
             const c = document.getElementById('amv-componente').value;
-            const divs = ['amv-inputs-agulha', 'amv-inputs-rolete', 'amv-inputs-coxin', 'amv-inputs-jacare_canal', 'amv-inputs-jacare_dureza', 'amv-inputs-fixacao_concreto', 'amv-inputs-cilindro', 'amv-inputs-batefica'];
-            divs.forEach(id => document.getElementById(id).style.display = 'none');
-            document.getElementById('btn-amv').style.display = 'none';
-            document.getElementById('resultado-box-amv').style.display = 'none';
-            if (c) { document.getElementById(`amv-inputs-${c}`).style.display = 'grid'; document.getElementById('btn-amv').style.display = 'block'; }
+            document.getElementById('amv-inputs-container').style.display = c ? 'grid' : 'none';
+            document.getElementById('btn-amv').style.display = c ? 'block' : 'none';
+            document.getElementById('res-amv').style.display = 'none';
         }
-
         function analisarAMV() {
             const c = document.getElementById('amv-componente').value;
-            const box = document.getElementById('resultado-box-amv');
-            let sC = 'aceitavel', tit = '✅ CONFORME', dBase = '', pRef = '';
-            if (c === 'agulha') {
-                const p = getVal('val-amv-ponta'); pRef = 'ETM 0005';
-                if (p <= 3.9) dBase = 'Dentro da tolerância (Máx 3.9mm)';
-                else { sC='refugo'; tit='❌ NÃO CONFORME'; dBase = 'Desgaste excessivo (>3.9mm)'; }
-            } else if (c === 'rolete') {
-                const a = getVal('val-amv-altura-rolete'); pRef = 'EM-SPE-072';
-                if (a <= 2.0) dBase = 'Altura conforme (≤2.0mm)';
-                else { sC='reparar'; tit='🔧 CALIBRAR'; dBase='Ajustar para ≤2.0mm'; }
-            } else if (c === 'coxin') {
-                const d = getVal('val-amv-coxin'); pRef = 'EM-SPE-072';
-                if (d >= 88 && d <= 92) dBase = 'Dureza correta (88-92 Shore A)';
-                else { sC='refugo'; tit='❌ NÃO CONFORME'; dBase='Dureza fora do padrão'; }
-            } else if (c === 'jacare_canal') {
-                const pr = getVal('val-amv-jacare-canal'); pRef = 'ETM AMV';
-                if (pr >= 51 && pr <= 55) dBase = 'Profundidade conforme (53±2mm)';
-                else { sC='reparar'; tit='🔧 REPARAR'; dBase='Fora da faixa (51-55mm)'; }
-            } else if (c === 'jacare_dureza') {
-                const du = getVal('val-amv-jacare-dureza'); pRef = 'ETM AMV';
-                if (du >= 352 && du <= 418) dBase = 'Dureza conforme (352-418 HB)';
-                else { sC='refugo'; tit='❌ NÃO CONFORME'; dBase='Aço manganês fora da especificação'; }
-            } else if (c === 'fixacao_concreto') {
-                const pres = getVal('val-amv-fixacao'); pRef = 'ETM A0019';
-                if (pres >= 900 && pres <= 1500) dBase = 'Pressão conforme (1200±300 kgf)';
-                else { sC='reparar'; tit='🔧 REVISAR'; dBase='Pressão fora da faixa de segurança'; }
-            } else if (c === 'cilindro') {
-                const pr = getVal('val-amv-pressao'); const te = getVal('val-amv-tempo'); pRef = 'EM-SPE-026';
-                if (pr >= 500 && te >= 10 && te <= 12) dBase = 'Pressão e tempo conformes';
-                else { sC='reparar'; tit='🔧 REGULAR'; dBase='Pressão mín 500kgf | Tempo 10-12s'; }
-            } else if (c === 'batefica') {
-                const des = getVal('val-amv-deslocamento'); pRef = 'EM-SPE-017';
-                if (des >= 100 && des <= 121) dBase = 'Deslocamento conforme (100-121mm)';
-                else { sC='reparar'; tit='🔧 AJUSTAR'; dBase='Verificar cruzeta de ajuste'; }
+            const v = parseFloat(document.getElementById('val-amv-medida').value);
+            const box = document.getElementById('res-amv');
+            box.style.display = 'block';
+            if(c === 'agulha') {
+                if(v <= 3.9) { box.className = 'resultado-box aceitavel'; box.innerText = '✅ CONFORME (Máx 3.9mm)'; }
+                else { box.className = 'resultado-box refugo'; box.innerText = '❌ NÃO CONFORME (Desgaste excessivo)'; }
+            } else if(c === 'rolete') {
+                if(v <= 2.0) { box.className = 'resultado-box aceitavel'; box.innerText = '✅ CONFORME (≤ 2.0mm)'; }
+                else { box.className = 'resultado-box reparar'; box.innerText = '🔧 NECESSITA AJUSTE (Acima de 2.0mm)'; }
             }
-            animarTexto(box, `${tit}\n\n📏 Análise:\n${dBase}\n\n📄 Procedimento: ETM-AMV\n🔖 Ref: ${pRef}`, sC);
         }
 
-        // --- LÓGICA MADEIRA ---
-        function atualizarCamposMadeira() {
-            const cat = document.getElementById('mad-categoria').value;
-            document.getElementById('mad-inputs-fisico').style.display = 'none';
-            document.getElementById('mad-inputs-defeito').style.display = 'none';
-            document.getElementById('btn-madeira').style.display = 'none';
-            if (cat === 'fisico') { document.getElementById('mad-inputs-fisico').style.display = 'grid'; document.getElementById('btn-madeira').style.display = 'block'; }
-            else if (cat === 'defeito') { document.getElementById('mad-inputs-defeito').style.display = 'block'; atualizarDefeitoMadeira(); }
-        }
-
-        function atualizarDefeitoMadeira() {
-            const t = document.getElementById('mad-tipo-defeito').value;
-            const ds = ['mad-check-fixacao','mad-dims-racha','mad-dims-furos','mad-dims-empenamento','mad-div-prof-racha'];
-            ds.forEach(id => document.getElementById(id).style.display = 'none');
-            document.getElementById('btn-madeira').style.display = 'none';
-            if (!t) return;
-            if (t === 'racha_topo' || t === 'racha_centro') { 
-                document.getElementById('mad-check-fixacao').style.display='flex'; 
-                document.getElementById('mad-dims-racha').style.display='grid';
-                if(t==='racha_centro') document.getElementById('mad-div-prof-racha').style.display='flex';
-            } else if (t === 'furos_nos') { 
-                document.getElementById('mad-check-fixacao').style.display='flex'; 
-                document.getElementById('mad-dims-furos').style.display='grid';
-            } else if (t === 'empenamento') { 
-                document.getElementById('mad-dims-empenamento').style.display='grid';
-            }
-            document.getElementById('btn-madeira').style.display='block';
-        }
-
-        function analisarMadeira() {
-            const cat = document.getElementById('mad-categoria').value;
-            const box = document.getElementById('resultado-box-madeira');
-            let sC = 'aceitavel', tit = '✅ CONFORME', det = '';
-            if (cat === 'fisico') {
-                const um = getVal('val-mad-umidade');
-                if (um > 30) { sC='refugo'; tit='❌ REFUGO'; det='Umidade > 30%'; }
-                else det='Propriedades físicas conformes';
-            } else {
-                const fix = document.getElementById('mad-zona-fixacao').checked;
-                const t = document.getElementById('mad-tipo-defeito').value;
-                if (fix && t !== 'empenamento') { sC='refugo'; tit='❌ REFUGO'; det='Defeito proibido na zona de fixação'; }
-                else if (t==='empenamento') {
-                    const c = parseFloat(document.getElementById('val-mad-comp-dormente').value);
-                    const f = getVal('val-mad-flecha');
-                    if (f > (c/2)) { sC='refugo'; tit='❌ REFUGO'; det=`Flecha excede ${c/2}cm`; }
-                    else det='Empenamento aceitável';
-                } else det='Dimensões dentro das tolerâncias';
-            }
-            animarTexto(box, `${tit}\n\n📏 Análise:\n${det}\n\n📄 Procedimento: ETM-D006`, sC);
-        }
-
-        // --- LÓGICA BRITA ---
+        // --- CALCULADORA BRITA ---
         function atualizarCamposBrita() {
-            const cat = document.getElementById('brita-categoria').value;
-            const ids = ['brita-check-visual','brita-inputs-lote','brita-inputs-pedra','brita-inputs-granulometria'];
-            ids.forEach(id => document.getElementById(id).style.display = 'none');
-            document.getElementById('btn-brita').style.display = 'none';
-            if (cat) { document.getElementById(`brita-check-visual`).style.display = cat==='visual'?'flex':'none';
-                       if(cat!=='visual') document.getElementById(`brita-inputs-${cat.replace('forma_','')}`).style.display='block';
-                       if(cat==='forma_lote') document.getElementById('brita-inputs-lote').style.display='grid';
-                       document.getElementById('btn-brita').style.display='block'; }
+            const c = document.getElementById('brita-cat').value;
+            document.getElementById('brita-inputs').style.display = c ? 'block' : 'none';
+            document.getElementById('brita-visual-group').style.display = c === 'visual' ? 'flex' : 'none';
+            document.getElementById('brita-forma-group').style.display = c === 'forma' ? 'block' : 'none';
+            document.getElementById('btn-brita').style.display = c ? 'block' : 'none';
         }
-
         function analisarBrita() {
-            const box = document.getElementById('resultado-box-brita');
-            const cat = document.getElementById('brita-categoria').value;
-            let sC = 'aceitavel', tit = '✅ CONFORME', det = '';
-            if (cat==='visual' && document.getElementById('brita-presenca-finos').checked) { sC='refugo'; tit='❌ REFUGO'; det='Lastro contaminado'; }
-            else if (cat==='forma_lote' && getVal('val-brita-nao-cubicas') > 15) { sC='refugo'; tit='❌ REFUGO'; det='Não-cúbicas > 15%'; }
-            else det='Amostra aprovada nos critérios normativos';
-            animarTexto(box, `${tit}\n\n📏 Análise:\n${det}\n\n📄 Ref: Cartilha de Brita Rumo`, sC);
+            const c = document.getElementById('brita-cat').value;
+            const box = document.getElementById('res-brita');
+            box.style.display = 'block';
+            if(c === 'visual') {
+                if(document.getElementById('brita-contaminada').checked) { box.className='resultado-box refugo'; box.innerText='❌ REFUGO: Lastro contaminado'; }
+                else { box.className='resultado-box aceitavel'; box.innerText='✅ CONFORME: Isento de finos'; }
+            } else {
+                const v = parseFloat(document.getElementById('val-brita-perc').value);
+                if(v <= 15) { box.className='resultado-box aceitavel'; box.innerText='✅ CONFORME (≤ 15%)'; }
+                else { box.className='resultado-box refugo'; box.innerText='❌ REFUGO: Fora da tolerância'; }
+            }
         }
 
-        // --- LÓGICA SUBCOMPONENTES ---
-        const subDados = {
-            "pal_branca_tr68": { title: "Palmilha TR68", ref: "ENG-DVP-D183", m: [{l:"Comp", min:187.5, max:191.5}, {l:"Larg", min:151.0, max:155.0}, {l:"Esp", min:5.5, max:7.5}] },
-            "pal_verde_uic60": { title: "Palmilha UIC60", ref: "ENG-DVP-D135", m: [{l:"Comp", min:148.5, max:150.0}, {l:"Larg", min:113.0, max:114.0}] },
-            "iso_verde_3510w": { title: "Isolador 3510W", ref: "ENG-DVP-D136", m: [{l:"Comp", min:61.5, max:63.0}, {l:"Larg", min:9.6, max:10.2}] }
-        };
+        // --- CALCULADORA CONCRETO ---
+        function atualizarCamposConcreto() {
+            document.getElementById('conc-inputs').style.display = 'grid';
+            document.getElementById('btn-conc').style.display = 'block';
+        }
+        function analisarConcreto() {
+            const p = parseFloat(document.getElementById('val-conc-prof').value);
+            const box = document.getElementById('res-concreto');
+            box.style.display = 'block';
+            if(p <= 2) { box.className='resultado-box aceitavel'; box.innerText='✅ ACEITÁVEL'; }
+            else if(p <= 10) { box.className='resultado-box reparar'; box.innerText='🔧 REPARÁVEL'; }
+            else { box.className='resultado-box refugo'; box.innerText='❌ REFUGO'; }
+        }
 
+        // --- MADEIRA ---
+        function atualizarCamposMadeira() {
+            document.getElementById('mad-input-div').style.display = 'block';
+            document.getElementById('btn-mad').style.display = 'block';
+        }
+        function analisarMadeira() {
+            const v = parseFloat(document.getElementById('val-mad').value);
+            const box = document.getElementById('res-madeira');
+            box.style.display = 'block';
+            if(v <= 30) { box.className='resultado-box aceitavel'; box.innerText='✅ CONFORME'; }
+            else { box.className='resultado-box refugo'; box.innerText='❌ NÃO ACEITAR'; }
+        }
+
+        // --- SUBCOMPONENTES ---
         function atualizarCamposSub() {
-            const cat = document.getElementById('sub-categoria').value;
-            const container = document.getElementById('sub-inputs-container');
-            const box = document.getElementById('resultado-box-sub');
-            container.style.display = 'none'; document.getElementById('btn-sub').style.display = 'none';
-            for(let i=1; i<=5; i++) document.getElementById(`sub-div-m${i}`).style.display = 'none';
-            if (cat && subDados[cat]) {
-                subDados[cat].m.forEach((m, idx) => {
-                    const i = idx + 1; document.getElementById(`sub-lbl-m${i}`).innerText = m.l + " (mm):";
-                    document.getElementById(`sub-div-m${i}`).style.display = 'flex';
-                });
-                container.style.display = 'grid'; document.getElementById('btn-sub').style.display = 'block';
-            }
+            document.getElementById('sub-inputs').style.display = 'grid';
+            document.getElementById('btn-sub').style.display = 'block';
         }
-
         function analisarSub() {
-            const cat = document.getElementById('sub-categoria').value;
-            const box = document.getElementById('resultado-box-sub');
-            const data = subDados[cat];
-            let erros = [];
-            data.m.forEach((m, idx) => {
-                const val = getVal(`val-sub-m${idx+1}`);
-                if (val < m.min || val > m.max) erros.push(`${m.l}: ${val}mm (Fora de ${m.min}-${m.max})`);
-            });
-            let sC = erros.length?'refugo':'aceitavel';
-            let tit = erros.length?'❌ NÃO CONFORME':'✅ CONFORME';
-            let det = erros.length?erros.join('\n'):'Todas as medidas conformes';
-            animarTexto(box, `${tit}\n\n${data.title}\n\n📏 Análise:\n${det}\n\n📄 Desenho: ${data.ref}`, sC);
+            const v = parseFloat(document.getElementById('val-sub').value);
+            const box = document.getElementById('res-sub');
+            box.style.display = 'block';
+            if(v >= 187.5 && v <= 191.5) { box.className='resultado-box aceitavel'; box.innerText='✅ CONFORME'; }
+            else { box.className='resultado-box refugo'; box.innerText='❌ FORA DA TOLERÂNCIA'; }
         }
-
-        // --- UTILITÁRIOS ---
-        function animarTexto(box, text, sC) {
-            box.className = `resultado-box ${sC}`; box.style.display = 'block'; box.innerHTML = '';
-            let i = 0; function type() { if (i < text.length) { box.innerHTML += text.charAt(i)==='\n'?'<br>':text.charAt(i); i++; setTimeout(type, 15); } }
-            type();
-        }
-
-        function salvarDadosLocal() {
-            const inputs = document.querySelectorAll('input, select');
-            const dados = {};
-            inputs.forEach(input => { if (input.id && input.id !== 'user-email') dados[input.id] = input.type === 'checkbox' ? input.checked : input.value; });
-            localStorage.setItem('rumoInspeccaoDados', JSON.stringify(dados));
-        }
-
-        function carregarDadosLocal() {
-            const dadosSalvos = localStorage.getItem('rumoInspeccaoDados');
-            if (dadosSalvos) {
-                const dados = JSON.parse(dadosSalvos);
-                for (const id in dados) {
-                    const input = document.getElementById(id);
-                    if (input) { if (input.type === 'checkbox') input.checked = dados[id]; else input.value = dados[id]; }
-                }
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const inputs = document.querySelectorAll('input, select');
-            inputs.forEach(input => {
-                input.addEventListener('input', salvarDadosLocal);
-                input.addEventListener('change', salvarDadosLocal);
-            });
-        });
     </script>
 </body>
 </html>
