@@ -337,10 +337,6 @@
             cursor: pointer;
             margin-top: 10px;
         }
-        .btn-analisar:disabled {
-            background-color: #9e9e9e;
-            cursor: not-allowed;
-        }
         .resultado-box {
             margin-top: 25px;
             padding: 25px;
@@ -791,113 +787,13 @@
         </main>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAVUi-Ec7pSiWhdsZK3iF0iHT4kevyH2oo",
-            authDomain: "inspecao-rumo.firebaseapp.com",
-            projectId: "inspecao-rumo",
-            storageBucket: "inspecao-rumo.firebasestorage.app",
-            messagingSenderId: "999417271935",
-            appId: "1:999417271935:web:6c61d6ba86b90a6dd0514a"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        const msgErro = document.getElementById('error-msg');
-        const inputEmail = document.getElementById('user-email');
-        const btnLogin = document.getElementById('btn-login-email');
-
-        // 1. VERIFICAR RETORNO DO LINK DE E-MAIL
-        if (isSignInWithEmailLink(auth, window.location.href)) {
-            let email = window.localStorage.getItem('emailParaSignIn');
-            if (!email) {
-                email = window.prompt('Confirme seu e-mail corporativo para liberar o acesso:');
-            }
-            signInWithEmailLink(auth, email, window.location.href)
-                .then((result) => {
-                    window.localStorage.removeItem('emailParaSignIn');
-                    if(window.liberarAcessoGlob) window.liberarAcessoGlob();
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                })
-                .catch((error) => {
-                    console.error("Erro no login:", error);
-                    msgErro.innerText = "Link expirado ou inválido. Tente enviar novamente.";
-                    msgErro.style.color = "#d32f2f";
-                    msgErro.style.display = 'block';
-                });
-        }
-
-        // 2. MANTER A SESSÃO ATIVA SE JÁ ESTIVER LOGADO
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const email = user.email.toLowerCase();
-                // Libera o acesso para os domínios da Rumo e o seu e-mail pessoal de testes
-                if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com') || email === 'erwinklein94@gmail.com') {
-                    if(window.liberarAcessoGlob) window.liberarAcessoGlob();
-                } else {
-                    window.fazerLogout();
-                }
-            }
-        });
-
-        // 3. FUNÇÃO DE ENVIAR E-MAIL (Substitui a antiga validarAcesso do script de baixo)
-        window.validarAcesso = function() {
-            const email = inputEmail.value.trim().toLowerCase();
-            msgErro.style.display = 'none';
-
-            if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com') || email === 'erwinklein94@gmail.com') {
-                btnLogin.innerText = "Enviando link...";
-                btnLogin.disabled = true;
-
-                const actionCodeSettings = {
-                    url: window.location.href, 
-                    handleCodeInApp: true,
-                };
-
-                sendSignInLinkToEmail(auth, email, actionCodeSettings)
-                    .then(() => {
-                        window.localStorage.setItem('emailParaSignIn', email);
-                        msgErro.innerText = "✅ Link seguro enviado! Verifique a sua caixa de entrada (e o Spam).";
-                        msgErro.style.color = "#2E7D32";
-                        msgErro.style.display = 'block';
-                        btnLogin.innerText = "LINK ENVIADO";
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        msgErro.innerText = "Erro ao enviar o e-mail. Recarregue a página e tente novamente.";
-                        msgErro.style.color = "#d32f2f";
-                        msgErro.style.display = 'block';
-                        btnLogin.innerText = "RECEBER LINK DE ACESSO";
-                        btnLogin.disabled = false;
-                    });
-            } else {
-                msgErro.innerText = "Acesso restrito para @rumolog.com ou @ext.rumolog.com";
-                msgErro.style.color = "#d32f2f";
-                msgErro.style.display = 'block';
-            }
-        };
-
-        // 4. FUNÇÃO DE LOGOUT ATUALIZADA
-        window.fazerLogout = function() {
-            if (confirm("Deseja realmente sair do sistema e limpar os dados locais?")) {
-                signOut(auth).then(() => {
-                    localStorage.removeItem('rumoInspeccaoDados');
-                    window.location.reload();
-                });
-            }
-        };
-    </script>
-
     <script>
-        // Esta função é chamada pelo Firebase para mostrar a interface se o login der certo
+        // Função chamada pelo Firebase quando o login for bem-sucedido
         window.liberarAcessoGlob = function() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-layout').style.display = 'flex';
             ocultarSidebarMobile();
+            carregarDadosLocal();
         };
 
         function ocultarSidebarMobile() {
@@ -1464,12 +1360,12 @@
             digitar();
         }
 
-        // ====================== LOCAL STORAGE ======================
+        // ====================== LOCAL STORAGE (Salva o rascunho do formulário) ======================
         function salvarDadosLocal() {
             const inputs = document.querySelectorAll('input, select');
             const dados = {};
             inputs.forEach(input => {
-                if (input.id) {
+                if (input.id && input.id !== 'user-email') { // NÃO SALVAR O E-MAIL AQUI PARA NÃO DAR CONFLITO COM O FIREBASE
                     if (input.type === 'checkbox') {
                         dados[input.id] = input.checked;
                     } else {
@@ -1532,14 +1428,121 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            carregarDadosLocal();
             const inputs = document.querySelectorAll('input, select');
             inputs.forEach(input => {
                 input.addEventListener('input', salvarDadosLocal);
                 input.addEventListener('change', salvarDadosLocal);
             });
         });
+    </script>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // CHAVES DO SEU PROJETO FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVUi-Ec7pSiWhdsZK3iF0iHT4kevyH2oo",
+            authDomain: "inspecao-rumo.firebaseapp.com",
+            projectId: "inspecao-rumo",
+            storageBucket: "inspecao-rumo.firebasestorage.app",
+            messagingSenderId: "999417271935",
+            appId: "1:999417271935:web:6c61d6ba86b90a6dd0514a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const msgErro = document.getElementById('error-msg');
+        const inputEmail = document.getElementById('user-email');
+        const btnLogin = document.getElementById('btn-login-email');
+
+        // 1. VERIFICAR SE O USUÁRIO ESTÁ RETORNANDO DO LINK DE E-MAIL
+        if (isSignInWithEmailLink(auth, window.location.href)) {
+            let email = window.localStorage.getItem('emailParaSignIn');
+            if (!email) {
+                email = window.prompt('Por favor, confirme seu e-mail corporativo para liberar o acesso:');
+            }
+            signInWithEmailLink(auth, email, window.location.href)
+                .then((result) => {
+                    window.localStorage.removeItem('emailParaSignIn');
+                    if(typeof window.liberarAcessoGlob === 'function') {
+                        window.liberarAcessoGlob();
+                    }
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                })
+                .catch((error) => {
+                    console.error("Erro no login:", error);
+                    msgErro.innerText = "Link expirado ou inválido. Tente enviar novamente.";
+                    msgErro.style.color = "#d32f2f";
+                    msgErro.style.display = 'block';
+                });
+        }
+
+        // 2. MANTER A SESSÃO ATIVA (PULAR TELA DE LOGIN SE JÁ LOGOU ANTES)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const email = user.email.toLowerCase();
+                // Bloqueio de Segurança para garantir que só a Rumo acesse
+                if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com') || email === 'erwinklein94@gmail.com') {
+                    if(typeof window.liberarAcessoGlob === 'function') {
+                        window.liberarAcessoGlob();
+                    }
+                } else {
+                    window.fazerLogout();
+                }
+            }
+        });
+
+        // 3. FUNÇÃO QUE ENVIA O E-MAIL (Mágica acontece aqui)
+        window.validarAcesso = async function() {
+            const email = inputEmail.value.trim().toLowerCase();
+            msgErro.style.display = 'none';
+
+            if (email.endsWith('@rumolog.com') || email.endsWith('@ext.rumolog.com') || email === 'erwinklein94@gmail.com') {
+                btnLogin.innerText = "Enviando link...";
+                btnLogin.disabled = true;
+
+                // O truque para não acumular lixo na URL
+                const urlLimpa = window.location.origin + window.location.pathname;
+
+                const actionCodeSettings = {
+                    url: urlLimpa, 
+                    handleCodeInApp: true,
+                };
+
+                try {
+                    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+                    window.localStorage.setItem('emailParaSignIn', email);
+                    msgErro.innerText = "✅ Link seguro enviado! Verifique sua caixa de entrada (e o Spam).";
+                    msgErro.style.color = "#2E7D32";
+                    msgErro.style.display = 'block';
+                    btnLogin.innerText = "LINK ENVIADO";
+                } catch (error) {
+                    console.error("ERRO FIREBASE:", error.code, error.message);
+                    // Rastreio de erro na tela para depuração
+                    msgErro.innerText = "Erro ao enviar: " + error.code + ". Recarregue a página.";
+                    msgErro.style.color = "#d32f2f";
+                    msgErro.style.display = 'block';
+                    btnLogin.innerText = "RECEBER LINK DE ACESSO";
+                    btnLogin.disabled = false;
+                }
+            } else {
+                msgErro.innerText = "Acesso restrito para @rumolog.com ou @ext.rumolog.com";
+                msgErro.style.color = "#d32f2f";
+                msgErro.style.display = 'block';
+            }
+        };
+
+        // 4. FUNÇÃO DE LOGOUT
+        window.fazerLogout = function() {
+            if (confirm("Deseja realmente sair do sistema e limpar os dados locais?")) {
+                signOut(auth).then(() => {
+                    localStorage.removeItem('rumoInspeccaoDados');
+                    window.location.reload();
+                });
+            }
+        };
     </script>
 </body>
 </html>
