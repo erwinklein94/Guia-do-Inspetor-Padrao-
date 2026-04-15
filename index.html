@@ -140,7 +140,7 @@
         .modal-img-placeholder { width: 100%; height: 200px; background: rgba(0,0,0,0.05); border: 2px dashed var(--border-color); border-radius: 8px; margin: 15px 0; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.9rem; }
         body.dark .modal-img-placeholder { background: rgba(255,255,255,0.05); }
 
-        /* --- CSS DA CÂMERA E EXPORTAÇÃO (MELHORADO) --- */
+        /* --- CSS DA CÂMERA E EXPORTAÇÃO --- */
         #camera-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 11000; display: flex; flex-direction: column; }
         .camera-header { display: flex; justify-content: space-between; padding: 15px; background: rgba(0,0,0,0.5); position: absolute; top: 0; width: 100%; z-index: 2; }
         .camera-header button { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; text-shadow: 1px 1px 3px black; }
@@ -153,7 +153,8 @@
             color: white; padding: 12px 15px; border-radius: 8px; 
             font-size: 0.8rem; z-index: 2; pointer-events: none; 
             border-left: 4px solid var(--accent);
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
+            text-shadow: 1px 1px 5px rgba(0,0,0,1);
+            text-align: center; /* ALINHADO AO CENTRO */
         }
         
         .camera-controls { background: #000; padding: 20px; display: flex; justify-content: center; align-items: center; gap: 20px; z-index: 2; }
@@ -863,7 +864,7 @@
             
             document.getElementById('overlay-texto-visual').innerHTML = `
                 <strong>${statusIcon} LAUDO RUMO - ${categoria}</strong><br>
-                <span style="font-size:0.75rem; opacity:0.8;">Data: ${dataStr}</span><br>
+                <span style="font-size:0.7rem; opacity:0.8;">Data: ${dataStr}</span><br>
                 ${laudoAtualTexto.split('\n').slice(0,3).join('<br>')}...
             `;
 
@@ -910,58 +911,68 @@
             canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Escala dinâmica para adaptar a qualquer resolução de câmera de celular
-            // Base 500 para forçar fontes menores em relação ao tamanho total
-            const scale = canvas.width / 500; 
+            // Ajuste dinâmico baseado na largura do vídeo (tamanhos 30% a 40% menores do que antes)
+            const baseUnit = canvas.width;
+            const fontSizeTitle = baseUnit * 0.025; 
+            const fontSizeDate = baseUnit * 0.015;
+            const fontSizeBody = baseUnit * 0.018;
+            const padding = baseUnit * 0.02;
+            const lineHeight = fontSizeBody * 1.5;
 
-            const padding = 15 * scale;
-            const lineHeight = 16 * scale; // Linhas mais juntas
             const dataStr = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR');
             
             const linhas = laudoAtualTexto.split('\n').filter(l => l.trim() !== '');
             const linhasFiltradas = linhas.slice(0, 10);
 
-            const boxHeight = (linhasFiltradas.length + 2.5) * lineHeight + padding * 2;
-            const startY = canvas.height - boxHeight - (20 * scale);
+            const boxHeight = (linhasFiltradas.length * lineHeight) + fontSizeTitle + fontSizeDate + (padding * 4);
+            
+            // Centralizar na horizontal e deixar na parte inferior (com margem)
+            const boxWidth = baseUnit * 0.94; // 94% da tela
+            const startX = baseUnit * 0.03;   // 3% da borda
+            const startY = canvas.height - boxHeight - (baseUnit * 0.03);
 
             // Fundo escuro com 5% de opacidade
             context.fillStyle = "rgba(0, 0, 0, 0.05)";
             context.beginPath();
-            context.roundRect(10 * scale, startY, canvas.width - (20 * scale), boxHeight, 10 * scale);
+            context.roundRect(startX, startY, boxWidth, boxHeight, 15);
             context.fill();
 
             // Borda amarela à esquerda
             context.fillStyle = "#FFD600";
             context.beginPath();
-            context.roundRect(10 * scale, startY, 6 * scale, boxHeight, [10 * scale, 0, 0, 10 * scale]);
+            context.roundRect(startX, startY, baseUnit * 0.01, boxHeight, [15, 0, 0, 15]);
             context.fill();
 
-            // Sombra preta densa para leitura perfeita
+            // Sombra forte para garantir leitura perfeita, independentemente do fundo da foto
             context.shadowColor = "rgba(0, 0, 0, 1)";
-            context.shadowBlur = 4;
-            context.shadowOffsetX = 1.5;
-            context.shadowOffsetY = 1.5;
+            context.shadowBlur = 6;
+            context.shadowOffsetX = 2;
+            context.shadowOffsetY = 2;
 
-            context.textAlign = "left";
+            // Centraliza o texto dentro do Canvas
+            context.textAlign = "center";
+            const textCenterX = canvas.width / 2;
+            const maxWidth = boxWidth - (padding * 2);
             
-            // max-width impede que o texto vaze da tela se for muito longo
-            const maxWidth = canvas.width - (35 * scale); 
+            let textY = startY + padding + fontSizeTitle;
             
-            let textY = startY + padding + (12 * scale);
+            // Título
             context.fillStyle = "white";
-            context.font = "bold " + Math.floor(15 * scale) + "px sans-serif";
-            context.fillText(`INSPEÇÃO RUMO - ${categoriaAtual}`, 25 * scale, textY, maxWidth);
+            context.font = "bold " + Math.floor(fontSizeTitle) + "px sans-serif";
+            context.fillText(`INSPEÇÃO RUMO - ${categoriaAtual}`, textCenterX, textY, maxWidth);
             
-            textY += 16 * scale;
-            context.font = Math.floor(11 * scale) + "px sans-serif";
+            // Data
+            textY += fontSizeTitle + (padding / 2);
+            context.font = Math.floor(fontSizeDate) + "px sans-serif";
             context.fillStyle = "#FFD600";
-            context.fillText(dataStr, 25 * scale, textY, maxWidth);
-            textY += 24 * scale;
+            context.fillText(dataStr, textCenterX, textY, maxWidth);
+            textY += padding;
 
+            // Corpo do laudo
             context.fillStyle = "white";
-            context.font = "bold " + Math.floor(12 * scale) + "px sans-serif"; 
+            context.font = "bold " + Math.floor(fontSizeBody) + "px sans-serif"; 
             linhasFiltradas.forEach(linha => {
-                context.fillText(linha, 25 * scale, textY, maxWidth);
+                context.fillText(linha, textCenterX, textY, maxWidth);
                 textY += lineHeight;
             });
 
