@@ -108,8 +108,12 @@
 
         .btn-analisar { width: 100%; padding: 16px; background-color: var(--bg-login); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; }
         .btn-analisar:hover { filter: brightness(1.2); }
-        .btn-wpp { background-color: #25D366; color: white; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        .botoes-acao { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .btn-wpp { background-color: #25D366; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem;}
         .btn-wpp:hover { background-color: #128C7E; }
+        .btn-cam { background-color: #0277bd; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem;}
+        .btn-cam:hover { background-color: #01579b; }
 
         .resultado-box { margin-top: 25px; padding: 25px; border-radius: 12px; text-align: left; font-weight: 500; line-height: 1.5; display: none; box-shadow: 0 2px 8px var(--shadow-light); }
         .resultado-box.reparar { background-color: var(--bg-reparar); color: var(--text-reparar); border: 2px solid var(--border-reparar); }
@@ -120,19 +124,34 @@
         .aviso-normativo { text-align: center; font-size: 0.85rem; font-weight: bold; color: var(--text-muted); margin-top: 20px; padding: 15px; border-radius: 8px; background: rgba(0,0,0,0.03); display: none; }
         body.dark .aviso-normativo { background: rgba(255,255,255,0.05); }
 
-        /* --- INÍCIO: CSS DO DICIONÁRIO VISUAL --- */
+        /* DICIONÁRIO VISUAL */
         .btn-ajuda-visual { background: rgba(4, 35, 63, 0.1); border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.75rem; font-weight: bold; color: var(--bg-login); cursor: pointer; transition: 0.2s; margin-left: auto; }
         body.dark .btn-ajuda-visual { background: rgba(255, 255, 255, 0.1); color: var(--accent); }
         .btn-ajuda-visual:hover { background: var(--bg-login); color: white; }
-        
         .modal-ajuda { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
         .modal-ajuda-content { background: var(--bg-panel); padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; position: relative; }
         .modal-ajuda-close { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; cursor: pointer; font-weight: bold; color: var(--text-muted); }
         .modal-img-placeholder { width: 100%; height: 200px; background: rgba(0,0,0,0.05); border: 2px dashed var(--border-color); border-radius: 8px; margin: 15px 0; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.9rem; }
         body.dark .modal-img-placeholder { background: rgba(255,255,255,0.05); }
-        /* --- FIM: CSS DO DICIONÁRIO VISUAL --- */
 
-        @media (max-width: 768px) { aside { position: fixed; height: 100vh; z-index: 1000; left: 0; top: 0; width: 280px; } main { padding: 80px 20px 20px; } .dimensoes-grid { grid-template-columns: 1fr; gap: 10px; } h1 { font-size: 1.4rem; } }
+        /* --- CSS DA CÂMERA E EXPORTAÇÃO --- */
+        #camera-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 11000; display: flex; flex-direction: column; }
+        .camera-header { display: flex; justify-content: space-between; padding: 15px; background: rgba(0,0,0,0.5); position: absolute; top: 0; width: 100%; z-index: 2; }
+        .camera-header button { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+        .video-container { position: relative; flex-grow: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        #video-preview, #foto-capturada { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+        
+        .overlay-texto { position: absolute; bottom: 20px; left: 20px; right: 20px; background: rgba(0,0,0,0.65); color: white; padding: 15px; border-radius: 10px; font-size: 0.85rem; z-index: 2; pointer-events: none; border-left: 4px solid var(--accent); }
+        
+        .camera-controls { background: #000; padding: 20px; display: flex; justify-content: center; align-items: center; gap: 20px; z-index: 2; }
+        .btn-capturar { width: 70px; height: 70px; border-radius: 50%; background: transparent; border: 4px solid white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .btn-capturar::after { content: ""; width: 55px; height: 55px; background: white; border-radius: 50%; transition: 0.2s; }
+        .btn-capturar:active::after { width: 45px; height: 45px; }
+        
+        .botoes-pos-captura { display: flex; gap: 10px; width: 100%; max-width: 400px; margin: 0 auto; }
+        .btn-secundario { background: #333; color: white; border: none; padding: 15px; border-radius: 8px; flex-grow: 1; font-weight: bold; cursor: pointer; }
+
+        @media (max-width: 768px) { aside { position: fixed; height: 100vh; z-index: 1000; left: 0; top: 0; width: 280px; } main { padding: 80px 20px 20px; } .dimensoes-grid, .botoes-acao { grid-template-columns: 1fr; gap: 10px; } h1 { font-size: 1.4rem; } }
     </style>
 </head>
 <body>
@@ -151,13 +170,38 @@
         <div class="modal-ajuda-content">
             <span class="modal-ajuda-close" onclick="fecharAjuda()">&times;</span>
             <h3 id="modal-titulo" style="color: var(--text-title); margin-bottom: 5px;">Título</h3>
-            <p id="modal-desc" style="font-size: 0.85rem; color: var(--text-muted);">Descrição do defeito ou forma de medição.</p>
-            <div class="modal-img-placeholder">
-                📷 <br> [Espaço para foto real do trecho]
-            </div>
+            <p id="modal-desc" style="font-size: 0.85rem; color: var(--text-muted);">Descrição do defeito.</p>
+            <div class="modal-img-placeholder">📷 <br> [Espaço para foto]</div>
             <button class="btn-analisar" style="padding: 10px;" onclick="fecharAjuda()">Entendi</button>
         </div>
     </div>
+
+    <div id="camera-modal" class="escondido">
+        <div class="camera-header">
+            <button onclick="fecharCamera()">❌ Cancelar</button>
+            <span style="color: white; font-weight: bold;">Evidência de Inspeção</span>
+        </div>
+        
+        <div class="video-container">
+            <video id="video-preview" autoplay playsinline></video>
+            <img id="foto-capturada" class="escondido" alt="Laudo Final">
+            <div class="overlay-texto" id="overlay-texto-visual"></div>
+            <canvas id="canvas-render" style="display:none;"></canvas>
+        </div>
+
+        <div class="camera-controls" id="controles-camera">
+            <button class="btn-capturar" onclick="tirarFoto()"></button>
+        </div>
+        
+        <div class="camera-controls escondido" id="controles-pos-captura">
+            <div class="botoes-pos-captura">
+                <button class="btn-secundario" onclick="retomarCamera()">🔄 Refazer</button>
+                <button class="btn-secundario" style="background:#0277bd;" onclick="baixarFotoCarimbada()">⬇️ Salvar</button>
+                <button class="btn-secundario" style="background:#25D366;" onclick="compartilharFotoCarimbada()">📲 Enviar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="main-layout">
         <aside id="sidebar">
             <div class="sidebar-top">
@@ -213,7 +257,11 @@
                     <button class="btn-analisar escondido" id="btn-amv" onclick="analisarAMV()">VERIFICAR CONFORMIDADE</button>
                     
                     <div id="resultado-box-amv" class="resultado-box"></div>
-                    <button id="btn-wpp-amv" class="btn-analisar btn-wpp escondido" onclick="compartilharWhatsApp('resultado-box-amv', 'AMV')">📲 Enviar Relatório via WhatsApp</button>
+                    
+                    <div id="botoes-acao-amv" class="botoes-acao escondido">
+                        <button class="btn-cam" onclick="abrirCamera('resultado-box-amv', 'AMV')">📸 Registrar Foto com Laudo</button>
+                        <button class="btn-wpp" onclick="compartilharWhatsApp('resultado-box-amv', 'AMV')">💬 Enviar via WhatsApp</button>
+                    </div>
                     
                     <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Atualizados 14/04/2026</div>
                 </div>
@@ -237,7 +285,6 @@
                     <div id="brita-inputs-lote" class="dimensoes-grid escondido"><div class="form-group"><label>Percentual de Não-Cúbicas (%): <button class="btn-ajuda-visual" onclick="abrirAjuda('nao_cubica')">?</button></label><input type="number" id="val-brita-nao-cubicas" step="0.1"></div></div>
                     
                     <div id="brita-inputs-pedra" class="escondido">
-                        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;"><strong>a:</strong> Maior distância | <strong>b:</strong> Distância média | <strong>c:</strong> Menor distância</p>
                         <div class="dimensoes-grid">
                             <div class="form-group"><label>Dimensão A (cm):</label><input type="number" id="val-brita-a" step="0.1"></div>
                             <div class="form-group"><label>Dimensão B (cm):</label><input type="number" id="val-brita-b" step="0.1"></div>
@@ -247,10 +294,9 @@
 
                     <div id="brita-inputs-granulometria" class="escondido">
                         <div class="form-group" style="margin-bottom:20px;">
-                            <label>Aplicação do Lastro (Tipo de Dormente):</label>
+                            <label>Aplicação do Lastro:</label>
                             <select id="brita-tipo-dormente"><option value="geral">Madeira, Plástico ou Concreto</option><option value="aco">Dormentes de Aço</option></select>
                         </div>
-                        <p style="font-weight: bold; margin-bottom: 10px; font-size: 0.9rem;">Insira o percentual Retido Acumulado (%) em cada peneira:</p>
                         <div class="dimensoes-grid">
                             <div class="form-group"><label>Peneira 63,5 mm (%):</label><input type="number" id="val-brita-g63" step="0.1"></div>
                             <div class="form-group"><label>Peneira 50,0 mm (%):</label><input type="number" id="val-brita-g50" step="0.1"></div>
@@ -264,9 +310,10 @@
                     <button class="btn-analisar escondido" id="btn-brita" onclick="analisarBrita()">VERIFICAR CONFORMIDADE</button>
                     
                     <div id="resultado-box-brita" class="resultado-box"></div>
-                    <button id="btn-wpp-brita" class="btn-analisar btn-wpp escondido" onclick="compartilharWhatsApp('resultado-box-brita', 'Brita')">📲 Enviar Relatório via WhatsApp</button>
-                    
-                    <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Atualizados 14/04/2026</div>
+                    <div id="botoes-acao-brita" class="botoes-acao escondido">
+                        <button class="btn-cam" onclick="abrirCamera('resultado-box-brita', 'Brita')">📸 Registrar Foto com Laudo</button>
+                        <button class="btn-wpp" onclick="compartilharWhatsApp('resultado-box-brita', 'Brita')">💬 Enviar via WhatsApp</button>
+                    </div>
                 </div>
             </section>
 
@@ -299,9 +346,10 @@
                     <button class="btn-analisar" onclick="analisarDefeito()">VERIFICAR CONFORMIDADE</button>
                     
                     <div id="resultado-box-concreto" class="resultado-box"></div>
-                    <button id="btn-wpp-concreto" class="btn-analisar btn-wpp escondido" onclick="compartilharWhatsApp('resultado-box-concreto', 'Dormente Concreto')">📲 Enviar Relatório via WhatsApp</button>
-                    
-                    <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Atualizados 14/04/2026</div>
+                    <div id="botoes-acao-concreto" class="botoes-acao escondido">
+                        <button class="btn-cam" onclick="abrirCamera('resultado-box-concreto', 'Concreto')">📸 Registrar Foto com Laudo</button>
+                        <button class="btn-wpp" onclick="compartilharWhatsApp('resultado-box-concreto', 'Concreto')">💬 Enviar via WhatsApp</button>
+                    </div>
                 </div>
             </section>
 
@@ -318,7 +366,7 @@
                     </div>
 
                     <div id="mad-inputs-fisico" class="dimensoes-grid escondido">
-                        <div class="form-group"><label>Classe da Madeira:</label><select id="mad-classe"><option value="1">1ª Classe</option><option value="2">2ª Classe</option></select></div>
+                        <div class="form-group"><label>Classe:</label><select id="mad-classe"><option value="1">1ª Classe</option><option value="2">2ª Classe</option></select></div>
                         <div class="form-group"><label>Umidade (%):</label><input type="number" id="val-mad-umidade" step="0.1"></div>
                         <div class="form-group"><label>Densidade (kg/m³):</label><input type="number" id="val-mad-densidade" step="1"></div>
                         <div class="form-group"><label>Retenção CCA (kg/m³):</label><input type="number" id="val-mad-retencao" step="0.1"></div>
@@ -328,36 +376,25 @@
                         <div class="form-group">
                             <label>Tipo de Defeito: <button class="btn-ajuda-visual" onclick="abrirAjuda('def_madeira')">?</button></label>
                             <select id="mad-tipo-defeito" onchange="atualizarInterface('madeira_sub')">
-                                <option value="">Selecione o Defeito...</option>
+                                <option value="">Selecione...</option>
                                 <option value="racha_topo">Fenda ou Racha de Topo</option>
                                 <option value="racha_centro">Rachadura de Centro</option>
                                 <option value="furos_nos">Furos de Broca / Nós Cariados</option>
-                                <option value="empenamento">Empenamento (Encurvamento/Arqueamento)</option>
+                                <option value="empenamento">Empenamento</option>
                             </select>
                         </div>
-
                         <div id="mad-check-fixacao" class="checkbox-group escondido"><input type="checkbox" id="mad-zona-fixacao"><label for="mad-zona-fixacao">Defeito na Zona de Fixação?</label></div>
-
                         <div id="mad-dims-racha" class="dimensoes-grid escondido">
                             <div class="form-group"><label>Comprimento (cm):</label><input type="number" id="val-mad-comp-racha" step="0.1"></div>
                             <div class="form-group"><label>Abertura (mm):</label><input type="number" id="val-mad-abert-racha" step="0.1"></div>
                             <div class="form-group escondido" id="mad-div-prof-racha"><label>Profundidade (cm):</label><input type="number" id="val-mad-prof-racha" step="0.1"></div>
                         </div>
-
                         <div id="mad-dims-furos" class="dimensoes-grid escondido">
-                            <div class="form-group"><label>Diâmetro do Furo/Nó (cm):</label><input type="number" id="val-mad-diam-furo" step="0.1"></div>
-                            <div class="form-group"><label>Profundidade do Furo (cm):</label><input type="number" id="val-mad-prof-furo" step="0.1"></div>
+                            <div class="form-group"><label>Diâmetro Furo (cm):</label><input type="number" id="val-mad-diam-furo" step="0.1"></div>
+                            <div class="form-group"><label>Profundidade (cm):</label><input type="number" id="val-mad-prof-furo" step="0.1"></div>
                         </div>
-
                         <div id="mad-dims-empenamento" class="dimensoes-grid escondido">
-                            <div class="form-group">
-                                <label>Comp. Dormente (m):</label>
-                                <select id="val-mad-comp-dormente">
-                                    <option value="2.00">2,00 m</option><option value="2.20">2,20 m</option><option value="2.40">2,40 m</option>
-                                    <option value="2.60">2,60 m</option><option value="2.80">2,80 m</option><option value="3.00">3,00 m</option>
-                                    <option value="3.20">3,20 m</option><option value="4.00">4,00 m</option>
-                                </select>
-                            </div>
+                            <div class="form-group"><label>Comp. Dormente (m):</label><select id="val-mad-comp-dormente"><option value="2.00">2,00 m</option><option value="2.20">2,20 m</option><option value="2.40">2,40 m</option><option value="2.60">2,60 m</option><option value="2.80">2,80 m</option><option value="3.00">3,00 m</option><option value="3.20">3,20 m</option><option value="4.00">4,00 m</option></select></div>
                             <div class="form-group"><label>Flecha Constatada (cm):</label><input type="number" id="val-mad-flecha" step="0.1"></div>
                         </div>
                     </div>
@@ -365,14 +402,15 @@
                     <button class="btn-analisar escondido" id="btn-madeira" onclick="analisarMadeira()">VERIFICAR CONFORMIDADE</button>
                     
                     <div id="resultado-box-madeira" class="resultado-box"></div>
-                    <button id="btn-wpp-madeira" class="btn-analisar btn-wpp escondido" onclick="compartilharWhatsApp('resultado-box-madeira', 'Dormente Madeira')">📲 Enviar Relatório via WhatsApp</button>
-
-                    <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Atualizados 14/04/2026</div>
+                    <div id="botoes-acao-madeira" class="botoes-acao escondido">
+                        <button class="btn-cam" onclick="abrirCamera('resultado-box-madeira', 'Madeira')">📸 Registrar Foto com Laudo</button>
+                        <button class="btn-wpp" onclick="compartilharWhatsApp('resultado-box-madeira', 'Madeira')">💬 Enviar via WhatsApp</button>
+                    </div>
                 </div>
             </section>
 
             <section id="sec-sub" class="content-section">
-                <h1>Subcomponentes Metálicos e Plásticos <span class="proc-title">— Padrão ENG-DVP</span></h1>
+                <h1>Subcomponentes Metálicos/Plásticos <span class="proc-title">— Padrão ENG-DVP</span></h1>
                 <div class="card">
                     <div class="form-group">
                         <label>Subcomponente Inspecionado:</label>
@@ -400,30 +438,31 @@
                     <button class="btn-analisar escondido" id="btn-sub" onclick="analisarSub()">VERIFICAR CONFORMIDADE</button>
                     
                     <div id="resultado-box-sub" class="resultado-box"></div>
-                    <button id="btn-wpp-sub" class="btn-analisar btn-wpp escondido" onclick="compartilharWhatsApp('resultado-box-sub', 'Subcomponentes')">📲 Enviar Relatório via WhatsApp</button>
-                    
-                    <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Atualizados 14/04/2026</div>
+                    <div id="botoes-acao-sub" class="botoes-acao escondido">
+                        <button class="btn-cam" onclick="abrirCamera('resultado-box-sub', 'Subcomponentes')">📸 Registrar Foto com Laudo</button>
+                        <button class="btn-wpp" onclick="compartilharWhatsApp('resultado-box-sub', 'Subcomponentes')">💬 Enviar via WhatsApp</button>
+                    </div>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
+        // === FUNÇÕES AUXILIARES ===
         function getVal(id) { return parseFloat(document.getElementById(id).value) || 0; }
-        
         function hideAll(selector) { document.querySelectorAll(selector).forEach(el => el.classList.add('escondido')); }
         function showEl(id, type = 'block') { const el = document.getElementById(id); if(el) { el.classList.remove('escondido'); el.style.display = type; } }
         function hideEl(id) { const el = document.getElementById(id); if(el) { el.classList.add('escondido'); } }
 
+        // === AUTENTICAÇÃO E NAVEGAÇÃO ===
         function validarAcesso() {
             if (document.getElementById('user-password').value.trim() === '1272') {
                 hideEl('login-screen'); showEl('main-layout', 'flex');
-                salvarDadosLocal();
                 if (window.innerWidth <= 768) { document.getElementById('sidebar').classList.add('hidden'); showEl('toggle-sidebar-btn', 'flex'); }
             } else { showEl('error-msg'); }
         }
 
-        function fazerLogout() {
+        function fazerLogout() { 
             if (confirm("Deseja realmente sair e limpar os dados locais?")) {
                 localStorage.removeItem('rumoInspeccaoDados');
                 window.location.reload();
@@ -436,10 +475,9 @@
             elemento.classList.add('active');
             if (window.innerWidth <= 768) { document.getElementById('sidebar').classList.add('hidden'); showEl('toggle-sidebar-btn', 'flex'); }
         }
-
         function toggleSidebar() { document.getElementById('sidebar').classList.remove('hidden'); hideEl('toggle-sidebar-btn'); }
 
-        // --- INÍCIO: JS DO DICIONÁRIO VISUAL ---
+        // === AJUDA VISUAL ===
         const descricoesAjuda = {
             'agulha': { titulo: 'Ponta da Agulha (Perfil 5100)', desc: 'Meça a espessura da ponta da agulha a exatos 15mm do início da usinagem. O desgaste não pode exceder o estipulado na norma AREMA.' },
             'jacare_canal': { titulo: 'Jacaré - Canal', desc: 'A profundidade do canal deve ser aferida no núcleo do jacaré de aço manganês, garantindo passagem segura do friso da roda.' },
@@ -447,34 +485,19 @@
             'loc_dormente': { titulo: 'Localização do Defeito', desc: 'Apoio: Área diretamente abaixo da chapa/trilho. Testeira: As extremidades do dormente. Fora de Apoio: Região central livre.' },
             'def_madeira': { titulo: 'Tipos de Fenda', desc: 'Fenda de Topo: Inicia na face externa e entra na madeira. Rachadura de Centro: Abertura longitudinal no meio do dormente, não alcançando as bordas.' }
         };
-
         function abrirAjuda(chave) {
-            const dados = descricoesAjuda[chave];
-            if(dados) {
-                document.getElementById('modal-titulo').innerText = dados.titulo;
-                document.getElementById('modal-desc').innerText = dados.desc;
+            if(descricoesAjuda[chave]) {
+                document.getElementById('modal-titulo').innerText = descricoesAjuda[chave].titulo;
+                document.getElementById('modal-desc').innerText = descricoesAjuda[chave].desc;
                 showEl('modal-ajuda-visual', 'flex');
             }
         }
         function fecharAjuda() { hideEl('modal-ajuda-visual'); }
-        // --- FIM: JS DO DICIONÁRIO VISUAL ---
 
-        // --- INTEGRAÇÃO WHATSAPP ---
-        function compartilharWhatsApp(boxId, categoria) {
-            const box = document.getElementById(boxId);
-            const textoLimpo = box.innerText;
-            const dataAtual = new Date().toLocaleDateString('pt-BR');
-            const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            
-            const cabecalho = `*INSPEÇÃO DE QUALIDADE - RUMO*\n📍 *Categoria:* ${categoria}\n📅 *Data:* ${dataAtual} às ${horaAtual}\n\n`;
-            const mensagem = encodeURIComponent(cabecalho + textoLimpo);
-            
-            window.open(`https://wa.me/?text=${mensagem}`, '_blank');
-        }
-
+        // === INTERFACE ===
         function atualizarInterface(modulo) {
             hideEl(`resultado-box-${modulo.split('_')[0]}`);
-            hideEl(`btn-wpp-${modulo.split('_')[0]}`); // Esconde botão do WhatsApp
+            hideEl(`botoes-acao-${modulo.split('_')[0]}`);
             
             if (modulo === 'amv') {
                 const comp = document.getElementById('amv-componente').value;
@@ -521,7 +544,35 @@
             }
         }
 
-        // ====================== LÓGICA CONCRETO ======================
+        // === ANIMAÇÃO DO LAUDO ===
+        function animarTexto(boxId, textoFinal, statusClass) {
+            const box = document.getElementById(boxId);
+            box.className = `resultado-box ${statusClass}`;
+            box.style.display = 'block';
+            box.innerHTML = '';
+            
+            const secaoAtual = boxId.split('-')[2];
+            hideEl(`botoes-acao-${secaoAtual}`);
+            
+            const aviso = box.parentElement.querySelector('.aviso-normativo');
+            if(aviso) aviso.style.display = 'none';
+            
+            let i = 0; const speed = 15;
+            function digitar() {
+                if (i < textoFinal.length) {
+                    box.innerHTML += textoFinal.charAt(i) === '\n' ? '<br>' : textoFinal.charAt(i);
+                    i++; setTimeout(digitar, speed);
+                } else {
+                    showEl(`botoes-acao-${secaoAtual}`, 'grid');
+                    if(aviso) aviso.style.display = 'block';
+                }
+            }
+            digitar();
+        }
+
+        // === LÓGICAS DE ANÁLISE DETALHADA ===
+
+        // 1. CONCRETO
         const optLocal = {
             vazio: [{val: 'apoio', txt: 'Apoio do Trilho'}, {val: 'fora_apoio', txt: 'Fora da Região do Trilho'}, {val: 'testeira', txt: 'Testeira'}],
             quebra: [{val: 'lat_sup', txt: 'Laterais / Superior (fora trilho)'}, {val: 'testeira', txt: 'Testeira'}],
@@ -598,7 +649,7 @@
             animarTexto('resultado-box-concreto', `${titulo}\n\n📏 Dimensões base:\n${dim}\n\n${acao}\n\n📄 Procedimento: PO-SPE-160\n🔖 Ref Específica: ${ref}`, status);
         }
 
-        // ====================== LÓGICA AMV ======================
+        // 2. AMV
         function analisarAMV() {
             const comp = document.getElementById('amv-componente').value;
             let status = 'aceitavel', titulo = '✅ CONFORME', dim = '', ref = '', acao = '✅ AÇÃO: Componente liberado para montagem/operação.';
@@ -642,7 +693,7 @@
             animarTexto('resultado-box-amv', `${titulo}\n\n📏 Análise:\n${dim}\n\n${acao}\n\n📄 Procedimento: Lote de Manuais ETM-AMV\n🔖 Ref Específica: ${ref}`, status);
         }
 
-        // ====================== LÓGICA BRITA ======================
+        // 3. BRITA
         function analisarBrita() {
             const cat = document.getElementById('brita-categoria').value;
             let status = 'aceitavel', titulo = '✅ CONFORME', dim = '', acao = '✅ AÇÃO: Lote de brita liberado para lastramento.';
@@ -688,9 +739,7 @@
             animarTexto('resultado-box-brita', `${titulo}\n\n📏 Análise:\n${dim}\n\n${acao}\n\n📄 Procedimento: MAN-VP-L-MTE-LT-0003`, status);
         }
 
-        // ====================== LÓGICA MADEIRA E SUBCOMPONENTES ======================
-        // (A mesma estrutura de antes para Madeira e Subcomponentes, com o Acréscimo do "acao" no animarTexto)
-        
+        // 4. MADEIRA
         function analisarMadeira() {
             const cat = document.getElementById('mad-categoria').value;
             let status = 'aceitavel', titulo = '✅ CONFORME', dim = '', acao = '✅ AÇÃO: Lote liberado para via.';
@@ -735,6 +784,7 @@
             animarTexto('resultado-box-madeira', `${titulo}\n\n📏 Análise:\n${dim}\n\n${acao}\n\n📄 Procedimento: ENG-DSV-VP-ETM-D006`, status);
         }
 
+        // 5. SUBCOMPONENTES (RECUPERADO COM TODOS OS SAPS E VALORES ORIGINAIS)
         const subDados = {
             "pal_branca_tr68": { title: "Palmilha Branca TR68 FAST-CLIP", ref: "ENG-DVP-D183 / INF-FX-0003", m: [{l:"Medida 1 (mm)", min:187.5, max:191.5}, {l:"Medida 2 (mm)", min:151.0, max:155.0}, {l:"Medida 3 (mm)", min:111.5, max:114.5}, {l:"Medida 4 (mm)", min:5.5, max:7.5}] },
             "pal_verde_uic60": { title: "Palmilha Verde UIC60", ref: "ENG-DVP-D135 / INF-FX-0003", m: [{l:"Medida 1 (mm)", min:148.5, max:150.0}, {l:"Medida 2 (mm)", min:113.0, max:114.0}, {l:"Medida 3 (mm)", min:7.05, max:7.55}] },
@@ -761,8 +811,8 @@
             item.m.forEach((medida, index) => {
                 const val = getVal(`val-sub-m${index+1}`);
                 if(val < medida.min || val > medida.max) {
-                    if (medida.max === 999999) erros.push(`- ${medida.l}: ${val}mm (Tolerância: Min ${medida.min}mm)`);
-                    else erros.push(`- ${medida.l}: ${val}mm (Tolerância: ${medida.min} a ${medida.max} mm)`);
+                    if (medida.max === 999999) erros.push(`- ${medida.l}: ${val}mm (Tol: Min ${medida.min}mm)`);
+                    else erros.push(`- ${medida.l}: ${val}mm (Tol: ${medida.min} a ${medida.max} mm)`);
                 }
             });
 
@@ -772,34 +822,166 @@
             animarTexto('resultado-box-sub', `${titulo}\n\n${item.title}\n\n📏 Análise:\n${dim}\n\n${acao}\n\n📄 Desenho Técnico: ${item.ref}`, status);
         }
 
-        // ====================== ANIMAÇÃO & STORAGE ======================
-        function animarTexto(boxId, textoFinal, statusClass) {
+        // === CÂMERA E EXPORTAÇÃO ===
+        let currentStream = null;
+        let laudoAtualTexto = "";
+        let categoriaAtual = "";
+        let fotoDataUrl = "";
+
+        async function abrirCamera(boxId, categoria) {
             const box = document.getElementById(boxId);
-            box.className = `resultado-box ${statusClass}`;
-            box.style.display = 'block';
-            box.innerHTML = '';
+            laudoAtualTexto = box.innerText;
+            categoriaAtual = categoria;
             
-            // Esconde o botão do WhatsApp enquanto digita
-            const secaoAtual = boxId.split('-')[2];
-            hideEl(`btn-wpp-${secaoAtual}`);
+            const statusMatch = laudoAtualTexto.match(/✅|❌|🔧|⚠️|🚫/);
+            const statusIcon = statusMatch ? statusMatch[0] : '';
+            const dataStr = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR');
             
-            const aviso = box.nextElementSibling.nextElementSibling; // Ajuste por causa do novo botão do WPP
-            if(aviso && aviso.classList.contains('aviso-normativo')) aviso.style.display = 'none';
-            
-            let i = 0; const speed = 15;
-            function digitar() {
-                if (i < textoFinal.length) {
-                    box.innerHTML += textoFinal.charAt(i) === '\n' ? '<br>' : textoFinal.charAt(i);
-                    i++; setTimeout(digitar, speed);
-                } else {
-                    // Terminada a animação, mostra o botão do WPP e o aviso normativo
-                    showEl(`btn-wpp-${secaoAtual}`, 'flex');
-                    if(aviso && aviso.classList.contains('aviso-normativo')) aviso.style.display = 'block';
-                }
+            document.getElementById('overlay-texto-visual').innerHTML = `
+                <strong>${statusIcon} LAUDO RUMO - ${categoria}</strong><br>
+                <span style="font-size:0.75rem; opacity:0.8;">Data: ${dataStr}</span><br>
+                ${laudoAtualTexto.split('\n').slice(0,3).join('<br>')}...
+            `;
+
+            showEl('camera-modal', 'flex');
+            hideEl('foto-capturada');
+            showEl('video-preview');
+            showEl('controles-camera', 'flex');
+            hideEl('controles-pos-captura');
+
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } 
+                });
+                const videoElement = document.getElementById('video-preview');
+                videoElement.srcObject = currentStream;
+            } catch (err) {
+                alert("Erro ao acessar a câmera. Verifique as permissões do navegador.");
+                fecharCamera();
             }
-            digitar();
         }
 
+        function fecharCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            hideEl('camera-modal');
+        }
+
+        function retomarCamera() {
+            hideEl('foto-capturada');
+            showEl('video-preview');
+            showEl('controles-camera', 'flex');
+            hideEl('controles-pos-captura');
+            document.getElementById('overlay-texto-visual').style.display = 'block';
+        }
+
+        function tirarFoto() {
+            const video = document.getElementById('video-preview');
+            const canvas = document.getElementById('canvas-render');
+            const context = canvas.getContext('2d');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const padding = 30;
+            const lineHeight = 35;
+            const dataStr = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR');
+            
+            const linhas = laudoAtualTexto.split('\n').filter(l => l.trim() !== '');
+            const linhasFiltradas = linhas.slice(0, 10);
+
+            const boxHeight = (linhasFiltradas.length + 3) * lineHeight + padding * 2;
+            const startY = canvas.height - boxHeight - 20;
+
+            context.fillStyle = "rgba(0, 0, 0, 0.65)";
+            context.beginPath();
+            context.roundRect(20, startY, canvas.width - 40, boxHeight, 15);
+            context.fill();
+
+            context.fillStyle = "#FFD600";
+            context.beginPath();
+            context.roundRect(20, startY, 10, boxHeight, [15, 0, 0, 15]);
+            context.fill();
+
+            context.fillStyle = "white";
+            context.textAlign = "left";
+            
+            let textY = startY + padding + 20;
+            context.font = "bold 32px sans-serif";
+            context.fillText(`INSPEÇÃO RUMO - ${categoriaAtual}`, 45, textY);
+            
+            textY += 30;
+            context.font = "24px sans-serif";
+            context.fillStyle = "#FFD600";
+            context.fillText(dataStr, 45, textY);
+            textY += 40;
+
+            context.fillStyle = "white";
+            context.font = "bold 26px sans-serif";
+            linhasFiltradas.forEach(linha => {
+                context.fillText(linha, 45, textY);
+                textY += lineHeight;
+            });
+
+            fotoDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+            const imgEl = document.getElementById('foto-capturada');
+            imgEl.src = fotoDataUrl;
+            showEl('foto-capturada');
+            hideEl('video-preview');
+            document.getElementById('overlay-texto-visual').style.display = 'none';
+            
+            hideEl('controles-camera');
+            showEl('controles-pos-captura', 'flex');
+        }
+
+        function baixarFotoCarimbada() {
+            if (!fotoDataUrl) return;
+            const link = document.createElement('a');
+            link.href = fotoDataUrl;
+            link.download = `Laudo_${categoriaAtual}_${new Date().getTime()}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            alert("✅ Foto salva na sua galeria!");
+        }
+
+        async function compartilharFotoCarimbada() {
+            if (!fotoDataUrl) return;
+            const res = await fetch(fotoDataUrl);
+            const blob = await res.blob();
+            const file = new File([blob], "laudo_inspecao.jpg", { type: "image/jpeg" });
+
+            if (navigator.share && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Laudo Rumo',
+                        text: `Evidência de Inspeção - ${categoriaAtual}`
+                    });
+                } catch (error) {
+                    console.log('Compartilhamento cancelado ou falhou', error);
+                }
+            } else {
+                alert("⚠️ Seu navegador não suporta envio direto de imagem. Por favor, clique em SALVAR e envie pelo WhatsApp.");
+            }
+        }
+
+        function compartilharWhatsApp(boxId, categoria) {
+            const box = document.getElementById(boxId);
+            const textoLimpo = box.innerText;
+            const dataAtual = new Date().toLocaleDateString('pt-BR');
+            const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            
+            const cabecalho = `*INSPEÇÃO DE QUALIDADE - RUMO*\n📍 *Categoria:* ${categoria}\n📅 *Data:* ${dataAtual} às ${horaAtual}\n\n`;
+            const mensagem = encodeURIComponent(cabecalho + textoLimpo);
+            window.open(`https://wa.me/?text=${mensagem}`, '_blank');
+        }
+
+        // === STORAGE (SALVAR E CARREGAR DADOS) ===
         function salvarDadosLocal() {
             const inputs = document.querySelectorAll('input:not([type="password"]), select');
             const dados = {};
@@ -838,7 +1020,6 @@
                 input.addEventListener('input', salvarDadosLocal);
             });
             
-            // Fechar modal de ajuda clicando fora dele
             window.onclick = function(event) {
                 const modal = document.getElementById('modal-ajuda-visual');
                 if (event.target == modal) { fecharAjuda(); }
