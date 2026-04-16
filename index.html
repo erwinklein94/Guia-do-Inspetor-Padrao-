@@ -42,7 +42,7 @@
         </div>
 
         <div class="camera-controls" id="controles-camera">
-            <button class="btn-capturar" onclick="tirarFoto()"></button>
+            <button class="btn-capturar" onclick="tirarFoto()">📸</button>
         </div>
         
         <div class="camera-controls escondido" id="controles-pos-captura">
@@ -54,7 +54,7 @@
         </div>
     </div>
 
-    <div id="main-layout">
+    <div id="main-layout" class="escondido">
         <aside id="sidebar">
             <div class="sidebar-top">
                 <img src="https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg" alt="Rumo" class="sidebar-logo">
@@ -78,7 +78,7 @@
         </aside>
 
         <main>
-            <button id="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
+            <button id="toggle-sidebar-btn" onclick="toggleSidebar()" class="escondido">☰</button>
 
             <section id="sec-report" class="content-section active">
                 <h1>Report Semanal <span class="proc-title">— Indicadores de Qualidade</span></h1>
@@ -113,7 +113,8 @@
                     </div>
                 </div>
             </section>
-            <section id="sec-amv" class="content-section">
+            
+            <section id="sec-amv" class="content-section escondido">
                 <h1>AMV (Aparelhos de Mudança de Via) <span class="proc-title">— Lote ETM-AMV</span></h1>
                 <div class="card">
                     <div class="form-group">
@@ -131,17 +132,17 @@
                         </select>
                     </div>
 
-                    <div id="amv-inputs-agulha" class="dimensoes-grid escondido"><div class="form-group"><label>Medida Atual da Ponta da Agulha (mm): <button class="btn-ajuda-visual" onclick="abrirAjuda('agulha')">?</button></label><input type="number" id="val-amv-ponta" step="0.1"></div></div>
-                    <div id="amv-inputs-rolete" class="dimensoes-grid escondido"><div class="form-group"><label>Altura máx do rolete (mm):</label><input type="number" id="val-amv-altura-rolete" step="0.1"></div></div>
-                    <div id="amv-inputs-coxin" class="dimensoes-grid escondido"><div class="form-group"><label>Dureza constatada no coxin (Shore A):</label><input type="number" id="val-amv-coxin" step="1"></div></div>
-                    <div id="amv-inputs-jacare_canal" class="dimensoes-grid escondido"><div class="form-group"><label>Profundidade do Canal (mm): <button class="btn-ajuda-visual" onclick="abrirAjuda('jacare_canal')">?</button></label><input type="number" id="val-amv-jacare-canal" step="0.1"></div></div>
-                    <div id="amv-inputs-jacare_dureza" class="dimensoes-grid escondido"><div class="form-group"><label>Dureza Brinell na área de impacto (HB):</label><input type="number" id="val-amv-jacare-dureza" step="1"></div></div>
-                    <div id="amv-inputs-fixacao_concreto" class="dimensoes-grid escondido"><div class="form-group"><label>Pressão do Grampo Eclip-2009 (kgf):</label><input type="number" id="val-amv-fixacao" step="1"></div></div>
+                    <div id="amv-inputs-agulha" class="dimensoes-grid escondido"><div class="form-group"><label>Medida Atual da Ponta da Agulha (mm): <button class="btn-ajuda-visual" onclick="abrirAjuda('agulha')">?</button></label><input type="number" inputmode="decimal" id="val-amv-ponta" step="0.1"></div></div>
+                    <div id="amv-inputs-rolete" class="dimensoes-grid escondido"><div class="form-group"><label>Altura máx do rolete (mm):</label><input type="number" inputmode="decimal" id="val-amv-altura-rolete" step="0.1"></div></div>
+                    <div id="amv-inputs-coxin" class="dimensoes-grid escondido"><div class="form-group"><label>Dureza constatada no coxin (Shore A):</label><input type="number" inputmode="numeric" id="val-amv-coxin" step="1"></div></div>
+                    <div id="amv-inputs-jacare_canal" class="dimensoes-grid escondido"><div class="form-group"><label>Profundidade do Canal (mm): <button class="btn-ajuda-visual" onclick="abrirAjuda('jacare_canal')">?</button></label><input type="number" inputmode="decimal" id="val-amv-jacare-canal" step="0.1"></div></div>
+                    <div id="amv-inputs-jacare_dureza" class="dimensoes-grid escondido"><div class="form-group"><label>Dureza Brinell na área de impacto (HB):</label><input type="number" inputmode="numeric" id="val-amv-jacare-dureza" step="1"></div></div>
+                    <div id="amv-inputs-fixacao_concreto" class="dimensoes-grid escondido"><div class="form-group"><label>Pressão do Grampo Eclip-2009 (kgf):</label><input type="number" inputmode="numeric" id="val-amv-fixacao" step="1"></div></div>
                     <div id="amv-inputs-cilindro" class="dimensoes-grid escondido">
-                        <div class="form-group"><label>Pressão de travamento constatada (kgf):</label><input type="number" id="val-amv-pressao" step="1"></div>
-                        <div class="form-group"><label>Tempo de acionamento c/ 260kg (s):</label><input type="number" id="val-amv-tempo" step="0.1"></div>
+                        <div class="form-group"><label>Pressão de travamento constatada (kgf):</label><input type="number" inputmode="numeric" id="val-amv-pressao" step="1"></div>
+                        <div class="form-group"><label>Tempo de acionamento c/ 260kg (s):</label><input type="number" inputmode="decimal" id="val-amv-tempo" step="0.1"></div>
                     </div>
-                    <div id="amv-inputs-batefica" class="dimensoes-grid escondido"><div class="form-group"><label>Deslocamento verificado das agulhas (mm):</label><input type="number" id="val-amv-deslocamento" step="1"></div></div>
+                    <div id="amv-inputs-batefica" class="dimensoes-grid escondido"><div class="form-group"><label>Deslocamento verificado das agulhas (mm):</label><input type="number" inputmode="numeric" id="val-amv-deslocamento" step="1"></div></div>
 
                     <button class="btn-analisar escondido" id="btn-amv" onclick="analisarAMV()">VERIFICAR CONFORMIDADE</button>
                     
@@ -156,7 +157,7 @@
                 </div>
             </section>
 
-            <section id="sec-brita" class="content-section">
+            <section id="sec-brita" class="content-section escondido">
                 <h1>Brita para Lastro <span class="proc-title">— MAN-VP-T-ETM-ES-0006-05</span></h1>
                 <div class="card">
                     <div class="form-group">
@@ -180,24 +181,24 @@
                     </div>
 
                     <div id="brita-check-visual" class="checkbox-group escondido"><input type="checkbox" id="brita-presenca-finos"><label for="brita-presenca-finos">Presença visível de argila, areia ou matéria orgânica?</label></div>
-                    <div id="brita-inputs-lote" class="dimensoes-grid escondido"><div class="form-group"><label>Percentual de Não-Cúbicas (%): <button class="btn-ajuda-visual" onclick="abrirAjuda('nao_cubica')">?</button></label><input type="number" id="val-brita-nao-cubicas" step="0.1"></div></div>
+                    <div id="brita-inputs-lote" class="dimensoes-grid escondido"><div class="form-group"><label>Percentual de Não-Cúbicas (%): <button class="btn-ajuda-visual" onclick="abrirAjuda('nao_cubica')">?</button></label><input type="number" inputmode="decimal" id="val-brita-nao-cubicas" step="0.1"></div></div>
 
                     <div id="brita-inputs-granulometria" class="escondido">
                         <p style="font-weight: bold; margin-bottom: 10px; font-size: 0.9rem;">Insira o percentual Retido Acumulado (%) PLANO 24 AREMA:</p>
                         <div class="dimensoes-grid">
-                            <div class="form-group"><label>Peneira 3" (76.2 mm):</label><input type="number" id="val-brita-g3" step="0.1"></div>
-                            <div class="form-group"><label>Peneira 2.1/2" (63.5 mm):</label><input type="number" id="val-brita-g250" step="0.1"></div>
-                            <div class="form-group"><label>Peneira 1.1/2" (38.1 mm):</label><input type="number" id="val-brita-g150" step="0.1"></div>
-                            <div class="form-group"><label>Peneira 3/4" (19.1 mm):</label><input type="number" id="val-brita-g075" step="0.1"></div>
-                            <div class="form-group"><label>Peneira 1/2" (12.7 mm):</label><input type="number" id="val-brita-g050" step="0.1"></div>
+                            <div class="form-group"><label>Peneira 3" (76.2 mm):</label><input type="number" inputmode="decimal" id="val-brita-g3" step="0.1"></div>
+                            <div class="form-group"><label>Peneira 2.1/2" (63.5 mm):</label><input type="number" inputmode="decimal" id="val-brita-g250" step="0.1"></div>
+                            <div class="form-group"><label>Peneira 1.1/2" (38.1 mm):</label><input type="number" inputmode="decimal" id="val-brita-g150" step="0.1"></div>
+                            <div class="form-group"><label>Peneira 3/4" (19.1 mm):</label><input type="number" inputmode="decimal" id="val-brita-g075" step="0.1"></div>
+                            <div class="form-group"><label>Peneira 1/2" (12.7 mm):</label><input type="number" inputmode="decimal" id="val-brita-g050" step="0.1"></div>
                         </div>
                     </div>
 
                     <div id="brita-inputs-lab" class="escondido">
                         <div class="dimensoes-grid">
-                            <div class="form-group"><label>Abrasão Los Angeles (%):</label><input type="number" id="val-brita-losangeles" step="0.1"></div>
-                            <div class="form-group"><label>Material Pulverulento (%):</label><input type="number" id="val-brita-pulverulento" step="0.1"></div>
-                            <div class="form-group"><label>Torrões de Argila (%):</label><input type="number" id="val-brita-argila" step="0.1"></div>
+                            <div class="form-group"><label>Abrasão Los Angeles (%):</label><input type="number" inputmode="decimal" id="val-brita-losangeles" step="0.1"></div>
+                            <div class="form-group"><label>Material Pulverulento (%):</label><input type="number" inputmode="decimal" id="val-brita-pulverulento" step="0.1"></div>
+                            <div class="form-group"><label>Torrões de Argila (%):</label><input type="number" inputmode="decimal" id="val-brita-argila" step="0.1"></div>
                         </div>
                     </div>
 
@@ -211,7 +212,7 @@
                 </div>
             </section>
 
-            <section id="sec-concreto" class="content-section">
+            <section id="sec-concreto" class="content-section escondido">
                 <h1>Dormente de Concreto <span class="proc-title">— PO-SPE-160</span></h1>
                 <div class="card">
                     <div class="form-group">
@@ -231,10 +232,10 @@
                     <div class="checkbox-group escondido" id="container-aco"><input type="checkbox" id="aco-exposto"><label for="aco-exposto">Exposição de Armadura / Aço?</label></div>
 
                     <div class="dimensoes-grid escondido" id="dimensoes-inputs">
-                        <div class="form-group" id="div-profundidade"><label>Profundidade (mm):</label><input type="number" id="val-profundidade" step="0.1"></div>
-                        <div class="form-group" id="div-comprimento"><label>Comprimento (mm):</label><input type="number" id="val-comprimento" step="0.1"></div>
-                        <div class="form-group" id="div-largura"><label>Largura (mm):</label><input type="number" id="val-largura" step="0.1"></div>
-                        <div class="form-group" id="div-espessura"><label>Espessura (mm):</label><input type="number" id="val-espessura" step="0.01"></div>
+                        <div class="form-group" id="div-profundidade"><label>Profundidade (mm):</label><input type="number" inputmode="decimal" id="val-profundidade" step="0.1"></div>
+                        <div class="form-group" id="div-comprimento"><label>Comprimento (mm):</label><input type="number" inputmode="decimal" id="val-comprimento" step="0.1"></div>
+                        <div class="form-group" id="div-largura"><label>Largura (mm):</label><input type="number" inputmode="decimal" id="val-largura" step="0.1"></div>
+                        <div class="form-group" id="div-espessura"><label>Espessura (mm):</label><input type="number" inputmode="decimal" id="val-espessura" step="0.01"></div>
                     </div>
 
                     <button class="btn-analisar" onclick="analisarDefeito()">VERIFICAR CONFORMIDADE</button>
@@ -247,7 +248,7 @@
                 </div>
             </section>
 
-            <section id="sec-madeira" class="content-section">
+            <section id="sec-madeira" class="content-section escondido">
                 <h1>Dormente de Madeira <span class="proc-title">— MAN-DM-T-MTE-DM-0001</span></h1>
                 <div class="card">
                     <div class="form-group">
@@ -261,9 +262,9 @@
 
                     <div id="mad-inputs-fisico" class="dimensoes-grid escondido">
                         <div class="form-group"><label>Classe:</label><select id="mad-classe"><option value="1">1ª Classe</option><option value="2">2ª Classe</option></select></div>
-                        <div class="form-group"><label>Umidade (%):</label><input type="number" id="val-mad-umidade" step="0.1"></div>
-                        <div class="form-group"><label>Densidade (kg/m³):</label><input type="number" id="val-mad-densidade" step="1"></div>
-                        <div class="form-group"><label>Retenção CCA (kg/m³):</label><input type="number" id="val-mad-retencao" step="0.1"></div>
+                        <div class="form-group"><label>Umidade (%):</label><input type="number" inputmode="decimal" id="val-mad-umidade" step="0.1"></div>
+                        <div class="form-group"><label>Densidade (kg/m³):</label><input type="number" inputmode="numeric" id="val-mad-densidade" step="1"></div>
+                        <div class="form-group"><label>Retenção CCA (kg/m³):</label><input type="number" inputmode="decimal" id="val-mad-retencao" step="0.1"></div>
                     </div>
 
                     <div id="mad-inputs-defeito" class="escondido">
@@ -295,15 +296,15 @@
                                 </select>
                             </div>
                             <div class="dimensoes-grid">
-                                <div class="form-group"><label>Comp. Aferido (m):</label><input type="number" id="val-mad-dim-comp" step="0.01"></div>
-                                <div class="form-group"><label>Largura Aferida (cm):</label><input type="number" id="val-mad-dim-larg" step="0.1"></div>
-                                <div class="form-group"><label>Altura Aferida (cm):</label><input type="number" id="val-mad-dim-alt" step="0.1"></div>
+                                <div class="form-group"><label>Comp. Aferido (m):</label><input type="number" inputmode="decimal" id="val-mad-dim-comp" step="0.01"></div>
+                                <div class="form-group"><label>Largura Aferida (cm):</label><input type="number" inputmode="decimal" id="val-mad-dim-larg" step="0.1"></div>
+                                <div class="form-group"><label>Altura Aferida (cm):</label><input type="number" inputmode="decimal" id="val-mad-dim-alt" step="0.1"></div>
                             </div>
                             <p style="font-size:0.8rem; color:var(--text-muted);">Insira as medidas nominais (referência da Nota Fiscal):</p>
                             <div class="dimensoes-grid" style="background: rgba(0,0,0,0.02);">
-                                <div class="form-group"><label>Comp. Nominal (m):</label><input type="number" id="val-mad-nom-comp" step="0.01"></div>
-                                <div class="form-group"><label>Largura Nominal (cm):</label><input type="number" id="val-mad-nom-larg" step="0.1"></div>
-                                <div class="form-group"><label>Altura Nominal (cm):</label><input type="number" id="val-mad-nom-alt" step="0.1"></div>
+                                <div class="form-group"><label>Comp. Nominal (m):</label><input type="number" inputmode="decimal" id="val-mad-nom-comp" step="0.01"></div>
+                                <div class="form-group"><label>Largura Nominal (cm):</label><input type="number" inputmode="decimal" id="val-mad-nom-larg" step="0.1"></div>
+                                <div class="form-group"><label>Altura Nominal (cm):</label><input type="number" inputmode="decimal" id="val-mad-nom-alt" step="0.1"></div>
                             </div>
                         </div>
 
@@ -314,24 +315,24 @@
                                     <option value="2.20">2,20 m ou 2,80 m</option>
                                 </select>
                             </div>
-                            <div class="form-group"><label>Face Reta (Altura) (cm):</label><input type="number" id="val-mad-esmoado-reta" step="0.1"></div>
-                            <div class="form-group"><label>Face Superior (Topo) (cm):</label><input type="number" id="val-mad-esmoado-topo" step="0.1"></div>
+                            <div class="form-group"><label>Face Reta (Altura) (cm):</label><input type="number" inputmode="decimal" id="val-mad-esmoado-reta" step="0.1"></div>
+                            <div class="form-group"><label>Face Superior (Topo) (cm):</label><input type="number" inputmode="decimal" id="val-mad-esmoado-topo" step="0.1"></div>
                         </div>
 
                         <div id="mad-dims-racha" class="dimensoes-grid escondido">
-                            <div class="form-group"><label>Comprimento (cm):</label><input type="number" id="val-mad-comp-racha" step="0.1"></div>
-                            <div class="form-group"><label>Abertura (mm):</label><input type="number" id="val-mad-abert-racha" step="0.1"></div>
-                            <div class="form-group escondido" id="mad-div-prof-racha"><label>Profundidade (cm):</label><input type="number" id="val-mad-prof-racha" step="0.1"></div>
+                            <div class="form-group"><label>Comprimento (cm):</label><input type="number" inputmode="decimal" id="val-mad-comp-racha" step="0.1"></div>
+                            <div class="form-group"><label>Abertura (mm):</label><input type="number" inputmode="decimal" id="val-mad-abert-racha" step="0.1"></div>
+                            <div class="form-group escondido" id="mad-div-prof-racha"><label>Profundidade (cm):</label><input type="number" inputmode="decimal" id="val-mad-prof-racha" step="0.1"></div>
                         </div>
 
                         <div id="mad-dims-furos" class="dimensoes-grid escondido">
-                            <div class="form-group"><label>Diâmetro Furo (cm):</label><input type="number" id="val-mad-diam-furo" step="0.1"></div>
-                            <div class="form-group"><label>Profundidade (cm):</label><input type="number" id="val-mad-prof-furo" step="0.1"></div>
+                            <div class="form-group"><label>Diâmetro Furo (cm):</label><input type="number" inputmode="decimal" id="val-mad-diam-furo" step="0.1"></div>
+                            <div class="form-group"><label>Profundidade (cm):</label><input type="number" inputmode="decimal" id="val-mad-prof-furo" step="0.1"></div>
                         </div>
 
                         <div id="mad-dims-empenamento" class="dimensoes-grid escondido">
                             <div class="form-group"><label>Comp. Dormente (m):</label><select id="val-mad-comp-dormente"><option value="2.00">2,00 m</option><option value="2.20">2,20 m</option><option value="2.40">2,40 m</option><option value="2.60">2,60 m</option><option value="2.80">2,80 m</option><option value="3.00">3,00 m</option><option value="3.20">3,20 m</option><option value="4.00">4,00 m</option></select></div>
-                            <div class="form-group"><label>Flecha Constatada (cm):</label><input type="number" id="val-mad-flecha" step="0.1"></div>
+                            <div class="form-group"><label>Flecha Constatada (cm):</label><input type="number" inputmode="decimal" id="val-mad-flecha" step="0.1"></div>
                         </div>
                     </div>
 
@@ -345,7 +346,7 @@
                 </div>
             </section>
 
-            <section id="sec-sub" class="content-section">
+            <section id="sec-sub" class="content-section escondido">
                 <h1>Subcomponentes Metálicos/Plásticos <span class="proc-title">— Padrão ENG-DVP</span></h1>
                 <div class="card">
                     <div class="form-group">
