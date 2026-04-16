@@ -59,22 +59,6 @@
         .form-group select,.form-group input{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:8px;font-size:1rem;background:var(--bg-input);color:var(--text-main)}
         .checkbox-group{display:flex;align-items:center;gap:12px;background:var(--bg-input);padding:15px;border-radius:8px;margin-bottom:15px;font-weight:bold}
         .dimensoes-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;background:var(--bg-input);padding:15px;border-radius:8px;border:1px solid var(--border-color);margin-bottom:15px}
-        .dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:25px}
-        .stat-card{background:var(--bg-input);padding:20px;border-radius:10px;border:1px solid var(--border-color);text-align:center;box-shadow:0 2px 8px var(--shadow-light)}
-        .stat-value{font-size:2.2rem;font-weight:bold;color:var(--text-title);margin:10px 0}
-        .stat-label{font-size:.8rem;font-weight:bold;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
-        .stat-value.success{color:#2E7D32}.stat-value.danger{color:#C62828}.stat-value.warning{color:#F57C00}
-        body.dark .stat-value.success{color:#81C784}body.dark .stat-value.danger{color:#E57373}body.dark .stat-value.warning{color:#FFB74D}
-        .chart-container{background:var(--bg-input);padding:25px;border-radius:10px;border:1px solid var(--border-color);margin-bottom:15px;box-shadow:0 2px 8px var(--shadow-light)}
-        .chart-bar-row{display:flex;align-items:center;margin-bottom:12px;gap:15px}
-        .chart-label{width:120px;font-size:.85rem;font-weight:bold;color:var(--text-main);text-align:right}
-        .chart-bar-bg{flex-grow:1;background:#E0E0E0;height:16px;border-radius:8px;overflow:hidden;position:relative}
-        body.dark .chart-bar-bg{background:#424242}
-        .chart-bar-fill{height:100%;background:var(--text-title);border-radius:8px;transition:width 1s ease-in-out}
-        .chart-bar-fill.danger{background:#C62828}.chart-bar-fill.success{background:#2E7D32}.chart-bar-fill.warning{background:#F57C00}
-        body.dark .chart-bar-fill.danger{background:#E57373}body.dark .chart-bar-fill.success{background:#81C784}body.dark .chart-bar-fill.warning{background:#FFB74D}
-        .chart-value{width:50px;font-size:.9rem;font-weight:bold;color:var(--text-main)}
-        .ct{margin-bottom:20px;font-size:1.1rem;color:var(--text-title);text-align:center}
         .btn-analisar{width:100%;padding:16px;background:var(--bg-login);color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:10px;transition:.2s}
         .btn-analisar:hover{filter:brightness(1.2)}
         .botoes-acao{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
@@ -108,6 +92,20 @@
         .btn-capturar:active::after{width:45px;height:45px}
         .botoes-pos-captura{display:flex;gap:10px;width:100%;max-width:450px;margin:0 auto}
         .btn-secundario{background:#333;color:#fff;border:none;padding:16px;border-radius:8px;flex-grow:1;font-weight:bold;cursor:pointer;font-size:1.05rem;box-shadow:0 4px 10px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;gap:8px}
+        /* ESTILOS DA ABA PROCEDIMENTOS */
+        .proc-result-box{margin-top:20px;padding:20px;background:var(--bg-input);border-radius:10px;border-left:4px solid var(--accent);box-shadow:0 2px 8px var(--shadow-light);display:none}
+        .proc-item{padding:15px;background:var(--bg-panel);border-radius:8px;margin-bottom:12px;border:1px solid var(--border-color);transition:.3s}
+        .proc-item:hover{box-shadow:0 4px 12px var(--shadow-light);transform:translateY(-2px)}
+        .proc-item-title{color:var(--text-title);font-weight:bold;font-size:1rem;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+        .proc-item-code{display:inline-block;background:var(--bg-login);color:#fff;padding:4px 10px;border-radius:6px;font-size:.75rem;font-weight:bold;margin-bottom:8px;letter-spacing:.5px}
+        body.dark .proc-item-code{background:var(--accent);color:var(--bg-login)}
+        .proc-item-desc{color:var(--text-muted);font-size:.85rem;line-height:1.5}
+        .proc-area-header{background:linear-gradient(135deg,var(--bg-login),var(--text-title));color:#fff;padding:12px 18px;border-radius:8px;margin:20px 0 10px;font-weight:bold;font-size:.95rem;display:flex;align-items:center;gap:10px}
+        .proc-area-header:first-child{margin-top:0}
+        body.dark .proc-area-header{background:linear-gradient(135deg,#021324,#0d3a5e)}
+        .btn-todos{width:100%;padding:14px;background:#F57C00;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:10px;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+        .btn-todos:hover{background:#E65100}
+        .proc-empty{text-align:center;padding:30px;color:var(--text-muted);font-size:.95rem}
         @media(max-width:768px){aside{position:fixed;height:100vh;z-index:1000;left:0;top:0;width:280px}main{padding:80px 20px 20px}.dimensoes-grid,.botoes-acao{grid-template-columns:1fr;gap:10px}h1{font-size:1.4rem}}
     </style>
 </head>
@@ -157,13 +155,13 @@
                 <img src="https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg" alt="Rumo" class="sidebar-logo">
                 <div class="sidebar-subtitle">Coordenação de Qualidade e Homologação dos Materiais de Via Permanente</div>
                 <div class="menu-header">Guia do Inspetor Padrão</div>
-                <div class="menu-item" onclick="navegar(this,'sec-amv')">AMV & Componentes</div>
+                <div class="menu-item active" onclick="navegar(this,'sec-amv')">AMV & Componentes</div>
                 <div class="menu-item" onclick="navegar(this,'sec-brita')">Brita</div>
                 <div class="menu-item" onclick="navegar(this,'sec-concreto')">Dormente de Concreto</div>
                 <div class="menu-item" onclick="navegar(this,'sec-madeira')">Dormente de Madeira</div>
                 <div class="menu-item" onclick="navegar(this,'sec-sub')">Subcomponentes</div>
                 <div style="border-top:1px solid rgba(255,255,255,.2);margin:15px 25px;box-shadow:0 1px 0 rgba(0,0,0,.5)"></div>
-                <div class="menu-item active" onclick="navegar(this,'sec-report')">📊 Report Semanal</div>
+                <div class="menu-item" onclick="navegar(this,'sec-procedimentos')">📚 Procedimentos</div>
             </div>
             <div class="sidebar-bottom">
                 <button onclick="fazerLogout()" class="logout-btn">🚪 Sair do Sistema</button>
@@ -173,29 +171,8 @@
         </aside>
         <main>
             <button id="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
-            <section id="sec-report" class="content-section active">
-                <h1>Report Semanal <span class="proc-title">— Indicadores de Qualidade</span></h1>
-                <div class="card">
-                    <div class="dimensoes-grid">
-                        <div class="form-group"><label>Selecione a Semana:</label>
-                            <select id="report-semana" onchange="atualizarReport()">
-                                <option value="15">Semana 15</option><option value="14">Semana 14</option><option value="13">Semana 13</option>
-                                <option value="12">Semana 12</option><option value="11">Semana 11</option><option value="10">Semana 10</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label>Selecione a Área de Inspeção:</label>
-                            <select id="report-area" onchange="atualizarReport()">
-                                <option value="">Selecione para visualizar...</option>
-                                <option value="amv">AMV & Componentes</option><option value="concreto">Dormente de Concreto</option>
-                                <option value="madeira">Dormente de Madeira</option><option value="lastro">Lastro / Brita</option>
-                                <option value="sub">Subcomponentes</option><option value="rnc">RNC (Não Conformidades)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="report-content" class="escondido" style="margin-top:30px"></div>
-                </div>
-            </section>
-            <section id="sec-amv" class="content-section">
+
+            <section id="sec-amv" class="content-section active">
                 <h1>AMV (Aparelhos de Mudança de Via) <span class="proc-title">— Lote ETM-AMV</span></h1>
                 <div class="card">
                     <div class="form-group"><label>Componente Inspecionado:</label>
@@ -377,6 +354,34 @@
                     </div>
                 </div>
             </section>
+
+            <!-- NOVA SEÇÃO: PROCEDIMENTOS -->
+            <section id="sec-procedimentos" class="content-section">
+                <h1>📚 Procedimentos <span class="proc-title">— Consulta de Normas Técnicas</span></h1>
+                <div class="card">
+                    <div class="form-group">
+                        <label>1️⃣ Selecione a Área de Atuação:</label>
+                        <select id="proc-area" onchange="atualizarProcSubitem()">
+                            <option value="">Selecione...</option>
+                            <option value="amv">AMV & Componentes</option>
+                            <option value="brita">Brita</option>
+                            <option value="concreto">Dormente de Concreto</option>
+                            <option value="madeira">Dormente de Madeira</option>
+                            <option value="sub">Subcomponentes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>2️⃣ Selecione o Item para Consulta:</label>
+                        <select id="proc-subitem" disabled>
+                            <option value="">Primeiro selecione uma área...</option>
+                        </select>
+                    </div>
+                    <button class="btn-analisar" onclick="consultarProcedimento()">🔍 CONSULTAR PROCEDIMENTO</button>
+                    <button class="btn-todos" onclick="mostrarTodosProcedimentos()">📋 MOSTRAR TODOS OS PROCEDIMENTOS</button>
+                    <div id="proc-result-box" class="proc-result-box"></div>
+                </div>
+            </section>
+
         </main>
     </div>
 <script>
@@ -392,51 +397,114 @@ function fazerLogout(){if(confirm("Deseja realmente sair e limpar os dados locai
 function navegar(el,sec){document.querySelectorAll('.content-section,.menu-item').forEach(e=>e.classList.remove('active'));$(sec).classList.add('active');el.classList.add('active');if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}
 function toggleSidebar(){$('sidebar').classList.remove('hidden');hideEl('toggle-sidebar-btn')}
 
-// === REPORT GENERATORS ===
-function mkStat(label,val,cls=''){return`<div class="stat-card"><div class="stat-label">${label}</div><div class="stat-value${cls?' '+cls:''}">${val}</div></div>`}
-function mkStats(items){return'<div class="dashboard-grid">'+items.map(i=>mkStat(i[0],i[1],i[2]||'')).join('')+'</div>'}
-function mkChart(title,bars){let h=`<div class="chart-container"><h3 class="ct">${title}</h3>`;
-bars.forEach(b=>{
-    h+=`<div class="chart-bar-row"><div class="chart-label">${b.l}</div><div class="chart-bar-bg">`;
-    if(b.segs)b.segs.forEach((seg,i,a)=>{const r=i===0?'8px 0 0 8px':i===a.length-1?'0 8px 8px 0':'0';h+=`<div class="chart-bar-fill ${seg[1]}" style="width:${seg[0]};float:left;border-radius:${r}"></div>`});
-    else h+=`<div class="chart-bar-fill${b.c?' '+b.c:''}" style="width:${b.w}"></div>`;
-    h+=`</div><div class="chart-value"${b.s?' style="'+b.s+'"':''}>${b.v}</div></div>`
-});return h+'</div>'}
-function B(l,w,v,c,s){return{l,w,v,c:c||'',s:s||''}}
-function BM(l,segs,v,s){return{l,segs,v,s:s||''}}
+// === BANCO DE PROCEDIMENTOS ===
+const PROCEDIMENTOS={
+    amv:{
+        nome:"AMV & Componentes",
+        icone:"⚙️",
+        itens:{
+            agulha:{titulo:"Ponta da Agulha (Perfil 5100)",codigo:"ETMs 0005, 0007, 0008, 0009",desc:"Meça a espessura da ponta da agulha a exatos 15mm do início da usinagem. O desgaste não pode exceder o estipulado. Tolerância máxima: 3.9mm (Nominal AREMA: 3.1mm + Tol: 0.8mm). Valores entre 3.7mm e 3.9mm exigem monitoramento programado. Acima de 3.9mm há risco de descarrilamento: bloquear e substituir."},
+            rolete:{titulo:"Roletes (Viga I)",codigo:"EM-SPE-072 (Item 5.2)",desc:"Altura máxima do rolete em relação à base da agulha: ≤ 2.0mm. Acima desse valor necessita calibração pela equipe de via."},
+            coxin:{titulo:"Coxins dos Roletes (Dureza)",codigo:"EM-SPE-072 (Item 5.3.1)",desc:"Dureza Shore A do coxin deve estar entre 88 e 92. Fora dessa faixa, rejeitar lote de coxins e retornar ao fornecedor."},
+            jacare_canal:{titulo:"Jacaré (Profundidade do Canal)",codigo:"ETMs 0005, 0007, 0008, 0009",desc:"Profundidade do canal deve ser aferida no núcleo do jacaré de aço manganês: 53 ± 2 mm (faixa 51 a 55 mm). Fora da tolerância: solicitar esmerilhamento ou preenchimento de solda."},
+            jacare_dureza:{titulo:"Jacaré (Dureza Brinell)",codigo:"ETMs 0008, 0009",desc:"Dureza Brinell na área de impacto: 352 a 418 HB. Fora da tolerância exigida: bloquear lote do Jacaré e abrir RNC."},
+            fixacao_concreto:{titulo:"Fixação AMV Concreto (Pressão Grampo)",codigo:"ENG-DSV-VP-ETM-A0019",desc:"Pressão do Grampo Eclip-2009: 1200 ± 300 kgf (faixa 900 a 1500 kgf). Fora da faixa: substituir grampos fadigados na região."},
+            cilindro:{titulo:"Cilindro de Mola",codigo:"EM-SPE-026",desc:"Pressão mínima de travamento: 500 kgf. Tempo de acionamento com 260 kg: entre 10 e 12 segundos. Fora da norma: ajuste de válvula do cilindro pela manutenção."},
+            batefica:{titulo:"Aparelho Talonável Bate-Fica",codigo:"EM-SPE-017",desc:"Deslocamento verificado das agulhas: 100 a 121 mm. Fora da tolerância: calibrar hastes do aparelho Bate-Fica."}
+        }
+    },
+    brita:{
+        nome:"Brita para Lastro",
+        icone:"🪨",
+        itens:{
+            visual:{titulo:"Inspeção Visual (Contaminação)",codigo:"MAN-VP-T-ETM-ES-0006-05",desc:"Verificar presença visível de argila, areia ou matéria orgânica no lastro. Qualquer contaminação visível resulta em rejeição imediata do vagão (REFUGO). Lastro limpo = liberado para aplicação."},
+            forma_lote:{titulo:"Ensaio de Forma (Lote / Não-Cúbicas)",codigo:"MAN-VP-T-ETM-ES-0006-05",desc:"Índice máximo de britas não-cúbicas permitido: 15%. Britas lamelares ou alongadas reduzem o intertravamento do lastro. Acima de 15%: lote reprovado, solicitar nova britagem."},
+            granulometria:{titulo:"Ensaio de Granulometria (AREMA 24)",codigo:"MAN-VP-T-ETM-ES-0006-05 / Plano 24 AREMA",desc:"Percentuais Retidos Acumulados: Peneira 3\" (76.2 mm) = 0%; Peneira 2.1/2\" (63.5 mm) = 0% a 10%; Peneira 1.1/2\" (38.1 mm) = 40% a 75%; Peneira 3/4\" (19.1 mm) = 90% a 100%; Peneira 1/2\" (12.7 mm) = 95% a 100%. Fora dessas faixas: lote reprovado."},
+            laboratorio:{titulo:"Ensaios Físicos (Laboratório)",codigo:"MAN-VP-T-ETM-ES-0006-05",desc:"Abrasão Los Angeles: máximo 35% para granito, 30% para calcário/basalto. Material Pulverulento: máximo 1%. Torrões de Argila: máximo 0.5%. Falha em qualquer um: bloquear pedreira/veio para fornecimento."}
+        }
+    },
+    concreto:{
+        nome:"Dormente de Concreto",
+        icone:"🧱",
+        itens:{
+            vazio_apoio:{titulo:"Vazios - Apoio do Trilho",codigo:"PO-SPE-160 (Tabela 1)",desc:"Aceitável: Profundidade ≤2 mm, Comprimento ≤3 mm, Largura ≤3 mm. Reparável: 3-5 mm de profundidade, 4-10 mm comprimento, 4-10 mm largura (reparo com argamassa epóxi). Refugo: >6 mm de profundidade."},
+            vazio_fora_apoio:{titulo:"Vazios - Fora da Região do Trilho",codigo:"PO-SPE-160 (Tabela 2)",desc:"Aceitável: Profundidade ≤5 mm, Comprimento ≤5 mm, Altura ≤5 mm. Reparável: 6-10 mm de profundidade, 6-20 mm comp/alt. Refugo: >11 mm de profundidade."},
+            vazio_testeira:{titulo:"Vazios - Testeira",codigo:"PO-SPE-160 (Página 15-16)",desc:"Com exposição de armadura: tolerável até 30 mm de profundidade. Sem exposição: reparável até 50 mm. Acima desses limites: segregar dormente e preencher RNC."},
+            quebra_lat_sup:{titulo:"Quebras - Laterais / Superior",codigo:"PO-SPE-160 (Tabela 3)",desc:"Aceitável: Prof. ≤10 mm, Comp. ≤49 mm, Alt. ≤29 mm. Reparável: Prof. 11-20 mm, Comp. 50-200 mm, Alt. 30-150 mm. Refugo: >21 mm de profundidade ou exposição de armadura ativa."},
+            quebra_testeira:{titulo:"Quebras - Testeira",codigo:"PO-SPE-160 (Tabela 4)",desc:"Aceitável: Prof. ≤10 mm, Comp. ≤49 mm, Alt. ≤29 mm. Reparável: Prof. 11-20 mm, Comp. 50-200 mm, Alt. 30-150 mm. Qualquer exposição de armadura ativa = refugo."},
+            fissura_ombreira:{titulo:"Fissuras - Ombreira",codigo:"PO-SPE-160 (Tabela 5)",desc:"Qualquer fissura na ombreira = refugo sumário. Não há tolerância para esse tipo de defeito."},
+            fissura_lateral:{titulo:"Fissuras - Lateral / Transversal",codigo:"PO-SPE-160 (Tabela 5)",desc:"Aceitável: Espessura ≤0,10 mm e Comprimento ≤10 mm. Reparável: Espessura 0,15-0,50 mm e Comprimento 11-100 mm (injeção de epóxi). Refugo: Espessura ≥0,55 mm ou Comprimento >101 mm."}
+        }
+    },
+    madeira:{
+        nome:"Dormente de Madeira",
+        icone:"🪵",
+        itens:{
+            fisico:{titulo:"Propriedades Físicas e Químicas",codigo:"MAN-DM-T-MTE-DM-0001",desc:"Umidade máxima: 30%. Densidade mínima 1ª Classe: 750 kg/m³. Densidade mínima 2ª Classe: 600 kg/m³. Retenção CCA mínima: 9.6 kg/m³. Fora desses limites: recusar recebimento (falha no tratamento)."},
+            dimensoes:{titulo:"Dimensões Fora do Padrão",codigo:"MAN-DM-T-MTE-DM-0001",desc:"Tolerância Comprimento: +5 cm / -0 cm do nominal. Tolerância Largura: ±2 cm. Tolerância Altura: ±1 cm. Fora dessas tolerâncias: dormente dimensionalmente divergente, refugo."},
+            esmoado:{titulo:"Esmoado (Falta de Canto)",codigo:"MAN-DM-T-MTE-DM-0001",desc:"Fora da zona de fixação (2,00 m): Face Reta ≥9 cm, Topo ≥15 cm. Dentro da zona de fixação (2,00 m): Face Reta ≥14 cm, Topo ≥20 cm. Para 2,20/2,80 m os limites aumentam em 1-2 cm. Abaixo desses mínimos: segregar."},
+            racha_topo:{titulo:"Fenda ou Racha de Topo",codigo:"MAN-DM-T-MTE-DM-0001",desc:"Comprimento máximo: 15 cm. Abertura máxima: 2 mm. Proibida presença na zona de fixação. Excedeu limites: segregar dormente."},
+            racha_centro:{titulo:"Rachadura de Centro",codigo:"MAN-DM-T-MTE-DM-0001",desc:"Comprimento máximo: 15 cm. Abertura máxima: 2 mm. Profundidade máxima: 2 cm. Proibida presença na zona de fixação. Excedeu limites: segregar dormente."},
+            furos_nos:{titulo:"Furos de Broca / Nós Cariados",codigo:"MAN-DM-T-MTE-DM-0001",desc:"Diâmetro máximo: 2,5 cm. Profundidade máxima: menor que 5 cm. Proibida presença na zona de fixação. Excedeu limites: segregar dormente."},
+            empenamento:{titulo:"Empenamento (Flecha)",codigo:"MAN-DM-T-MTE-DM-0001",desc:"Flecha máxima permitida: metade do comprimento do dormente em cm (ex.: 2,00 m → máx 1 cm; 4,00 m → máx 2 cm). Acima: segregar para descarte."},
+            podre:{titulo:"Madeira Podre",codigo:"MAN-DM-T-MTE-DM-0001",desc:"Refugo Sumário: dormente com aspecto de apodrecimento é rejeitado imediatamente, sem análise dimensional. Não aceitável em nenhuma hipótese."},
+            casca:{titulo:"Presença de Casca",codigo:"MAN-DM-T-MTE-DM-0001",desc:"Refugo Sumário: presença de casca na madeira é rejeitada imediatamente. Indica falha no processamento inicial da tora."},
+            anti_rachante:{titulo:"Falta de Proteção Anti-Rachante",codigo:"MAN-DM-T-MTE-DM-0001",desc:"Refugo Sumário: proteção anti-rachante ausente ou menor que 70% na face do dormente é rejeitado imediatamente."},
+            amarracao:{titulo:"Falha na Amarração do Fardo",codigo:"MAN-DM-T-MTE-DM-0001",desc:"Refugo Sumário: amarração deficiente (menos de 3 fitas ou sem pontaletes) resulta em rejeição imediata do fardo."}
+        }
+    },
+    sub:{
+        nome:"Subcomponentes Metálicos/Plásticos",
+        icone:"🔩",
+        itens:{
+            pal_branca_tr68:{titulo:"Palmilha Branca TR68 FAST-CLIP (SAP:109105)",codigo:"ENG-DVP-D183 / INF-FX-0003",desc:"Medida 1: 187,5 a 191,5 mm. Medida 2: 151 a 155 mm. Medida 3: 111,5 a 114,5 mm. Medida 4: 5,5 a 7,5 mm. Fora das tolerâncias: lote dimensionalmente reprovado, preencher RNC."},
+            pal_verde_uic60:{titulo:"Palmilha Verde UIC60 (SAP:127543)",codigo:"ENG-DVP-D135 / INF-FX-0003",desc:"Medida 1: 148,5 a 150 mm. Medida 2: 113 a 114 mm. Medida 3: 7,05 a 7,55 mm. Fora das tolerâncias: lote dimensionalmente reprovado, preencher RNC."},
+            iso_verde_3510w:{titulo:"Isolador Lateral Verde 3510W (SAP:127551)",codigo:"ENG-DVP-D136",desc:"Medida 1: 61,5 a 63 mm. Medida 2: 9,6 a 10,2 mm. Medida 3: 7,4 a 8 mm. Fora das tolerâncias: lote dimensionalmente reprovado."},
+            iso_amarelo_3510w:{titulo:"Isolador Lateral Amarelo 3510W (SAP:147554)",codigo:"ENG-DVP-D136",desc:"Medida 1: 61,5 a 63 mm. Medida 2: 9,6 a 10,2 mm. Medida 3: 7,4 a 8 mm. Fora das tolerâncias: lote dimensionalmente reprovado."},
+            iso_preto_3502w:{titulo:"Isolador Lateral Preto 3502W (SAP:147555)",codigo:"ENG-DVP-D084",desc:"Medida 1: 61,5 a 63 mm. Medida 2: 7,6 a 8,2 mm. Medida 3: 7,4 a 8 mm. Fora das tolerâncias: lote dimensionalmente reprovado."},
+            iso_branco_pandrol:{titulo:"Isolador Lateral Branco 8mm (PANDROL - SAP:121107)",codigo:"ENG-DVP-D084",desc:"Medida 1: 61,5 a 63 mm. Medida 2: 7,6 a 8,2 mm. Medida 3: 7,4 a 8 mm. Fora das tolerâncias: lote dimensionalmente reprovado."},
+            iso_branco_3502w:{titulo:"Isolador Lateral Branco 3502W (SAP:121107)",codigo:"ENG-DVP-D084",desc:"Medida 1: 61,5 a 63 mm. Medida 2: 7,6 a 8,2 mm. Medida 3: 7,4 a 8 mm. Fora das tolerâncias: lote dimensionalmente reprovado."},
+            usp_getzner:{titulo:"UNDER SLEEPER PAD - USP (GETZNER - SAP:126980)",codigo:"ENG-DVP-D131",desc:"Comprimento: 1360 a 1390 mm. Largura: 225 a 245 mm. Espessura: 7 a 11 mm. Fora das tolerâncias: lote dimensionalmente reprovado, preencher RNC."},
+            grampo_capa_branca:{titulo:"Grampo W c/ isolador Capa Branca (SAP:99604)",codigo:"ENG-DVP-T040",desc:"Medida 1: 106,5 a 111 mm. Medida 2: 15,75 a 16,25 mm. Medida 3: 74,5 a 79 mm. Fora das tolerâncias: lote dimensionalmente reprovado."},
+            grampo_iso_frontal:{titulo:"Grampo W c/ isolador frontal (SAP:99604)",codigo:"ENG-DVP-T040",desc:"Medida 1: 106,5 a 111 mm. Medida 2: 15,75 a 16,25 mm. Medida 3: 74,5 a 79 mm. Fora das tolerâncias: lote dimensionalmente reprovado."},
+            ombreira_eclip:{titulo:"Ombreira E-CLIP HFOB02 (SAP:127542)",codigo:"ENG-DVP-D139",desc:"Medida 1: 73,5 a 76,5 mm. Medida 2: mínimo 24 mm (sem limite superior). Fora das tolerâncias: lote dimensionalmente reprovado, preencher RNC."},
+            ombreira_fastclip:{titulo:"Ombreira FAST-CLIP HFOB08 (SAP:127406B)",codigo:"ENG-DVP-D074",desc:"Medida 1: 99,75 a 102,25 mm. Medida 2: 58,7 a 60,7 mm. Medida 3: 95,9 a 98,1 mm. Medida 4: 70,3 a 72,5 mm. Medida 5: 34,9 a 36,7 mm. Fora das tolerâncias: reprovar lote."},
+            pal_verde_almofada:{titulo:"Palmilha Verde Almofada 6980 (SAP:127543)",codigo:"ENG-DVP-D135",desc:"Medida 1: 148,5 a 150 mm. Medida 2: 113 a 114 mm. Medida 3: 7,05 a 7,55 mm. Fora das tolerâncias: lote dimensionalmente reprovado."},
+            pal_branca_almofada:{titulo:"Palmilha Branca Almofada 7552 (SAP:109105)",codigo:"ENG-DVP-D183",desc:"Medida 1: 187,5 a 191,5 mm. Medida 2: 151 a 155 mm. Medida 3: 111,5 a 114,5 mm. Medida 4: 5,5 a 7,5 mm. Fora das tolerâncias: lote dimensionalmente reprovado."}
+        }
+    }
+};
 
-const R={};
-// SEMANA 15
-R["15"]={
-amv:()=>mkStats([["Peças Inspecionadas","11"],["Solicitação de Ajustes","9","warning"],["Reprovadas","0","danger"],["Aderência de Inspeção","100%","success"]])+mkChart("Peças Inspecionadas por Fornecedor",[B("Ibrafer","81%","9"),B("BR Parts","19%","2")]),
-concreto:()=>mkStats([["Total Fabricado","3687"],["Aprovados","3626","success"],["Reprovados","61","danger"],["Tx Aprovação (Sem. 15)","95.3%","success"]])+mkChart("Reprovas no Detalhado (Cavan)",[B("Vazios","67.2%","41","danger"),B("Outros","18%","11","danger"),B("Trincas","11.4%","7","danger"),B("Quebras / USP","3.2%","2","danger")]),
-madeira:()=>mkStats([["Inspecionados","1365"],["Aprovados","1294","success"],["Reprovados","71","danger"],["Tx Aprovação (Sem. 15)","95%","success"]])+mkChart("Peças Reprovadas por Fornecedor",[B("Pandolfi Madeiras","67.6%","48","danger"),B("Tres Guri","32.4%","23","danger")]),
-lastro:()=>mkStats([["Ensaios Realizados","52"],["Ensaios Aprovados","48","success"],["Reprovados","4","danger"],["Tx Aprovação (Sem. 15)","92%","success"]])+mkChart("Ensaios por Tipo (Aprovados vs Reprovados)",[BM("Granulometria",[["92.3%","success"],["7.7%","danger"]],"39"),BM("F. Fragmentos",[["92.3%","success"],["7.7%","danger"]],"13")]),
-sub:()=>mkStats([["Total de Registros (RNCs)","20"],["Concluídos","17","success"],["Em Andamento","1","warning"],["Cancelados","2","danger"]])+mkChart("Registros por Fornecedor (Top 1)",[B("Pandolfi","100%","19","warning")]),
-rnc:()=>R["15"].sub()
-};
-// SEMANA 14
-R["14"]={
-amv:()=>mkStats([["Peças Inspecionadas","40"],["Solicitação de Ajustes","7","warning"],["Reprovadas","0","danger"],["Aderência de Inspeção","100%","success"]])+mkChart("Peças Inspecionadas por Fornecedor",[B("BR Parts","100%","40")]),
-concreto:()=>mkStats([["Total Fabricado","4660"],["Aprovados","4452","success"],["Reprovados","208","danger"],["Tx Aprovação (Sem. 14)","95.54%","success"]])+mkChart("Reprovas no Detalhado (Cavan)",[B("Trincas","87.5%","182","danger"),B("Quebras","4.8%","10","danger"),B("Vazios","4.8%","10","danger"),B("Ombreiras / Outros","2.8%","6","danger")]),
-madeira:()=>mkStats([["Inspecionados","1782"],["Aprovados","1476","success"],["Reprovados","306","danger"],["Tx Aprovação (Sem. 14)","86%","warning"]])+mkChart("Peças Reprovadas por Fornecedor",[B("Pandolfi","69.6%","213","danger"),B("Larssen","20.6%","63","danger"),B("Ricken","6.2%","19","danger"),B("Tres Guri","3.6%","11","danger")]),
-lastro:()=>mkStats([["Ensaios Realizados","24"],["Ensaios Aprovados","24","success"],["Reprovados","0","danger"],["Tx Aprovação (Sem. 14)","100%","success"]])+mkChart("Ensaios por Tipo",[B("Granulometria","100%","18","success"),B("F. Fragmentos","100%","6","success")]),
-sub:()=>{const s=mkStats([["Total de Registros (RNCs)","78"],["Concluídos","63","success"],["Em Andamento","10","warning"],["Cancelados","5","danger"]]);return s+mkChart("Registros Abertos por Fornecedor (Top 5)",[B("Pandolfi","100%","17","warning"),B("Larssen","88%","15","warning"),B("Ricken","64%","11","warning"),B("F. Garcia","47%","8","warning"),B("Tratanorte","29%","5","warning")])},
-rnc:()=>R["14"].sub()
-};
-// SEMANA 13
-R["13"]={
-amv:()=>mkStats([["Peças Inspecionadas","52"],["Solicitação de Ajustes","22","warning"],["Reprovadas","0","danger"],["Aderência de Inspeção","98%","success"]])+mkChart("Peças Inspecionadas por Fornecedor",[B("BR Parts","71.1%","37"),B("Ibrafer","15.4%","8"),B("Hewitt","13.5%","7")])+mkChart("Solicitação de Ajustes por Fornecedor",[B("Ibrafer","100%","9","warning"),B("Hewitt","77.7%","7","warning"),B("BR Parts","66.7%","6","warning")])+mkChart("Peças Inspecionadas por Mês (2026)",[B("Janeiro","100%","301"),B("Fevereiro","17.3%","52"),B("Março","44.5%","134")]),
-concreto:()=>mkStats([["Total Fabricado (Acum.)","56.483"],["Aprovados (Acum.)","56.288","success"],["Reprovados (Acum.)","195","danger"],["Tx Aprovação (Sem. 13)","99,3%","success"]])+mkChart("Aprovação Semanal",[B("Sem. 2","98.94%","98,94%"),B("Sem. 4","99.60%","99,60%"),B("Sem. 6","99.64%","99,64%"),B("Sem. 8","99.27%","99,27%"),B("Sem. 10","99.76%","99,76%"),B("Sem. 12","99.54%","99,54%"),B("Sem. 13","99.29%","99,29%","success",null,"font-weight:900")])+mkChart("Reprovas no Detalhado (Acumulado)",[B("Vazios","100%","78","danger"),B("Ombreiras","35.9%","28","danger"),B("Trincas","32%","25","danger"),B("Quebras","30.8%","24","danger"),B("Falha de Produção","10.2%","8","danger"),B("Outros","9%","7","danger"),B("USP","0%","0","danger")])+mkChart("Produção por Mês (Fabricados)",[B("Janeiro","100%","19.751"),B("Fevereiro","98.8%","19.515"),B("Março","87.2%","17.217")]),
-madeira:()=>mkStats([["Inspecionados","1.064"],["Aprovados","955","success"],["Reprovados","109","danger"],["Tx Aprovação (Sem. 13)","91%","success"]])+mkChart("Peças por Fornecedor (Aprovados / Reprovados)",[BM("Ricken",[["93.15%","success"],["6.85%","danger"]],"626 / 46"),BM("Pandolfi",[["82.74%","success"],["17.26%","danger"]],"278 / 58"),BM("Tres Guri",[["91.07%","success"],["8.93%","danger"]],"51 / 5")])+mkChart("Taxa de Aprovação por Fornecedor",[B("Ricken","93.15%","93,15%","success"),B("Tres Guri","91.07%","91,07%","success"),B("Pandolfi","82.74%","82,74%","warning")])+mkChart("Taxa de Aprovação por Semana",[B("Sem. 4","84.14%","84,14%"),B("Sem. 5","93.55%","93,55%"),B("Sem. 6","86.58%","86,58%"),B("Sem. 7","96.09%","96,09%"),B("Sem. 8","89.99%","89,99%"),B("Sem. 10","89.15%","89,15%"),B("Sem. 11","91.16%","91,16%"),B("Sem. 12","89.35%","89,35%"),B("Sem. 13","91.07%","91,07%","success")])+mkChart("Taxa de Aprovação por Mês",[B("Janeiro","88.15%","88,15%"),B("Fevereiro","92.17%","92,17%"),B("Março","90.02%","90,02%")]),
-lastro:()=>mkStats([["Ensaios Realizados","71"],["Ensaios Aprovados","62","success"],["Reprovados","9","danger"],["Tx Aprovação (Sem. 13)","87%","warning"]])+mkChart("Ensaios por Tipo (Aprovados vs Reprovados)",[BM("Granulometria",[["90.7%","success"],["9.3%","danger"]],"54 (49/5)"),BM("F. Fragmentos",[["76.5%","success"],["23.5%","danger"]],"17 (13/4)")])+mkChart("Ensaios por Pedreira",[BM("Basalto",[["80%","success"],["20%","danger"]],"16 / 4"),B("Embu S A","100%","16 / 0","success"),BM("Coplan",[["58.3%","success"],["41.7%","danger"]],"7 / 5"),B("Minermix","100%","12 / 0","success"),B("Petra","100%","11 / 0","success")])+mkChart("Aprovação por Pedreira",[B("Coplan","58%","58%","danger",null,"color:#C62828"),B("Basalto","80%","80%","warning"),B("Embu S A","100%","100%","success"),B("Minermix","100%","100%","success"),B("Petra","100%","100%","success")]),
-sub:()=>mkStats([["Lotes Inspecionados","7"],["Peças Liberadas","71 Mil","success"],["Peças Não Conformes","0","success"],["Lotes Reprovados","--","success"]])+mkChart("Amostras Inspecionadas por Fornecedor",[B("Hipperfreios","100%","222")])+mkChart("Inspeção por Material",[B("Ombreira FAST-CLIP HFOB08","100%","142"),B("Palmilha Branca TR68","56.3%","80")])+mkChart("Inspeções por Mês (2026)",[B("Janeiro","100%","1,6 Mil"),B("Fevereiro","87.5%","1,4 Mil"),B("Março","37.5%","0,6 Mil")]),
-rnc:()=>mkStats([["Total de Registros","77"],["Concluídos","63","success"],["Em Andamento","9","warning"],["Cancelados","5","danger"]])+'<div class="dashboard-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:25px">'+mkStat("% Concluídos",'81,8%','success')+mkStat("% Em Andamento",'11,7%','warning')+mkStat("% Cancelados",'6,5%','danger')+'</div>'+mkChart("Registros Abertos por Fornecedor",[B("Pandolfi","100%","17","warning"),B("Larssen","88.2%","15","warning"),B("Ricken","64.7%","11","warning"),B("F. Garcia","47%","8","warning"),B("Tratanorte","29.4%","5","warning"),B("Autem","23.5%","4","warning")])+mkChart("Registros Abertos por Área",[BM("Manutenção",[["81%","success"],["7%","warning"],["12%","danger"]],"81%"),BM("Modernização",[["84%","success"],["4%","warning"],["12%","danger"]],"84%")])+mkChart("Registros Abertos por Material",[BM("Dormente Madeira",[["85%","success"],["6%","warning"],["9%","danger"]],"85%"),BM("Lastro",[["75%","success"],["13%","warning"],["13%","danger"]],"75%"),B("Dormente Concreto","100%","100%","success"),B("Ombreira E-CLIP","100%","100%","success")])
-};
+function atualizarProcSubitem(){
+    const area=$('proc-area').value,sel=$('proc-subitem');
+    sel.innerHTML='<option value="">Selecione um item...</option>';
+    hideEl('proc-result-box');
+    if(!area){sel.disabled=true;sel.innerHTML='<option value="">Primeiro selecione uma área...</option>';return}
+    sel.disabled=false;
+    const itens=PROCEDIMENTOS[area].itens;
+    for(const k in itens)sel.innerHTML+=`<option value="${k}">${itens[k].titulo}</option>`;
+}
 
-function atualizarReport(){
-    const s=$('report-semana').value,a=$('report-area').value,c=$('report-content');
-    if(a){c.innerHTML=R[s]&&R[s][a]?R[s][a]():`<div class="stat-card" style="text-align:center;padding:40px"><h3 style="color:var(--text-title);margin-bottom:10px">Dados da Semana ${s} não disponíveis ainda.</h3><p style="color:var(--text-muted);font-size:.95rem">Envie as imagens atualizadas do dashboard para processamento.</p></div>`;showEl('report-content')}else hideEl('report-content');
+function renderProcItem(item){
+    return `<div class="proc-item"><div class="proc-item-code">📄 ${item.codigo}</div><div class="proc-item-title">${item.titulo}</div><div class="proc-item-desc">${item.desc}</div></div>`;
+}
+
+function consultarProcedimento(){
+    const area=$('proc-area').value,sub=$('proc-subitem').value,box=$('proc-result-box');
+    if(!area||!sub){box.innerHTML='<div class="proc-empty">⚠️ Selecione uma área e um item para consultar o procedimento.</div>';box.classList.remove('escondido');box.style.display='block';return}
+    const g=PROCEDIMENTOS[area],item=g.itens[sub];
+    box.innerHTML=`<div class="proc-area-header">${g.icone} ${g.nome}</div>`+renderProcItem(item);
+    box.classList.remove('escondido');box.style.display='block';
+}
+
+function mostrarTodosProcedimentos(){
+    const box=$('proc-result-box');let html='';
+    for(const areaKey in PROCEDIMENTOS){
+        const g=PROCEDIMENTOS[areaKey];
+        html+=`<div class="proc-area-header">${g.icone} ${g.nome}</div>`;
+        for(const itemKey in g.itens)html+=renderProcItem(g.itens[itemKey]);
+    }
+    box.innerHTML=html;box.classList.remove('escondido');box.style.display='block';
 }
 
 // === AJUDA VISUAL ===
@@ -572,7 +640,7 @@ function compartilharWhatsApp(boxId,cat){const t=$(boxId).innerText,d=new Date()
 
 // === STORAGE ===
 function salvarDadosLocal(){const inputs=document.querySelectorAll('input:not([type="password"]),select'),d={};inputs.forEach(i=>{if(i.id)d[i.id]=i.type==='checkbox'?i.checked:i.value});d.sessao_ativa=true;localStorage.setItem('rumoInspeccaoDados',JSON.stringify(d))}
-function carregarDadosLocal(){const s=localStorage.getItem('rumoInspeccaoDados');if(s){const d=JSON.parse(s);for(const id in d){const el=$(id);if(el){el.type==='checkbox'?el.checked=d[id]:el.value=d[id]}}if(d['tipo-defeito'])atualizarOpcoes();['amv-componente','mad-categoria','brita-categoria','sub-categoria','report-semana','report-area'].forEach(id=>{if(d[id]){const el=$(id);if(el)el.dispatchEvent(new Event('change'))}});if(d.sessao_ativa){hideEl('login-screen');showEl('main-layout','flex');if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}}}
+function carregarDadosLocal(){const s=localStorage.getItem('rumoInspeccaoDados');if(s){const d=JSON.parse(s);for(const id in d){const el=$(id);if(el){el.type==='checkbox'?el.checked=d[id]:el.value=d[id]}}if(d['tipo-defeito'])atualizarOpcoes();['amv-componente','mad-categoria','brita-categoria','sub-categoria','proc-area'].forEach(id=>{if(d[id]){const el=$(id);if(el)el.dispatchEvent(new Event('change'))}});if(d.sessao_ativa){hideEl('login-screen');showEl('main-layout','flex');if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}}}
 
 document.addEventListener('DOMContentLoaded',()=>{carregarDadosLocal();document.querySelectorAll('input:not([type="password"]),select').forEach(i=>{i.addEventListener('change',salvarDadosLocal);i.addEventListener('input',salvarDadosLocal)});window.onclick=e=>{if(e.target===$('modal-ajuda-visual'))fecharAjuda()}})
 </script>
