@@ -1,115 +1,808 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Guia do Inspetor Padrão - RUMO</title>
     <style>
-        :root {
-            --bg-body:#f4f7f6;--bg-login:#04233f;--bg-sidebar:#04233f;--bg-panel:#FFF;--bg-input:#FFF;
-            --text-main:#212121;--text-muted:#666;--text-title:#04233f;--text-proc:#78909C;--accent:#FFD600;
-            --border-color:#E0E0E0;--shadow-light:rgba(0,0,0,0.05);--shadow-strong:rgba(0,0,0,0.3);
-            --watermark-opacity:0.20;--watermark-filter:none;
-            --bg-reparar:#FFF3E0;--text-reparar:#E65100;--border-reparar:#FFE0B2;
-            --bg-aceitavel:#E8F5E9;--text-aceitavel:#2E7D32;--border-aceitavel:#C8E6C9;
-            --bg-refugo:#FFEBEE;--text-refugo:#C62828;--border-refugo:#FFCDD2;
+        /* =====================================================================
+           RUMO — Identidade Visual / Design System
+           Guia do Inspetor Padrão
+           ===================================================================== */
+
+        @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700&family=Inter+Tight:wght@400;500;600;700&display=swap');
+
+        :root{
+         /* ---------- PALETA INSTITUCIONAL RUMO ---------- */
+         --rumo-navy-900:#021324;
+         --rumo-navy-800:#042D4F;
+         --rumo-navy-700:#0A3D62;
+         --rumo-navy-600:#1B5A8F;
+         --rumo-blue-500:#2BA5DB;
+         --rumo-blue-400:#3BAEE8;
+         --rumo-blue-300:#7CC8EC;
+         --rumo-lime:#A5D233;
+         --rumo-lime-dark:#8BB528;
+         --rumo-green:#3E8E41;
+         --rumo-orange:#F47C3C;
+         --rumo-coral:#E8593C;
+
+         /* ---------- TOKENS SEMÂNTICOS — TEMA CLARO ---------- */
+         --bg-body:#F4F6F9;
+         --bg-panel:#FFFFFF;
+         --bg-input:#F8FAFC;
+         --bg-sidebar:var(--rumo-navy-800);
+         --bg-login:var(--rumo-navy-800);
+         --text-main:#1A2633;
+         --text-muted:#5A6B7D;
+         --text-title:var(--rumo-navy-800);
+         --text-proc:#8A99A8;
+         --border-color:#E4EAF0;
+         --border-accent:var(--rumo-lime);
+
+         /* Sombras em camadas */
+         --shadow-sm:0 1px 2px rgba(4,45,79,.04),0 2px 8px rgba(4,45,79,.04);
+         --shadow-md:0 4px 16px rgba(4,45,79,.08),0 2px 4px rgba(4,45,79,.04);
+         --shadow-lg:0 20px 40px rgba(4,45,79,.15),0 8px 16px rgba(4,45,79,.08);
+
+         /* Estados de resultado */
+         --bg-aceitavel:#F0F7E4;
+         --text-aceitavel:#3E7015;
+         --border-aceitavel:var(--rumo-lime);
+         --bg-reparar:#FFF1E6;
+         --text-reparar:#B8531A;
+         --border-reparar:var(--rumo-orange);
+         --bg-refugo:#FDEBE6;
+         --text-refugo:#A83420;
+         --border-refugo:var(--rumo-coral);
+
+         --watermark-opacity:.12;
+         --watermark-filter:none;
         }
-        body.dark {
-            --bg-body:#121212;--bg-login:#021324;--bg-sidebar:#021324;--bg-panel:#1E1E1E;--bg-input:#2C2C2C;
-            --text-main:#E0E0E0;--text-muted:#bbb;--text-title:#64b5f6;--text-proc:#B0BEC5;
-            --border-color:#424242;--shadow-light:rgba(0,0,0,0.4);--shadow-strong:rgba(0,0,0,0.5);
-            --watermark-opacity:0.05;--watermark-filter:grayscale(100%) invert(1);
+
+        /* ---------- TOKENS SEMÂNTICOS — TEMA ESCURO ---------- */
+        body.dark{
+         --bg-body:#0A1520;
+         --bg-panel:#112232;
+         --bg-input:#0E1B28;
+         --bg-sidebar:var(--rumo-navy-900);
+         --bg-login:var(--rumo-navy-900);
+         --text-main:#E6EDF3;
+         --text-muted:#8B9BAD;
+         --text-title:var(--rumo-blue-400);
+         --text-proc:#6B7D8F;
+         --border-color:#1F3244;
+         --shadow-sm:0 1px 2px rgba(0,0,0,.3),0 2px 8px rgba(0,0,0,.2);
+         --shadow-md:0 4px 16px rgba(0,0,0,.4),0 2px 4px rgba(0,0,0,.2);
+         --shadow-lg:0 20px 40px rgba(0,0,0,.5),0 8px 16px rgba(0,0,0,.3);
+
+         --bg-aceitavel:rgba(165,210,51,.08);
+         --text-aceitavel:#B8DB52;
+         --bg-reparar:rgba(244,124,60,.08);
+         --text-reparar:#F8A170;
+         --bg-refugo:rgba(232,89,60,.1);
+         --text-refugo:#F28773;
+
+         --watermark-opacity:.04;
+         --watermark-filter:grayscale(100%) invert(1);
         }
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
-        body{background:var(--bg-body);color:var(--text-main);min-height:100vh;display:flex;transition:.3s;overflow-x:hidden}
-        .escondido{display:none!important}.bold{font-weight:bold}
-        #login-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg-login);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
-        .login-card{background:var(--bg-panel);padding:40px;border-radius:15px;width:100%;max-width:400px;text-align:center;box-shadow:0 15px 35px var(--shadow-strong)}
-        .login-logo{width:150px;margin-bottom:15px;filter:brightness(0.2)}
-        body.dark .login-logo{filter:brightness(0.8)}
-        .login-subtitle{font-size:.8rem;color:var(--text-muted);margin:-15px 0 25px;font-weight:600;line-height:1.3}
-        #main-layout{display:none;width:100%;position:relative;z-index:1}
-        #main-layout::before{content:"";position:fixed;top:0;left:0;width:100vw;height:100vh;background:url('https://inevitable-violet-aqhzqzsvkz.edgeone.app/transporte.jpg') center/cover no-repeat;opacity:var(--watermark-opacity);filter:var(--watermark-filter);z-index:-1;pointer-events:none}
-        aside{width:280px;background:var(--bg-sidebar);color:#fff;display:flex;flex-direction:column;padding:20px 0;flex-shrink:0;box-shadow:2px 0 10px rgba(0,0,0,.1);transition:.4s ease}
-        aside.hidden{transform:translateX(-100%);width:0;overflow:hidden;padding:0}
-        .sidebar-logo{display:block;width:140px;margin:0 auto 10px;filter:brightness(0) invert(1)}
-        .sidebar-subtitle{text-align:center;font-size:.75rem;opacity:.9;margin:0 15px 20px;font-weight:500}
-        .menu-header{padding:10px 25px 15px;font-size:1.1rem;font-weight:600;border-bottom:2px solid rgba(255,255,255,.3);margin-bottom:10px}
-        .menu-item{padding:15px 25px;cursor:pointer;transition:.3s;border-left:4px solid transparent;font-size:.95rem;font-weight:500;opacity:.85;display:flex;align-items:center;gap:8px}
-        .menu-item:hover,.menu-item.active{background:rgba(255,255,255,.1);opacity:1}
-        .menu-item.active{border-left-color:var(--accent)}
-        .sidebar-bottom{margin-top:auto;display:flex;flex-direction:column;align-items:center;width:100%}
-        .logout-btn{margin:0 25px 15px;padding:10px 15px;background:rgba(211,47,47,.15);border:1px solid rgba(211,47,47,.3);border-radius:8px;color:#ff8a80;font-weight:600;cursor:pointer;width:calc(100% - 50px);transition:.3s}
-        .logout-btn:hover{background:rgba(211,47,47,.4);color:#fff}
-        .suggest-btn{margin:0 25px 15px;padding:10px 15px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.4);border-radius:8px;color:#81e8a8;font-weight:600;cursor:pointer;width:calc(100% - 50px);transition:.3s;display:flex;align-items:center;justify-content:center;gap:8px;font-size:.9rem}
-        .suggest-btn:hover{background:rgba(37,211,102,.4);color:#fff}
-        .dark-toggle{margin-bottom:10px;padding:5px;background:transparent;border:none;cursor:pointer;font-size:2.2rem}
+
+        /* =====================================================================
+           BASE / RESET
+           ===================================================================== */
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{-webkit-text-size-adjust:100%}
+        body{
+         font-family:'Inter Tight','Barlow',system-ui,sans-serif;
+         background:var(--bg-body);
+         color:var(--text-main);
+         min-height:100vh;
+         display:flex;
+         transition:background .3s,color .3s;
+         overflow-x:hidden;
+         -webkit-font-smoothing:antialiased;
+         font-feature-settings:"ss01","cv11";
+        }
+        .escondido{display:none!important}
+        .bold{font-weight:700}
+
+        /* =====================================================================
+           TELA DE LOGIN
+           ===================================================================== */
+        #login-screen{
+         position:fixed;inset:0;z-index:1000;padding:20px;
+         display:flex;align-items:center;justify-content:center;
+         background:
+          radial-gradient(ellipse at top left,rgba(43,165,219,.18),transparent 50%),
+          radial-gradient(ellipse at bottom right,rgba(165,210,51,.12),transparent 50%),
+          linear-gradient(135deg,var(--rumo-navy-900) 0%,var(--rumo-navy-800) 100%);
+        }
+        #login-screen::before{
+         content:"";position:absolute;inset:0;pointer-events:none;
+         background-image:
+          linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px),
+          linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px);
+         background-size:48px 48px;
+        }
+        .login-card{
+         background:var(--bg-panel);
+         padding:48px 40px 36px;
+         border-radius:20px;
+         width:100%;max-width:420px;
+         text-align:center;
+         box-shadow:var(--shadow-lg);
+         position:relative;overflow:hidden;
+         animation:floatIn .6s cubic-bezier(.16,1,.3,1);
+        }
+        .login-card::before{
+         content:"";position:absolute;top:0;left:0;right:0;height:5px;
+         background:linear-gradient(90deg,var(--rumo-navy-800) 0%,var(--rumo-blue-500) 50%,var(--rumo-lime) 100%);
+        }
+        .login-logo{width:140px;margin-bottom:18px;filter:brightness(.15)}
+        body.dark .login-logo{filter:brightness(.95)}
+        .login-subtitle{
+         font-size:.72rem;color:var(--text-muted);
+         margin:-10px 0 28px;
+         font-weight:500;line-height:1.5;
+         letter-spacing:.02em;
+         text-transform:uppercase;
+        }
+        .login-label{
+         font-family:'Barlow Condensed',sans-serif;
+         font-weight:600;font-size:1.4rem;
+         margin-bottom:24px;
+         color:var(--text-title);
+         letter-spacing:.02em;
+        }
+
+        /* =====================================================================
+           LAYOUT PRINCIPAL
+           ===================================================================== */
+        #main-layout{display:none;width:100%;position:relative;z-index:1;min-height:100vh}
+        #main-layout::before{
+         content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+         background:url('https://inevitable-violet-aqhzqzsvkz.edgeone.app/transporte.jpg') center/cover no-repeat;
+         opacity:var(--watermark-opacity);filter:var(--watermark-filter);
+        }
+
+        /* =====================================================================
+           SIDEBAR
+           ===================================================================== */
+        aside{
+         width:288px;flex-shrink:0;
+         display:flex;flex-direction:column;
+         padding:28px 0 20px;
+         color:#fff;
+         background:linear-gradient(180deg,var(--rumo-navy-800) 0%,var(--rumo-navy-900) 100%);
+         box-shadow:4px 0 24px rgba(0,0,0,.1);
+         transition:transform .4s cubic-bezier(.16,1,.3,1);
+         position:relative;
+        }
+        aside::after{
+         content:"";position:absolute;top:0;right:0;bottom:0;width:1px;
+         background:linear-gradient(180deg,transparent,rgba(43,165,219,.3) 20%,rgba(165,210,51,.3) 80%,transparent);
+        }
+        aside.hidden{transform:translateX(-100%)}
+        .sidebar-logo{display:block;width:132px;margin:0 auto 12px;filter:brightness(0) invert(1)}
+        .sidebar-subtitle{
+         text-align:center;font-size:.68rem;
+         opacity:.75;margin:0 22px 26px;
+         font-weight:500;letter-spacing:.06em;
+         text-transform:uppercase;line-height:1.5;
+        }
+
+        /* Cabeçalho do menu */
+        .menu-header{
+         font-family:'Barlow Condensed',sans-serif;
+         padding:14px 28px 16px;
+         font-size:.72rem;font-weight:600;
+         letter-spacing:.18em;
+         text-transform:uppercase;
+         color:var(--rumo-blue-300);
+         border-bottom:1px solid rgba(255,255,255,.08);
+         margin-bottom:12px;
+         display:flex;align-items:center;gap:10px;
+        }
+        .menu-header::before{
+         content:"";width:6px;height:6px;border-radius:50%;
+         background:var(--rumo-lime);
+         box-shadow:0 0 10px var(--rumo-lime);
+        }
+
+        /* Itens de menu */
+        .menu-item{
+         padding:13px 28px;cursor:pointer;
+         font-size:.9rem;font-weight:500;
+         opacity:.72;
+         border-left:3px solid transparent;
+         transition:all .25s ease;
+         display:flex;align-items:center;gap:12px;
+         position:relative;
+        }
+        .menu-item::before{
+         content:"";width:5px;height:5px;border-radius:50%;
+         background:currentColor;opacity:.4;
+         transition:all .25s;
+        }
+        .menu-item:hover{
+         background:rgba(255,255,255,.04);
+         opacity:1;
+         padding-left:32px;
+        }
+        .menu-item.active{
+         background:linear-gradient(90deg,rgba(165,210,51,.12) 0%,transparent 100%);
+         border-left-color:var(--rumo-lime);
+         opacity:1;font-weight:600;
+        }
+        .menu-item.active::before{
+         background:var(--rumo-lime);opacity:1;
+         box-shadow:0 0 8px var(--rumo-lime);
+        }
+
+        .sidebar-divider{
+         height:1px;margin:16px 28px;
+         background:linear-gradient(90deg,transparent,rgba(255,255,255,.12) 50%,transparent);
+        }
+        .sidebar-bottom{
+         margin-top:auto;
+         display:flex;flex-direction:column;align-items:center;
+         width:100%;padding-top:16px;
+        }
+
+        /* Botões da sidebar */
+        .sidebar-btn{
+         margin:0 24px 12px;
+         padding:11px 16px;
+         border-radius:10px;
+         font-weight:600;font-size:.85rem;
+         cursor:pointer;width:calc(100% - 48px);
+         transition:all .25s;
+         display:flex;align-items:center;justify-content:center;gap:8px;
+         font-family:inherit;
+         backdrop-filter:blur(8px);
+        }
+        .suggest-btn{
+         background:rgba(165,210,51,.12);
+         border:1px solid rgba(165,210,51,.4);
+         color:var(--rumo-lime);
+        }
+        .suggest-btn:hover{
+         background:var(--rumo-lime);color:var(--rumo-navy-900);
+         transform:translateY(-1px);
+         box-shadow:0 4px 12px rgba(165,210,51,.3);
+        }
+        .logout-btn{
+         background:rgba(232,89,60,.12);
+         border:1px solid rgba(232,89,60,.35);
+         color:#F28773;
+        }
+        .logout-btn:hover{
+         background:var(--rumo-coral);color:#fff;
+         transform:translateY(-1px);
+         box-shadow:0 4px 12px rgba(232,89,60,.3);
+        }
+
+        /* Toggle de tema */
+        .dark-toggle{
+         margin-bottom:14px;padding:8px;
+         background:transparent;border:none;cursor:pointer;
+         font-size:1.8rem;
+         transition:transform .3s;
+        }
+        .dark-toggle:hover{transform:rotate(15deg) scale(1.1)}
         .dark-toggle .icon-sun{display:none}
-        body.dark .dark-toggle .icon-sun{display:inline;color:var(--accent)}
+        body.dark .dark-toggle .icon-sun{display:inline;color:var(--rumo-lime)}
         body.dark .dark-toggle .icon-moon{display:none}
-        .sidebar-credit{text-align:center;font-size:.75rem;opacity:.7;margin-bottom:12px}
-        main{flex-grow:1;padding:40px;overflow-y:auto;position:relative;display:flex;flex-direction:column}
-        .content-section{display:none;max-width:900px;margin:0 auto;flex-grow:1;width:100%}
-        .content-section.active{display:block}
-        h1{margin-bottom:25px;color:var(--text-title);font-size:1.8rem}
-        .proc-title{color:var(--text-proc);font-weight:400;font-size:.85em}
-        .card{background:var(--bg-panel);border-radius:12px;padding:30px;box-shadow:0 4px 15px var(--shadow-light);position:relative;z-index:1;overflow:hidden}
-        .card::before{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:url('https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg') center/60% no-repeat;opacity:.03;z-index:-1;pointer-events:none;filter:var(--watermark-filter)}
-        #toggle-sidebar-btn{position:fixed;top:20px;left:20px;z-index:9999;background:var(--bg-login);color:#fff;border:none;width:50px;height:50px;border-radius:50%;font-size:1.6rem;box-shadow:0 4px 12px var(--shadow-strong);display:none;cursor:pointer;align-items:center;justify-content:center;padding:0;line-height:1}
-        .form-group{margin-bottom:15px;width:100%;display:flex;flex-direction:column;gap:8px}
-        .form-group label{font-weight:bold;font-size:.85rem;color:var(--text-muted);display:flex;align-items:center;justify-content:space-between}
-        .form-group select,.form-group input{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:8px;font-size:1rem;background:var(--bg-input);color:var(--text-main)}
-        .checkbox-group{display:flex;align-items:center;gap:12px;background:var(--bg-input);padding:15px;border-radius:8px;margin-bottom:15px;font-weight:bold}
-        .dimensoes-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;background:var(--bg-input);padding:15px;border-radius:8px;border:1px solid var(--border-color);margin-bottom:15px}
-        .btn-analisar{width:100%;padding:16px;background:var(--bg-login);color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:10px;transition:.2s}
-        .btn-analisar:hover{filter:brightness(1.2)}
-        .botoes-acao{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
-        .btn-action{color:#fff;padding:12px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:.9rem}
-        .btn-wpp{background:#25D366}.btn-wpp:hover{background:#128C7E}
-        .btn-cam{background:#0277bd}.btn-cam:hover{background:#01579b}
-        .resultado-box{margin-top:25px;padding:25px;border-radius:12px;text-align:left;font-weight:500;line-height:1.5;display:none;box-shadow:0 2px 8px var(--shadow-light)}
-        .resultado-box.reparar{background:var(--bg-reparar);color:var(--text-reparar);border:2px solid var(--border-reparar)}
-        .resultado-box.aceitavel{background:var(--bg-aceitavel);color:var(--text-aceitavel);border:2px solid var(--border-aceitavel)}
-        .resultado-box.refugo{background:var(--bg-refugo);color:var(--text-refugo);border:2px solid var(--border-refugo)}
-        .error-msg{color:#d32f2f;font-size:.85rem;margin-top:10px;display:none}
-        .aviso-normativo{text-align:center;font-size:.85rem;font-weight:bold;color:var(--text-muted);margin-top:20px;padding:15px;border-radius:8px;background:rgba(0,0,0,.03);display:none}
-        body.dark .aviso-normativo{background:rgba(255,255,255,.05)}
-        .btn-ajuda-visual{background:rgba(4,35,63,.1);border:none;border-radius:50%;width:22px;height:22px;font-size:.75rem;font-weight:bold;color:var(--bg-login);cursor:pointer;transition:.2s;margin-left:auto}
-        body.dark .btn-ajuda-visual{background:rgba(255,255,255,.1);color:var(--accent)}
-        .btn-ajuda-visual:hover{background:var(--bg-login);color:#fff}
-        .modal-ajuda{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
-        .modal-ajuda-content{background:var(--bg-panel);padding:25px;border-radius:12px;width:90%;max-width:400px;text-align:center;position:relative}
-        .modal-ajuda-close{position:absolute;top:10px;right:15px;font-size:1.5rem;cursor:pointer;font-weight:bold;color:var(--text-muted)}
-        .modal-img-placeholder{width:100%;height:200px;background:rgba(0,0,0,.05);border:2px dashed var(--border-color);border-radius:8px;margin:15px 0;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:.9rem}
-        body.dark .modal-img-placeholder{background:rgba(255,255,255,.05)}
-        #camera-modal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:11000;display:flex;flex-direction:column}
-        .camera-header{display:flex;justify-content:space-between;padding:15px;background:rgba(0,0,0,.5);position:absolute;top:0;width:100%;z-index:2}
-        .camera-header button{background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;text-shadow:1px 1px 3px #000}
-        .video-container{position:relative;flex-grow:1;display:flex;align-items:center;justify-content:center;overflow:hidden}
-        #video-preview,#foto-capturada{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
-        .overlay-texto{position:absolute;bottom:20px;left:20px;right:20px;background:rgba(0,0,0,.05);color:#fff;padding:12px 15px;border-radius:8px;font-size:.8rem;z-index:2;pointer-events:none;border-left:4px solid var(--accent);text-shadow:1px 1px 4px rgba(0,0,0,.9);text-align:center}
-        .camera-controls{background:#000;padding:20px;display:flex;justify-content:center;align-items:center;gap:20px;z-index:2}
-        .btn-capturar{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.2);border:5px solid #fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;box-shadow:0 0 15px rgba(255,255,255,.4)}
-        .btn-capturar::after{content:"";width:56px;height:56px;background:#fff;border-radius:50%;transition:.2s}
-        .btn-capturar:active::after{width:45px;height:45px}
-        .botoes-pos-captura{display:flex;gap:10px;width:100%;max-width:450px;margin:0 auto}
-        .btn-secundario{background:#333;color:#fff;border:none;padding:16px;border-radius:8px;flex-grow:1;font-weight:bold;cursor:pointer;font-size:1.05rem;box-shadow:0 4px 10px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;gap:8px}
-        /* ESTILOS DA ABA PROCEDIMENTOS */
-        .proc-result-box{margin-top:20px;padding:20px;background:var(--bg-input);border-radius:10px;border-left:4px solid var(--accent);box-shadow:0 2px 8px var(--shadow-light);display:none}
-        .proc-item{padding:15px;background:var(--bg-panel);border-radius:8px;margin-bottom:12px;border:1px solid var(--border-color);transition:.3s}
-        .proc-item:hover{box-shadow:0 4px 12px var(--shadow-light);transform:translateY(-2px)}
-        .proc-item-title{color:var(--text-title);font-weight:bold;font-size:1rem;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-        .proc-item-code{display:inline-block;background:var(--bg-login);color:#fff;padding:4px 10px;border-radius:6px;font-size:.75rem;font-weight:bold;margin-bottom:8px;letter-spacing:.5px}
-        body.dark .proc-item-code{background:var(--accent);color:var(--bg-login)}
-        .proc-item-desc{color:var(--text-muted);font-size:.85rem;line-height:1.5}
-        .proc-area-header{background:linear-gradient(135deg,var(--bg-login),var(--text-title));color:#fff;padding:12px 18px;border-radius:8px;margin:20px 0 10px;font-weight:bold;font-size:.95rem;display:flex;align-items:center;gap:10px}
+        .sidebar-credit{
+         text-align:center;font-size:.68rem;
+         opacity:.5;margin-bottom:14px;
+         letter-spacing:.04em;
+        }
+
+        /* =====================================================================
+           ÁREA DE CONTEÚDO
+           ===================================================================== */
+        main{
+         flex-grow:1;padding:48px 56px;
+         overflow-y:auto;
+         position:relative;
+         display:flex;flex-direction:column;
+        }
+        .content-section{
+         display:none;max-width:920px;margin:0 auto;
+         flex-grow:1;width:100%;
+        }
+        .content-section.active{
+         display:block;
+         animation:fadeSlide .4s cubic-bezier(.16,1,.3,1);
+        }
+
+        /* Títulos */
+        h1{
+         font-family:'Barlow Condensed',sans-serif;
+         font-weight:700;
+         margin-bottom:28px;
+         color:var(--text-title);
+         font-size:2.4rem;
+         line-height:1.1;
+         letter-spacing:-.01em;
+         display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;
+         position:relative;
+         padding-bottom:16px;
+        }
+        h1::after{
+         content:"";position:absolute;bottom:0;left:0;
+         width:56px;height:3px;
+         background:linear-gradient(90deg,var(--rumo-lime),var(--rumo-blue-500));
+         border-radius:2px;
+        }
+        .proc-title{
+         font-family:'Inter Tight',sans-serif;
+         color:var(--text-proc);
+         font-weight:500;font-size:.8em;
+         letter-spacing:.02em;
+         text-transform:uppercase;
+        }
+
+        /* Cards */
+        .card{
+         background:var(--bg-panel);
+         border-radius:16px;
+         padding:36px;
+         box-shadow:var(--shadow-md);
+         position:relative;z-index:1;overflow:hidden;
+         border:1px solid var(--border-color);
+        }
+        .card::before{
+         content:"";position:absolute;top:0;left:0;right:0;height:3px;
+         background:linear-gradient(90deg,var(--rumo-navy-800) 0%,var(--rumo-blue-500) 50%,var(--rumo-lime) 100%);
+         opacity:.9;
+        }
+        .card::after{
+         content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+         background:url('https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg') center/52% no-repeat;
+         opacity:.025;filter:var(--watermark-filter);
+        }
+
+        /* Botão flutuante de toggle da sidebar (mobile) */
+        #toggle-sidebar-btn{
+         position:fixed;top:20px;left:20px;z-index:9999;
+         width:48px;height:48px;border-radius:14px;
+         background:var(--rumo-navy-800);color:#fff;
+         border:none;cursor:pointer;
+         font-size:1.4rem;
+         box-shadow:var(--shadow-lg);
+         display:none;
+         align-items:center;justify-content:center;
+         transition:transform .25s;
+        }
+        #toggle-sidebar-btn:hover{transform:scale(1.05)}
+
+        /* =====================================================================
+           FORMULÁRIOS
+           ===================================================================== */
+        .form-group{
+         margin-bottom:18px;width:100%;
+         display:flex;flex-direction:column;gap:8px;
+        }
+        .form-group label{
+         font-weight:600;font-size:.78rem;
+         color:var(--text-muted);
+         text-transform:uppercase;
+         letter-spacing:.06em;
+         display:flex;align-items:center;justify-content:space-between;
+         font-family:'Barlow',sans-serif;
+        }
+        .form-group select,.form-group input{
+         width:100%;padding:13px 14px;
+         border:1.5px solid var(--border-color);
+         border-radius:10px;
+         font-size:.95rem;
+         font-family:inherit;
+         background:var(--bg-input);
+         color:var(--text-main);
+         transition:all .2s;
+        }
+        .form-group select:focus,.form-group input:focus{
+         outline:none;
+         border-color:var(--rumo-blue-500);
+         box-shadow:0 0 0 3px rgba(43,165,219,.15);
+        }
+        .form-group select{
+         appearance:none;
+         background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235A6B7D' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+         background-repeat:no-repeat;
+         background-position:right 14px center;
+         padding-right:42px;
+         cursor:pointer;
+        }
+        body.dark .form-group select{
+         background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238B9BAD' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+        }
+
+        /* Checkbox customizado */
+        .checkbox-group{
+         display:flex;align-items:center;gap:14px;
+         background:var(--bg-input);
+         padding:16px 18px;
+         border-radius:10px;
+         margin-bottom:18px;
+         font-weight:500;font-size:.9rem;
+         border:1.5px solid var(--border-color);
+         cursor:pointer;
+         transition:all .2s;
+        }
+        .checkbox-group:hover{border-color:var(--rumo-blue-500)}
+        .checkbox-group input[type="checkbox"]{
+         width:20px;height:20px;
+         accent-color:var(--rumo-lime);
+         cursor:pointer;
+        }
+
+        /* Grid de dimensões com label flutuante */
+        .dimensoes-grid{
+         display:grid;grid-template-columns:1fr 1fr;gap:16px;
+         background:var(--bg-input);
+         padding:22px;border-radius:12px;
+         border:1.5px solid var(--border-color);
+         margin-bottom:18px;
+         position:relative;
+        }
+        .dimensoes-grid::before{
+         content:"MEDIDAS";position:absolute;top:-9px;left:18px;
+         background:var(--bg-panel);
+         padding:0 10px;
+         font-family:'Barlow',sans-serif;
+         font-size:.65rem;font-weight:700;
+         letter-spacing:.15em;
+         color:var(--rumo-blue-500);
+        }
+
+        /* =====================================================================
+           BOTÕES
+           ===================================================================== */
+        .btn-analisar{
+         width:100%;padding:16px;
+         background:linear-gradient(135deg,var(--rumo-navy-800) 0%,var(--rumo-navy-700) 100%);
+         color:#fff;border:none;border-radius:12px;
+         font-family:'Barlow Condensed',sans-serif;
+         font-weight:700;font-size:1.05rem;
+         letter-spacing:.08em;
+         text-transform:uppercase;
+         cursor:pointer;margin-top:10px;
+         transition:all .3s;
+         position:relative;overflow:hidden;
+         box-shadow:0 4px 12px rgba(4,45,79,.25);
+        }
+        .btn-analisar::before{
+         content:"";position:absolute;inset:0;
+         background:linear-gradient(135deg,var(--rumo-blue-500) 0%,var(--rumo-navy-700) 100%);
+         opacity:0;transition:opacity .3s;
+        }
+        .btn-analisar:hover::before{opacity:1}
+        .btn-analisar:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(4,45,79,.35)}
+        .btn-analisar:active{transform:translateY(0)}
+        .btn-analisar > *{position:relative;z-index:1}
+
+        .btn-todos{
+         width:100%;padding:14px;
+         background:var(--rumo-lime);color:var(--rumo-navy-900);
+         border:none;border-radius:12px;
+         font-family:'Barlow Condensed',sans-serif;
+         font-weight:700;font-size:1rem;
+         letter-spacing:.08em;text-transform:uppercase;
+         cursor:pointer;margin-top:10px;
+         transition:all .3s;
+         display:flex;align-items:center;justify-content:center;gap:10px;
+         box-shadow:0 4px 12px rgba(165,210,51,.3);
+        }
+        .btn-todos:hover{
+         background:var(--rumo-lime-dark);
+         transform:translateY(-2px);
+         box-shadow:0 8px 20px rgba(165,210,51,.4);
+        }
+
+        .botoes-acao{
+         display:grid;grid-template-columns:1fr 1fr;gap:12px;
+         margin-top:18px;
+        }
+        .btn-action{
+         color:#fff;padding:14px;
+         border:none;border-radius:12px;
+         font-family:'Barlow',sans-serif;
+         font-weight:600;font-size:.9rem;
+         cursor:pointer;
+         display:flex;align-items:center;justify-content:center;gap:8px;
+         transition:all .25s;
+         box-shadow:var(--shadow-sm);
+        }
+        .btn-action:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+        .btn-wpp{background:#25D366}
+        .btn-wpp:hover{background:#1EB853}
+        .btn-cam{background:var(--rumo-blue-500)}
+        .btn-cam:hover{background:var(--rumo-navy-700)}
+
+        /* Botão de ajuda visual */
+        .btn-ajuda-visual{
+         background:var(--rumo-blue-500);
+         border:none;border-radius:50%;
+         width:22px;height:22px;
+         font-size:.72rem;font-weight:700;
+         color:#fff;cursor:pointer;
+         transition:all .2s;margin-left:auto;
+         font-family:inherit;
+        }
+        .btn-ajuda-visual:hover{background:var(--rumo-navy-800);transform:scale(1.15)}
+
+        /* =====================================================================
+           RESULTADO DA ANÁLISE
+           ===================================================================== */
+        .resultado-box{
+         margin-top:28px;padding:28px 32px;
+         border-radius:14px;
+         text-align:left;font-weight:500;line-height:1.6;
+         display:none;
+         font-size:.95rem;
+         border-left:4px solid;
+         position:relative;
+         box-shadow:var(--shadow-sm);
+         font-family:'Inter Tight','Barlow',sans-serif;
+        }
+        .resultado-box::before{
+         content:"";position:absolute;top:0;right:0;width:80px;height:80px;
+         background:url('https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg') no-repeat center;
+         background-size:contain;opacity:.06;
+         pointer-events:none;
+        }
+        .resultado-box.aceitavel{background:var(--bg-aceitavel);color:var(--text-aceitavel);border-color:var(--border-aceitavel)}
+        .resultado-box.reparar{background:var(--bg-reparar);color:var(--text-reparar);border-color:var(--border-reparar)}
+        .resultado-box.refugo{background:var(--bg-refugo);color:var(--text-refugo);border-color:var(--border-refugo)}
+
+        .error-msg{color:var(--rumo-coral);font-size:.85rem;margin-top:12px;display:none;font-weight:500}
+        .aviso-normativo{
+         text-align:center;
+         font-size:.75rem;font-weight:500;
+         color:var(--text-muted);
+         margin-top:22px;padding:14px 18px;
+         border-radius:10px;
+         background:var(--bg-input);
+         border:1px dashed var(--border-color);
+         letter-spacing:.02em;
+         display:none;
+        }
+
+        /* =====================================================================
+           MODAL DE AJUDA
+           ===================================================================== */
+        .modal-ajuda{
+         position:fixed;inset:0;z-index:10000;
+         background:rgba(2,19,36,.75);
+         display:flex;align-items:center;justify-content:center;
+         backdrop-filter:blur(6px);
+         padding:20px;
+        }
+        .modal-ajuda-content{
+         background:var(--bg-panel);padding:32px 28px;
+         border-radius:18px;
+         width:100%;max-width:420px;
+         text-align:center;position:relative;
+         box-shadow:var(--shadow-lg);
+         animation:floatIn .4s cubic-bezier(.16,1,.3,1);
+         border-top:4px solid var(--rumo-blue-500);
+        }
+        .modal-ajuda-close{
+         position:absolute;top:14px;right:18px;
+         font-size:1.6rem;cursor:pointer;
+         font-weight:500;color:var(--text-muted);
+         transition:color .2s;line-height:1;
+        }
+        .modal-ajuda-close:hover{color:var(--rumo-coral)}
+        .modal-ajuda-content h3{
+         font-family:'Barlow Condensed',sans-serif;
+         font-size:1.5rem;font-weight:700;
+         color:var(--text-title);margin-bottom:8px;
+        }
+        .modal-ajuda-content p{
+         font-size:.9rem;color:var(--text-muted);line-height:1.6;
+        }
+        .modal-img-placeholder{
+         width:100%;height:180px;
+         background:var(--bg-input);
+         border:2px dashed var(--border-color);
+         border-radius:12px;margin:18px 0;
+         display:flex;flex-direction:column;
+         align-items:center;justify-content:center;
+         color:var(--text-muted);font-size:.85rem;gap:8px;
+        }
+
+        /* =====================================================================
+           CÂMERA
+           ===================================================================== */
+        #camera-modal{
+         position:fixed;inset:0;z-index:11000;
+         background:#000;
+         display:flex;flex-direction:column;
+        }
+        .camera-header{
+         display:flex;justify-content:space-between;align-items:center;
+         padding:16px 20px;
+         background:linear-gradient(180deg,rgba(0,0,0,.7) 0%,transparent 100%);
+         position:absolute;top:0;width:100%;z-index:2;
+        }
+        .camera-header button{
+         background:rgba(255,255,255,.1);
+         border:1px solid rgba(255,255,255,.2);
+         color:#fff;font-size:.9rem;
+         cursor:pointer;
+         padding:8px 14px;border-radius:8px;
+         font-weight:600;backdrop-filter:blur(8px);
+         font-family:inherit;
+        }
+        .camera-header span{
+         color:#fff;font-weight:700;
+         font-family:'Barlow Condensed',sans-serif;
+         font-size:1.1rem;letter-spacing:.08em;
+         text-transform:uppercase;
+        }
+        .video-container{
+         position:relative;flex-grow:1;overflow:hidden;
+         display:flex;align-items:center;justify-content:center;
+        }
+        #video-preview,#foto-capturada{
+         width:100%;height:100%;
+         object-fit:cover;
+         position:absolute;top:0;left:0;
+        }
+        .overlay-texto{
+         position:absolute;bottom:24px;left:20px;right:20px;
+         background:rgba(2,19,36,.75);
+         backdrop-filter:blur(10px);
+         color:#fff;padding:14px 18px;
+         border-radius:12px;
+         font-size:.78rem;z-index:2;pointer-events:none;
+         border-left:4px solid var(--rumo-lime);
+         text-align:left;line-height:1.5;
+        }
+        .camera-controls{
+         background:#000;padding:24px;
+         display:flex;justify-content:center;align-items:center;gap:20px;
+         z-index:2;
+        }
+
+        /* Botão de captura com pulso em verde lime */
+        .btn-capturar{
+         width:76px;height:76px;border-radius:50%;
+         background:rgba(255,255,255,.15);
+         border:4px solid #fff;
+         cursor:pointer;
+         display:flex;align-items:center;justify-content:center;
+         transition:all .2s;
+         box-shadow:0 0 0 0 rgba(165,210,51,.4);
+         animation:pulseCapture 2s infinite;
+        }
+        .btn-capturar::after{
+         content:"";width:54px;height:54px;
+         background:#fff;border-radius:50%;
+         transition:all .15s;
+        }
+        .btn-capturar:active::after{width:42px;height:42px;background:var(--rumo-lime)}
+        .botoes-pos-captura{display:flex;gap:10px;width:100%;max-width:480px;margin:0 auto}
+        .btn-secundario{
+         background:#1A2633;color:#fff;
+         border:1px solid rgba(255,255,255,.1);
+         padding:16px;border-radius:12px;
+         flex-grow:1;
+         font-family:'Barlow',sans-serif;
+         font-weight:600;cursor:pointer;font-size:.95rem;
+         display:flex;align-items:center;justify-content:center;gap:8px;
+         transition:all .2s;
+        }
+        .btn-secundario:hover{transform:translateY(-2px)}
+
+        /* =====================================================================
+           PROCEDIMENTOS
+           ===================================================================== */
+        .proc-result-box{
+         margin-top:24px;padding:22px;
+         background:var(--bg-input);
+         border-radius:14px;
+         border:1px solid var(--border-color);
+         box-shadow:var(--shadow-sm);
+         display:none;
+        }
+        .proc-item{
+         padding:18px 20px;
+         background:var(--bg-panel);
+         border-radius:12px;
+         margin-bottom:12px;
+         border:1px solid var(--border-color);
+         transition:all .25s;
+         position:relative;overflow:hidden;
+        }
+        .proc-item::before{
+         content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+         background:var(--rumo-blue-500);
+         transform:scaleY(0);transform-origin:top;
+         transition:transform .3s;
+        }
+        .proc-item:hover{
+         box-shadow:var(--shadow-md);
+         transform:translateX(4px);
+         border-color:var(--rumo-blue-500);
+        }
+        .proc-item:hover::before{transform:scaleY(1)}
+        .proc-item-title{
+         font-family:'Barlow Condensed',sans-serif;
+         color:var(--text-title);
+         font-weight:700;font-size:1.15rem;
+         margin-bottom:10px;line-height:1.3;
+        }
+        .proc-item-code{
+         display:inline-flex;align-items:center;gap:6px;
+         background:var(--rumo-navy-800);color:#fff;
+         padding:5px 12px;border-radius:6px;
+         font-family:'Barlow',sans-serif;
+         font-size:.68rem;font-weight:700;
+         margin-bottom:10px;letter-spacing:.08em;
+         text-transform:uppercase;
+        }
+        body.dark .proc-item-code{background:var(--rumo-lime);color:var(--rumo-navy-900)}
+        .proc-item-desc{
+         color:var(--text-muted);
+         font-size:.9rem;line-height:1.65;
+        }
+        .proc-area-header{
+         background:linear-gradient(135deg,var(--rumo-navy-800) 0%,var(--rumo-navy-700) 100%);
+         color:#fff;
+         padding:14px 20px;border-radius:10px;
+         margin:22px 0 12px;
+         font-family:'Barlow Condensed',sans-serif;
+         font-weight:700;font-size:1.05rem;
+         letter-spacing:.06em;text-transform:uppercase;
+         display:flex;align-items:center;gap:12px;
+         position:relative;overflow:hidden;
+        }
+        .proc-area-header::after{
+         content:"";position:absolute;right:0;top:0;bottom:0;width:80px;
+         background:linear-gradient(90deg,transparent,var(--rumo-lime));
+         opacity:.3;
+        }
         .proc-area-header:first-child{margin-top:0}
-        body.dark .proc-area-header{background:linear-gradient(135deg,#021324,#0d3a5e)}
-        .btn-todos{width:100%;padding:14px;background:#F57C00;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:10px;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
-        .btn-todos:hover{background:#E65100}
-        .proc-empty{text-align:center;padding:30px;color:var(--text-muted);font-size:.95rem}
-        @media(max-width:768px){aside{position:fixed;height:100vh;z-index:1000;left:0;top:0;width:280px}main{padding:80px 20px 20px}.dimensoes-grid,.botoes-acao{grid-template-columns:1fr;gap:10px}h1{font-size:1.4rem}}
+        .proc-empty{
+         text-align:center;padding:36px 20px;
+         color:var(--text-muted);font-size:.95rem;
+        }
+
+        /* =====================================================================
+           ANIMAÇÕES
+           ===================================================================== */
+        @keyframes floatIn{
+         from{opacity:0;transform:translateY(20px)}
+         to{opacity:1;transform:translateY(0)}
+        }
+        @keyframes fadeSlide{
+         from{opacity:0;transform:translateY(12px)}
+         to{opacity:1;transform:translateY(0)}
+        }
+        @keyframes pulseCapture{
+         0%,100%{box-shadow:0 0 0 0 rgba(165,210,51,.4)}
+         50%{box-shadow:0 0 0 12px rgba(165,210,51,0)}
+        }
+
+        /* =====================================================================
+           RESPONSIVO — MOBILE
+           ===================================================================== */
+        @media(max-width:768px){
+         aside{
+          position:fixed;height:100vh;z-index:1000;
+          left:0;top:0;width:282px;
+         }
+         main{padding:84px 20px 24px}
+         .dimensoes-grid,.botoes-acao{grid-template-columns:1fr;gap:12px}
+         h1{font-size:1.7rem}
+         .card{padding:24px 20px}
+         .login-card{padding:36px 24px 28px}
+        }
     </style>
 </head>
 <body>
@@ -117,25 +810,25 @@
         <div class="login-card">
             <img src="https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg" alt="Rumo" class="login-logo">
             <div class="login-subtitle">Coordenação de Qualidade e Homologação dos Materiais de Via Permanente</div>
-            <p class="bold" style="margin-bottom:20px">Guia de Procedimentos</p>
+            <p class="login-label">Guia de Procedimentos</p>
             <div class="form-group"><input type="password" id="user-password" placeholder="Digite a senha de acesso"></div>
-            <button class="btn-analisar" onclick="validarAcesso()">ENTRAR</button>
+            <button class="btn-analisar" onclick="validarAcesso()"><span>ENTRAR</span></button>
             <p id="error-msg" class="error-msg">Senha incorreta</p>
         </div>
     </div>
     <div id="modal-ajuda-visual" class="modal-ajuda escondido">
         <div class="modal-ajuda-content">
             <span class="modal-ajuda-close" onclick="fecharAjuda()">&times;</span>
-            <h3 id="modal-titulo" style="color:var(--text-title);margin-bottom:5px">Título</h3>
-            <p id="modal-desc" style="font-size:.85rem;color:var(--text-muted)">Descrição do defeito.</p>
+            <h3 id="modal-titulo">Título</h3>
+            <p id="modal-desc">Descrição do defeito.</p>
             <div class="modal-img-placeholder">📷 <br> [Espaço para foto]</div>
-            <button class="btn-analisar" style="padding:10px" onclick="fecharAjuda()">Entendi</button>
+            <button class="btn-analisar" onclick="fecharAjuda()"><span>ENTENDI</span></button>
         </div>
     </div>
     <div id="camera-modal" class="escondido">
         <div class="camera-header">
             <button onclick="fecharCamera()">❌ Cancelar</button>
-            <span style="color:#fff;font-weight:bold;text-shadow:1px 1px 3px #000">Evidência de Inspeção</span>
+            <span>Evidência de Inspeção</span>
         </div>
         <div class="video-container">
             <video id="video-preview" autoplay playsinline></video>
@@ -163,233 +856,234 @@
                 <div class="menu-item" onclick="navegar(this,'sec-concreto')">Dormente de Concreto</div>
                 <div class="menu-item" onclick="navegar(this,'sec-madeira')">Dormente de Madeira</div>
                 <div class="menu-item" onclick="navegar(this,'sec-sub')">Subcomponentes</div>
-                <div style="border-top:1px solid rgba(255,255,255,.2);margin:15px 25px;box-shadow:0 1px 0 rgba(0,0,0,.5)"></div>
+                <div class="sidebar-divider"></div>
                 <div class="menu-item" onclick="navegar(this,'sec-procedimentos')">📚 Procedimentos</div>
             </div>
             <div class="sidebar-bottom">
                 <button onclick="document.body.classList.toggle('dark')" class="dark-toggle"><span class="icon-moon">🌙</span><span class="icon-sun">☀️</span></button>
-                <button onclick="sugerirMudanca()" class="suggest-btn">💡 Sugerir Alteração</button>
+                <button onclick="sugerirMudanca()" class="sidebar-btn suggest-btn">💡 Sugerir Alteração</button>
                 <div class="sidebar-credit">Desenvolvido por Erwin Klein</div>
-                <button onclick="fazerLogout()" class="logout-btn">🚪 Logoff</button>
+                <button onclick="fazerLogout()" class="sidebar-btn logout-btn">🚪 Logoff</button>
             </div>
         </aside>
         <main>
             <button id="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
 
-```
-        <section id="sec-amv" class="content-section active">
-            <h1>AMV (Aparelhos de Mudança de Via) <span class="proc-title">— Lote ETM-AMV</span></h1>
-            <div class="card">
-                <div class="form-group"><label>Componente Inspecionado:</label>
-                    <select id="amv-componente" onchange="atualizarInterface('amv')">
-                        <option value="">Selecione...</option>
-                        <option value="agulha">Ponta da Agulha (Perfil 5100)</option><option value="rolete">Roletes (Viga I)</option>
-                        <option value="coxin">Coxins dos Roletes (Dureza)</option><option value="jacare_canal">Jacaré (Profundidade do Canal)</option>
-                        <option value="jacare_dureza">Jacaré (Dureza Brinell)</option><option value="fixacao_concreto">Fixação AMV Concreto (Pressão Grampo)</option>
-                        <option value="cilindro">Cilindro de Mola</option><option value="batefica">Aparelho Talonável Bate-Fica</option>
-                    </select>
-                </div>
-                <div id="amv-inputs-agulha" class="dimensoes-grid escondido"><div class="form-group"><label>Medida Atual da Ponta da Agulha (mm): <button class="btn-ajuda-visual" onclick="abrirAjuda('agulha')">?</button></label><input type="number" id="val-amv-ponta" step="0.1"></div></div>
-                <div id="amv-inputs-rolete" class="dimensoes-grid escondido"><div class="form-group"><label>Altura máx do rolete (mm):</label><input type="number" id="val-amv-altura-rolete" step="0.1"></div></div>
-                <div id="amv-inputs-coxin" class="dimensoes-grid escondido"><div class="form-group"><label>Dureza constatada no coxin (Shore A):</label><input type="number" id="val-amv-coxin" step="1"></div></div>
-                <div id="amv-inputs-jacare_canal" class="dimensoes-grid escondido"><div class="form-group"><label>Profundidade do Canal (mm): <button class="btn-ajuda-visual" onclick="abrirAjuda('jacare_canal')">?</button></label><input type="number" id="val-amv-jacare-canal" step="0.1"></div></div>
-                <div id="amv-inputs-jacare_dureza" class="dimensoes-grid escondido"><div class="form-group"><label>Dureza Brinell na área de impacto (HB):</label><input type="number" id="val-amv-jacare-dureza" step="1"></div></div>
-                <div id="amv-inputs-fixacao_concreto" class="dimensoes-grid escondido"><div class="form-group"><label>Pressão do Grampo Eclip-2009 (kgf):</label><input type="number" id="val-amv-fixacao" step="1"></div></div>
-                <div id="amv-inputs-cilindro" class="dimensoes-grid escondido">
-                    <div class="form-group"><label>Pressão de travamento constatada (kgf):</label><input type="number" id="val-amv-pressao" step="1"></div>
-                    <div class="form-group"><label>Tempo de acionamento c/ 260kg (s):</label><input type="number" id="val-amv-tempo" step="0.1"></div>
-                </div>
-                <div id="amv-inputs-batefica" class="dimensoes-grid escondido"><div class="form-group"><label>Deslocamento verificado das agulhas (mm):</label><input type="number" id="val-amv-deslocamento" step="1"></div></div>
-                <button class="btn-analisar escondido" id="btn-amv" onclick="analisarAMV()">VERIFICAR CONFORMIDADE</button>
-                <div id="resultado-box-amv" class="resultado-box"></div>
-                <div id="botoes-acao-amv" class="botoes-acao escondido">
-                    <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-amv','AMV')">📸 Registrar Foto com Laudo</button>
-                    <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-amv','AMV')">💬 Enviar via WhatsApp</button>
-                </div>
-                <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Atualizados 14/04/2026</div>
-            </div>
-        </section>
-        <section id="sec-brita" class="content-section">
-            <h1>Brita para Lastro <span class="proc-title">— MAN-VP-T-ETM-ES-0006-05</span></h1>
-            <div class="card">
-                <div class="form-group"><label>Litologia da Rocha (Essencial para limites):</label>
-                    <select id="brita-litologia"><option value="granito">Granito</option><option value="calcario">Calcário (Calcítico/Dolomítico)</option><option value="basalto">Basalto</option></select>
-                </div>
-                <div class="form-group"><label>Categoria da Inspeção:</label>
-                    <select id="brita-categoria" onchange="atualizarInterface('brita')">
-                        <option value="">Selecione...</option><option value="visual">Inspeção Visual (Contaminação)</option>
-                        <option value="forma_lote">Ensaio de Forma (Lote / Não-Cúbicas)</option><option value="granulometria">Ensaio de Granulometria (AREMA 24)</option>
-                        <option value="laboratorio">Ensaios Físicos (Laboratório)</option>
-                    </select>
-                </div>
-                <div id="brita-check-visual" class="checkbox-group escondido"><input type="checkbox" id="brita-presenca-finos"><label for="brita-presenca-finos">Presença visível de argila, areia ou matéria orgânica?</label></div>
-                <div id="brita-inputs-lote" class="dimensoes-grid escondido"><div class="form-group"><label>Percentual de Não-Cúbicas (%): <button class="btn-ajuda-visual" onclick="abrirAjuda('nao_cubica')">?</button></label><input type="number" id="val-brita-nao-cubicas" step="0.1"></div></div>
-                <div id="brita-inputs-granulometria" class="escondido">
-                    <p style="font-weight:bold;margin-bottom:10px;font-size:.9rem">Insira o percentual Retido Acumulado (%) PLANO 24 AREMA:</p>
-                    <div class="dimensoes-grid">
-                        <div class="form-group"><label>Peneira 3" (76.2 mm):</label><input type="number" id="val-brita-g3" step="0.1"></div>
-                        <div class="form-group"><label>Peneira 2.1/2" (63.5 mm):</label><input type="number" id="val-brita-g250" step="0.1"></div>
-                        <div class="form-group"><label>Peneira 1.1/2" (38.1 mm):</label><input type="number" id="val-brita-g150" step="0.1"></div>
-                        <div class="form-group"><label>Peneira 3/4" (19.1 mm):</label><input type="number" id="val-brita-g075" step="0.1"></div>
-                        <div class="form-group"><label>Peneira 1/2" (12.7 mm):</label><input type="number" id="val-brita-g050" step="0.1"></div>
-                    </div>
-                </div>
-                <div id="brita-inputs-lab" class="escondido"><div class="dimensoes-grid">
-                    <div class="form-group"><label>Abrasão Los Angeles (%):</label><input type="number" id="val-brita-losangeles" step="0.1"></div>
-                    <div class="form-group"><label>Material Pulverulento (%):</label><input type="number" id="val-brita-pulverulento" step="0.1"></div>
-                    <div class="form-group"><label>Torrões de Argila (%):</label><input type="number" id="val-brita-argila" step="0.1"></div>
-                </div></div>
-                <button class="btn-analisar escondido" id="btn-brita" onclick="analisarBrita()">VERIFICAR CONFORMIDADE</button>
-                <div id="resultado-box-brita" class="resultado-box"></div>
-                <div id="botoes-acao-brita" class="botoes-acao escondido">
-                    <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-brita','Brita')">📸 Registrar Foto com Laudo</button>
-                    <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-brita','Brita')">💬 Enviar via WhatsApp</button>
-                </div>
-            </div>
-        </section>
-        <section id="sec-concreto" class="content-section">
-            <h1>Dormente de Concreto <span class="proc-title">— PO-SPE-160</span></h1>
-            <div class="card">
-                <div class="form-group"><label>Tipo de Defeito:</label>
-                    <select id="tipo-defeito" onchange="atualizarOpcoes()"><option value="">Selecione...</option><option value="vazio">Vazios</option><option value="quebra">Quebras</option><option value="fissura">Fissuras</option></select>
-                </div>
-                <div class="form-group"><label>Localização: <button class="btn-ajuda-visual" onclick="abrirAjuda('loc_dormente')">?</button></label>
-                    <select id="localizacao" onchange="atualizarCampos()"><option value="">Selecione a região...</option></select>
-                </div>
-                <div class="checkbox-group escondido" id="container-aco"><input type="checkbox" id="aco-exposto"><label for="aco-exposto">Exposição de Armadura / Aço?</label></div>
-                <div class="dimensoes-grid escondido" id="dimensoes-inputs">
-                    <div class="form-group" id="div-profundidade"><label>Profundidade (mm):</label><input type="number" id="val-profundidade" step="0.1"></div>
-                    <div class="form-group" id="div-comprimento"><label>Comprimento (mm):</label><input type="number" id="val-comprimento" step="0.1"></div>
-                    <div class="form-group" id="div-largura"><label>Largura (mm):</label><input type="number" id="val-largura" step="0.1"></div>
-                    <div class="form-group" id="div-espessura"><label>Espessura (mm):</label><input type="number" id="val-espessura" step="0.01"></div>
-                </div>
-                <button class="btn-analisar" onclick="analisarDefeito()">VERIFICAR CONFORMIDADE</button>
-                <div id="resultado-box-concreto" class="resultado-box"></div>
-                <div id="botoes-acao-concreto" class="botoes-acao escondido">
-                    <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-concreto','Concreto')">📸 Registrar Foto com Laudo</button>
-                    <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-concreto','Concreto')">💬 Enviar via WhatsApp</button>
-                </div>
-            </div>
-        </section>
-        <section id="sec-madeira" class="content-section">
-            <h1>Dormente de Madeira <span class="proc-title">— MAN-DM-T-MTE-DM-0001</span></h1>
-            <div class="card">
-                <div class="form-group"><label>Categoria da Inspeção:</label>
-                    <select id="mad-categoria" onchange="atualizarInterface('madeira')"><option value="">Selecione...</option><option value="fisico">Propriedades Físicas e Químicas</option><option value="defeito">Análise de Defeitos e Conformidade</option></select>
-                </div>
-                <div id="mad-inputs-fisico" class="dimensoes-grid escondido">
-                    <div class="form-group"><label>Classe:</label><select id="mad-classe"><option value="1">1ª Classe</option><option value="2">2ª Classe</option></select></div>
-                    <div class="form-group"><label>Umidade (%):</label><input type="number" id="val-mad-umidade" step="0.1"></div>
-                    <div class="form-group"><label>Densidade (kg/m³):</label><input type="number" id="val-mad-densidade" step="1"></div>
-                    <div class="form-group"><label>Retenção CCA (kg/m³):</label><input type="number" id="val-mad-retencao" step="0.1"></div>
-                </div>
-                <div id="mad-inputs-defeito" class="escondido">
-                    <div class="form-group"><label>Tipo de Defeito ou Medição: <button class="btn-ajuda-visual" onclick="abrirAjuda('def_madeira')">?</button></label>
-                        <select id="mad-tipo-defeito" onchange="atualizarInterface('madeira_sub')">
-                            <option value="">Selecione...</option><option value="dimensoes">📏 Dimensões Fora do Padrão</option><option value="esmoado">🪵 Esmoado (Falta de Canto)</option>
-                            <option value="racha_topo">🪓 Fenda ou Racha de Topo</option><option value="racha_centro">🪓 Rachadura de Centro</option>
-                            <option value="furos_nos">🕳️ Furos de Broca / Nós Cariados</option><option value="empenamento">📐 Empenamento (Flecha)</option>
-                            <option disabled>────────────────</option><option value="podre">❌ Madeira Podre</option><option value="casca">❌ Presença de Casca</option>
-                            <option value="anti_rachante">❌ Falta de Proteção Anti-Rachante</option><option value="amarracao">❌ Falha na Amarração do Fardo</option>
+            <section id="sec-amv" class="content-section active">
+                <h1>AMV (Aparelhos de Mudança de Via) <span class="proc-title">— Lote ETM-AMV</span></h1>
+                <div class="card">
+                    <div class="form-group"><label>Componente Inspecionado:</label>
+                        <select id="amv-componente" onchange="atualizarInterface('amv')">
+                            <option value="">Selecione...</option>
+                            <option value="agulha">Ponta da Agulha (Perfil 5100)</option><option value="rolete">Roletes (Viga I)</option>
+                            <option value="coxin">Coxins dos Roletes (Dureza)</option><option value="jacare_canal">Jacaré (Profundidade do Canal)</option>
+                            <option value="jacare_dureza">Jacaré (Dureza Brinell)</option><option value="fixacao_concreto">Fixação AMV Concreto (Pressão Grampo)</option>
+                            <option value="cilindro">Cilindro de Mola</option><option value="batefica">Aparelho Talonável Bate-Fica</option>
                         </select>
                     </div>
-                    <div id="mad-check-fixacao" class="checkbox-group escondido"><input type="checkbox" id="mad-zona-fixacao"><label for="mad-zona-fixacao">O defeito está na Zona de Fixação?</label></div>
-                    <div id="mad-dims-dimensoes" class="escondido">
-                        <div class="form-group"><label>Tipo do Dormente:</label><select id="val-mad-dim-bitola"><option value="normal">Métrica / Larga</option><option value="amv">AMV</option></select></div>
+                    <div id="amv-inputs-agulha" class="dimensoes-grid escondido"><div class="form-group"><label>Medida Atual da Ponta da Agulha (mm): <button class="btn-ajuda-visual" onclick="abrirAjuda('agulha')">?</button></label><input type="number" id="val-amv-ponta" step="0.1"></div></div>
+                    <div id="amv-inputs-rolete" class="dimensoes-grid escondido"><div class="form-group"><label>Altura máx do rolete (mm):</label><input type="number" id="val-amv-altura-rolete" step="0.1"></div></div>
+                    <div id="amv-inputs-coxin" class="dimensoes-grid escondido"><div class="form-group"><label>Dureza constatada no coxin (Shore A):</label><input type="number" id="val-amv-coxin" step="1"></div></div>
+                    <div id="amv-inputs-jacare_canal" class="dimensoes-grid escondido"><div class="form-group"><label>Profundidade do Canal (mm): <button class="btn-ajuda-visual" onclick="abrirAjuda('jacare_canal')">?</button></label><input type="number" id="val-amv-jacare-canal" step="0.1"></div></div>
+                    <div id="amv-inputs-jacare_dureza" class="dimensoes-grid escondido"><div class="form-group"><label>Dureza Brinell na área de impacto (HB):</label><input type="number" id="val-amv-jacare-dureza" step="1"></div></div>
+                    <div id="amv-inputs-fixacao_concreto" class="dimensoes-grid escondido"><div class="form-group"><label>Pressão do Grampo Eclip-2009 (kgf):</label><input type="number" id="val-amv-fixacao" step="1"></div></div>
+                    <div id="amv-inputs-cilindro" class="dimensoes-grid escondido">
+                        <div class="form-group"><label>Pressão de travamento constatada (kgf):</label><input type="number" id="val-amv-pressao" step="1"></div>
+                        <div class="form-group"><label>Tempo de acionamento c/ 260kg (s):</label><input type="number" id="val-amv-tempo" step="0.1"></div>
+                    </div>
+                    <div id="amv-inputs-batefica" class="dimensoes-grid escondido"><div class="form-group"><label>Deslocamento verificado das agulhas (mm):</label><input type="number" id="val-amv-deslocamento" step="1"></div></div>
+                    <button class="btn-analisar escondido" id="btn-amv" onclick="analisarAMV()"><span>VERIFICAR CONFORMIDADE</span></button>
+                    <div id="resultado-box-amv" class="resultado-box"></div>
+                    <div id="botoes-acao-amv" class="botoes-acao escondido">
+                        <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-amv','AMV')">📸 Registrar Foto com Laudo</button>
+                        <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-amv','AMV')">💬 Enviar via WhatsApp</button>
+                    </div>
+                    <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Atualizados 14/04/2026</div>
+                </div>
+            </section>
+            
+            <section id="sec-brita" class="content-section">
+                <h1>Brita para Lastro <span class="proc-title">— MAN-VP-T-ETM-ES-0006-05</span></h1>
+                <div class="card">
+                    <div class="form-group"><label>Litologia da Rocha (Essencial para limites):</label>
+                        <select id="brita-litologia"><option value="granito">Granito</option><option value="calcario">Calcário (Calcítico/Dolomítico)</option><option value="basalto">Basalto</option></select>
+                    </div>
+                    <div class="form-group"><label>Categoria da Inspeção:</label>
+                        <select id="brita-categoria" onchange="atualizarInterface('brita')">
+                            <option value="">Selecione...</option><option value="visual">Inspeção Visual (Contaminação)</option>
+                            <option value="forma_lote">Ensaio de Forma (Lote / Não-Cúbicas)</option><option value="granulometria">Ensaio de Granulometria (AREMA 24)</option>
+                            <option value="laboratorio">Ensaios Físicos (Laboratório)</option>
+                        </select>
+                    </div>
+                    <div id="brita-check-visual" class="checkbox-group escondido"><input type="checkbox" id="brita-presenca-finos"><label for="brita-presenca-finos">Presença visível de argila, areia ou matéria orgânica?</label></div>
+                    <div id="brita-inputs-lote" class="dimensoes-grid escondido"><div class="form-group"><label>Percentual de Não-Cúbicas (%): <button class="btn-ajuda-visual" onclick="abrirAjuda('nao_cubica')">?</button></label><input type="number" id="val-brita-nao-cubicas" step="0.1"></div></div>
+                    <div id="brita-inputs-granulometria" class="escondido">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:.9rem;color:var(--text-title);">Insira o percentual Retido Acumulado (%) PLANO 24 AREMA:</p>
                         <div class="dimensoes-grid">
-                            <div class="form-group"><label>Comp. Aferido (m):</label><input type="number" id="val-mad-dim-comp" step="0.01"></div>
-                            <div class="form-group"><label>Largura Aferida (cm):</label><input type="number" id="val-mad-dim-larg" step="0.1"></div>
-                            <div class="form-group"><label>Altura Aferida (cm):</label><input type="number" id="val-mad-dim-alt" step="0.1"></div>
-                        </div>
-                        <p style="font-size:.8rem;color:var(--text-muted)">Insira as medidas nominais (referência da Nota Fiscal):</p>
-                        <div class="dimensoes-grid" style="background:rgba(0,0,0,.02)">
-                            <div class="form-group"><label>Comp. Nominal (m):</label><input type="number" id="val-mad-nom-comp" step="0.01"></div>
-                            <div class="form-group"><label>Largura Nominal (cm):</label><input type="number" id="val-mad-nom-larg" step="0.1"></div>
-                            <div class="form-group"><label>Altura Nominal (cm):</label><input type="number" id="val-mad-nom-alt" step="0.1"></div>
+                            <div class="form-group"><label>Peneira 3" (76.2 mm):</label><input type="number" id="val-brita-g3" step="0.1"></div>
+                            <div class="form-group"><label>Peneira 2.1/2" (63.5 mm):</label><input type="number" id="val-brita-g250" step="0.1"></div>
+                            <div class="form-group"><label>Peneira 1.1/2" (38.1 mm):</label><input type="number" id="val-brita-g150" step="0.1"></div>
+                            <div class="form-group"><label>Peneira 3/4" (19.1 mm):</label><input type="number" id="val-brita-g075" step="0.1"></div>
+                            <div class="form-group"><label>Peneira 1/2" (12.7 mm):</label><input type="number" id="val-brita-g050" step="0.1"></div>
                         </div>
                     </div>
-                    <div id="mad-dims-esmoado" class="dimensoes-grid escondido">
-                        <div class="form-group"><label>Comp. Dormente (m):</label><select id="val-mad-esmoado-comp"><option value="2.00">2,00 m</option><option value="2.20">2,20 m ou 2,80 m</option></select></div>
-                        <div class="form-group"><label>Face Reta (Altura) (cm):</label><input type="number" id="val-mad-esmoado-reta" step="0.1"></div>
-                        <div class="form-group"><label>Face Superior (Topo) (cm):</label><input type="number" id="val-mad-esmoado-topo" step="0.1"></div>
-                    </div>
-                    <div id="mad-dims-racha" class="dimensoes-grid escondido">
-                        <div class="form-group"><label>Comprimento (cm):</label><input type="number" id="val-mad-comp-racha" step="0.1"></div>
-                        <div class="form-group"><label>Abertura (mm):</label><input type="number" id="val-mad-abert-racha" step="0.1"></div>
-                        <div class="form-group escondido" id="mad-div-prof-racha"><label>Profundidade (cm):</label><input type="number" id="val-mad-prof-racha" step="0.1"></div>
-                    </div>
-                    <div id="mad-dims-furos" class="dimensoes-grid escondido">
-                        <div class="form-group"><label>Diâmetro Furo (cm):</label><input type="number" id="val-mad-diam-furo" step="0.1"></div>
-                        <div class="form-group"><label>Profundidade (cm):</label><input type="number" id="val-mad-prof-furo" step="0.1"></div>
-                    </div>
-                    <div id="mad-dims-empenamento" class="dimensoes-grid escondido">
-                        <div class="form-group"><label>Comp. Dormente (m):</label><select id="val-mad-comp-dormente"><option value="2.00">2,00 m</option><option value="2.20">2,20 m</option><option value="2.40">2,40 m</option><option value="2.60">2,60 m</option><option value="2.80">2,80 m</option><option value="3.00">3,00 m</option><option value="3.20">3,20 m</option><option value="4.00">4,00 m</option></select></div>
-                        <div class="form-group"><label>Flecha Constatada (cm):</label><input type="number" id="val-mad-flecha" step="0.1"></div>
+                    <div id="brita-inputs-lab" class="escondido"><div class="dimensoes-grid">
+                        <div class="form-group"><label>Abrasão Los Angeles (%):</label><input type="number" id="val-brita-losangeles" step="0.1"></div>
+                        <div class="form-group"><label>Material Pulverulento (%):</label><input type="number" id="val-brita-pulverulento" step="0.1"></div>
+                        <div class="form-group"><label>Torrões de Argila (%):</label><input type="number" id="val-brita-argila" step="0.1"></div>
+                    </div></div>
+                    <button class="btn-analisar escondido" id="btn-brita" onclick="analisarBrita()"><span>VERIFICAR CONFORMIDADE</span></button>
+                    <div id="resultado-box-brita" class="resultado-box"></div>
+                    <div id="botoes-acao-brita" class="botoes-acao escondido">
+                        <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-brita','Brita')">📸 Registrar Foto com Laudo</button>
+                        <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-brita','Brita')">💬 Enviar via WhatsApp</button>
                     </div>
                 </div>
-                <button class="btn-analisar escondido" id="btn-madeira" onclick="analisarMadeira()">VERIFICAR CONFORMIDADE</button>
-                <div id="resultado-box-madeira" class="resultado-box"></div>
-                <div id="botoes-acao-madeira" class="botoes-acao escondido">
-                    <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-madeira','Madeira')">📸 Registrar Foto com Laudo</button>
-                    <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-madeira','Madeira')">💬 Enviar via WhatsApp</button>
+            </section>
+            
+            <section id="sec-concreto" class="content-section">
+                <h1>Dormente de Concreto <span class="proc-title">— PO-SPE-160</span></h1>
+                <div class="card">
+                    <div class="form-group"><label>Tipo de Defeito:</label>
+                        <select id="tipo-defeito" onchange="atualizarOpcoes()"><option value="">Selecione...</option><option value="vazio">Vazios</option><option value="quebra">Quebras</option><option value="fissura">Fissuras</option></select>
+                    </div>
+                    <div class="form-group"><label>Localização: <button class="btn-ajuda-visual" onclick="abrirAjuda('loc_dormente')">?</button></label>
+                        <select id="localizacao" onchange="atualizarCampos()"><option value="">Selecione a região...</option></select>
+                    </div>
+                    <div class="checkbox-group escondido" id="container-aco"><input type="checkbox" id="aco-exposto"><label for="aco-exposto">Exposição de Armadura / Aço?</label></div>
+                    <div class="dimensoes-grid escondido" id="dimensoes-inputs">
+                        <div class="form-group" id="div-profundidade"><label>Profundidade (mm):</label><input type="number" id="val-profundidade" step="0.1"></div>
+                        <div class="form-group" id="div-comprimento"><label>Comprimento (mm):</label><input type="number" id="val-comprimento" step="0.1"></div>
+                        <div class="form-group" id="div-largura"><label>Largura (mm):</label><input type="number" id="val-largura" step="0.1"></div>
+                        <div class="form-group" id="div-espessura"><label>Espessura (mm):</label><input type="number" id="val-espessura" step="0.01"></div>
+                    </div>
+                    <button class="btn-analisar" onclick="analisarDefeito()"><span>VERIFICAR CONFORMIDADE</span></button>
+                    <div id="resultado-box-concreto" class="resultado-box"></div>
+                    <div id="botoes-acao-concreto" class="botoes-acao escondido">
+                        <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-concreto','Concreto')">📸 Registrar Foto com Laudo</button>
+                        <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-concreto','Concreto')">💬 Enviar via WhatsApp</button>
+                    </div>
                 </div>
-            </div>
-        </section>
-        <section id="sec-sub" class="content-section">
-            <h1>Subcomponentes Metálicos/Plásticos <span class="proc-title">— Padrão ENG-DVP</span></h1>
-            <div class="card">
-                <div class="form-group"><label>Subcomponente Inspecionado:</label>
-                    <select id="sub-categoria" onchange="atualizarInterface('sub')">
-                        <option value="">Selecione o Item...</option>
-                        <option value="pal_branca_tr68">Palmilha Branca TR68 FAST-CLIP (SAP:109105)</option><option value="pal_verde_uic60">Palmilha Verde UIC60 (SAP:127543)</option>
-                        <option value="iso_verde_3510w">Isolador Lateral Verde 3510W (SAP:127551)</option><option value="iso_amarelo_3510w">Isolador Lateral Amarelo 3510W (SAP:147554)</option>
-                        <option value="iso_preto_3502w">Isolador Lateral Preto 3502W (SAP:147555)</option><option value="iso_branco_pandrol">Isolador Lateral Branco 8mm (PANDROL - SAP:121107)</option>
-                        <option value="iso_branco_3502w">Isolador Lateral Branco 3502W (SAP:121107)</option><option value="usp_getzner">UNDER SLEEPER PAD - USP (GETZNER - SAP:126980)</option>
-                        <option value="grampo_capa_branca">Grampo W c/ isolador Capa Branca (SAP:99604)</option><option value="grampo_iso_frontal">Grampo W c/ isolador frontal (SAP:99604)</option>
-                        <option value="ombreira_eclip">Ombreira E-CLIP HFOB02 (SAP:127542)</option><option value="ombreira_fastclip">Ombreira FAST-CLIP HFOB08 (SAP:127406B)</option>
-                        <option value="pal_verde_almofada">Palmilha Verde Almofada 6980 (SAP:127543)</option><option value="pal_branca_almofada">Palmilha Branca Almofada 7552 (SAP:109105)</option>
-                    </select>
+            </section>
+            
+            <section id="sec-madeira" class="content-section">
+                <h1>Dormente de Madeira <span class="proc-title">— MAN-DM-T-MTE-DM-0001</span></h1>
+                <div class="card">
+                    <div class="form-group"><label>Categoria da Inspeção:</label>
+                        <select id="mad-categoria" onchange="atualizarInterface('madeira')"><option value="">Selecione...</option><option value="fisico">Propriedades Físicas e Químicas</option><option value="defeito">Análise de Defeitos e Conformidade</option></select>
+                    </div>
+                    <div id="mad-inputs-fisico" class="dimensoes-grid escondido">
+                        <div class="form-group"><label>Classe:</label><select id="mad-classe"><option value="1">1ª Classe</option><option value="2">2ª Classe</option></select></div>
+                        <div class="form-group"><label>Umidade (%):</label><input type="number" id="val-mad-umidade" step="0.1"></div>
+                        <div class="form-group"><label>Densidade (kg/m³):</label><input type="number" id="val-mad-densidade" step="1"></div>
+                        <div class="form-group"><label>Retenção CCA (kg/m³):</label><input type="number" id="val-mad-retencao" step="0.1"></div>
+                    </div>
+                    <div id="mad-inputs-defeito" class="escondido">
+                        <div class="form-group"><label>Tipo de Defeito ou Medição: <button class="btn-ajuda-visual" onclick="abrirAjuda('def_madeira')">?</button></label>
+                            <select id="mad-tipo-defeito" onchange="atualizarInterface('madeira_sub')">
+                                <option value="">Selecione...</option><option value="dimensoes">📏 Dimensões Fora do Padrão</option><option value="esmoado">🪵 Esmoado (Falta de Canto)</option>
+                                <option value="racha_topo">🪓 Fenda ou Racha de Topo</option><option value="racha_centro">🪓 Rachadura de Centro</option>
+                                <option value="furos_nos">🕳️ Furos de Broca / Nós Cariados</option><option value="empenamento">📐 Empenamento (Flecha)</option>
+                                <option disabled>────────────────</option><option value="podre">❌ Madeira Podre</option><option value="casca">❌ Presença de Casca</option>
+                                <option value="anti_rachante">❌ Falta de Proteção Anti-Rachante</option><option value="amarracao">❌ Falha na Amarração do Fardo</option>
+                            </select>
+                        </div>
+                        <div id="mad-check-fixacao" class="checkbox-group escondido"><input type="checkbox" id="mad-zona-fixacao"><label for="mad-zona-fixacao">O defeito está na Zona de Fixação?</label></div>
+                        <div id="mad-dims-dimensoes" class="escondido">
+                            <div class="form-group"><label>Tipo do Dormente:</label><select id="val-mad-dim-bitola"><option value="normal">Métrica / Larga</option><option value="amv">AMV</option></select></div>
+                            <div class="dimensoes-grid">
+                                <div class="form-group"><label>Comp. Aferido (m):</label><input type="number" id="val-mad-dim-comp" step="0.01"></div>
+                                <div class="form-group"><label>Largura Aferida (cm):</label><input type="number" id="val-mad-dim-larg" step="0.1"></div>
+                                <div class="form-group"><label>Altura Aferida (cm):</label><input type="number" id="val-mad-dim-alt" step="0.1"></div>
+                            </div>
+                            <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:8px">Insira as medidas nominais (referência da Nota Fiscal):</p>
+                            <div class="dimensoes-grid" style="background:var(--bg-panel)">
+                                <div class="form-group"><label>Comp. Nominal (m):</label><input type="number" id="val-mad-nom-comp" step="0.01"></div>
+                                <div class="form-group"><label>Largura Nominal (cm):</label><input type="number" id="val-mad-nom-larg" step="0.1"></div>
+                                <div class="form-group"><label>Altura Nominal (cm):</label><input type="number" id="val-mad-nom-alt" step="0.1"></div>
+                            </div>
+                        </div>
+                        <div id="mad-dims-esmoado" class="dimensoes-grid escondido">
+                            <div class="form-group"><label>Comp. Dormente (m):</label><select id="val-mad-esmoado-comp"><option value="2.00">2,00 m</option><option value="2.20">2,20 m ou 2,80 m</option></select></div>
+                            <div class="form-group"><label>Face Reta (Altura) (cm):</label><input type="number" id="val-mad-esmoado-reta" step="0.1"></div>
+                            <div class="form-group"><label>Face Superior (Topo) (cm):</label><input type="number" id="val-mad-esmoado-topo" step="0.1"></div>
+                        </div>
+                        <div id="mad-dims-racha" class="dimensoes-grid escondido">
+                            <div class="form-group"><label>Comprimento (cm):</label><input type="number" id="val-mad-comp-racha" step="0.1"></div>
+                            <div class="form-group"><label>Abertura (mm):</label><input type="number" id="val-mad-abert-racha" step="0.1"></div>
+                            <div class="form-group escondido" id="mad-div-prof-racha"><label>Profundidade (cm):</label><input type="number" id="val-mad-prof-racha" step="0.1"></div>
+                        </div>
+                        <div id="mad-dims-furos" class="dimensoes-grid escondido">
+                            <div class="form-group"><label>Diâmetro Furo (cm):</label><input type="number" id="val-mad-diam-furo" step="0.1"></div>
+                            <div class="form-group"><label>Profundidade (cm):</label><input type="number" id="val-mad-prof-furo" step="0.1"></div>
+                        </div>
+                        <div id="mad-dims-empenamento" class="dimensoes-grid escondido">
+                            <div class="form-group"><label>Comp. Dormente (m):</label><select id="val-mad-comp-dormente"><option value="2.00">2,00 m</option><option value="2.20">2,20 m</option><option value="2.40">2,40 m</option><option value="2.60">2,60 m</option><option value="2.80">2,80 m</option><option value="3.00">3,00 m</option><option value="3.20">3,20 m</option><option value="4.00">4,00 m</option></select></div>
+                            <div class="form-group"><label>Flecha Constatada (cm):</label><input type="number" id="val-mad-flecha" step="0.1"></div>
+                        </div>
+                    </div>
+                    <button class="btn-analisar escondido" id="btn-madeira" onclick="analisarMadeira()"><span>VERIFICAR CONFORMIDADE</span></button>
+                    <div id="resultado-box-madeira" class="resultado-box"></div>
+                    <div id="botoes-acao-madeira" class="botoes-acao escondido">
+                        <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-madeira','Madeira')">📸 Registrar Foto com Laudo</button>
+                        <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-madeira','Madeira')">💬 Enviar via WhatsApp</button>
+                    </div>
                 </div>
-                <div id="sub-inputs-container" class="dimensoes-grid escondido"></div>
-                <button class="btn-analisar escondido" id="btn-sub" onclick="analisarSub()">VERIFICAR CONFORMIDADE</button>
-                <div id="resultado-box-sub" class="resultado-box"></div>
-                <div id="botoes-acao-sub" class="botoes-acao escondido">
-                    <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-sub','Subcomponentes')">📸 Registrar Foto com Laudo</button>
-                    <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-sub','Subcomponentes')">💬 Enviar via WhatsApp</button>
+            </section>
+            
+            <section id="sec-sub" class="content-section">
+                <h1>Subcomponentes Metálicos/Plásticos <span class="proc-title">— Padrão ENG-DVP</span></h1>
+                <div class="card">
+                    <div class="form-group"><label>Subcomponente Inspecionado:</label>
+                        <select id="sub-categoria" onchange="atualizarInterface('sub')">
+                            <option value="">Selecione o Item...</option>
+                            <option value="pal_branca_tr68">Palmilha Branca TR68 FAST-CLIP (SAP:109105)</option><option value="pal_verde_uic60">Palmilha Verde UIC60 (SAP:127543)</option>
+                            <option value="iso_verde_3510w">Isolador Lateral Verde 3510W (SAP:127551)</option><option value="iso_amarelo_3510w">Isolador Lateral Amarelo 3510W (SAP:147554)</option>
+                            <option value="iso_preto_3502w">Isolador Lateral Preto 3502W (SAP:147555)</option><option value="iso_branco_pandrol">Isolador Lateral Branco 8mm (PANDROL - SAP:121107)</option>
+                            <option value="iso_branco_3502w">Isolador Lateral Branco 3502W (SAP:121107)</option><option value="usp_getzner">UNDER SLEEPER PAD - USP (GETZNER - SAP:126980)</option>
+                            <option value="grampo_capa_branca">Grampo W c/ isolador Capa Branca (SAP:99604)</option><option value="grampo_iso_frontal">Grampo W c/ isolador frontal (SAP:99604)</option>
+                            <option value="ombreira_eclip">Ombreira E-CLIP HFOB02 (SAP:127542)</option><option value="ombreira_fastclip">Ombreira FAST-CLIP HFOB08 (SAP:127406B)</option>
+                            <option value="pal_verde_almofada">Palmilha Verde Almofada 6980 (SAP:127543)</option><option value="pal_branca_almofada">Palmilha Branca Almofada 7552 (SAP:109105)</option>
+                        </select>
+                    </div>
+                    <div id="sub-inputs-container" class="dimensoes-grid escondido"></div>
+                    <button class="btn-analisar escondido" id="btn-sub" onclick="analisarSub()"><span>VERIFICAR CONFORMIDADE</span></button>
+                    <div id="resultado-box-sub" class="resultado-box"></div>
+                    <div id="botoes-acao-sub" class="botoes-acao escondido">
+                        <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-sub','Subcomponentes')">📸 Registrar Foto com Laudo</button>
+                        <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-sub','Subcomponentes')">💬 Enviar via WhatsApp</button>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- NOVA SEÇÃO: PROCEDIMENTOS -->
-        <section id="sec-procedimentos" class="content-section">
-            <h1>📚 Procedimentos <span class="proc-title">— Consulta de Normas Técnicas</span></h1>
-            <div class="card">
-                <div class="form-group">
-                    <label>1️⃣ Selecione a Área de Atuação:</label>
-                    <select id="proc-area" onchange="atualizarProcSubitem()">
-                        <option value="">Selecione...</option>
-                        <option value="amv">AMV & Componentes</option>
-                        <option value="brita">Brita</option>
-                        <option value="concreto">Dormente de Concreto</option>
-                        <option value="madeira">Dormente de Madeira</option>
-                        <option value="sub">Subcomponentes</option>
-                    </select>
+            <section id="sec-procedimentos" class="content-section">
+                <h1>📚 Procedimentos <span class="proc-title">— Consulta de Normas Técnicas</span></h1>
+                <div class="card">
+                    <div class="form-group">
+                        <label>1️⃣ Selecione a Área de Atuação:</label>
+                        <select id="proc-area" onchange="atualizarProcSubitem()">
+                            <option value="">Selecione...</option>
+                            <option value="amv">AMV & Componentes</option>
+                            <option value="brita">Brita</option>
+                            <option value="concreto">Dormente de Concreto</option>
+                            <option value="madeira">Dormente de Madeira</option>
+                            <option value="sub">Subcomponentes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>2️⃣ Selecione o Item para Consulta:</label>
+                        <select id="proc-subitem" disabled>
+                            <option value="">Primeiro selecione uma área...</option>
+                        </select>
+                    </div>
+                    <button class="btn-analisar" onclick="consultarProcedimento()"><span>🔍 CONSULTAR PROCEDIMENTO</span></button>
+                    <button class="btn-todos" onclick="mostrarTodosProcedimentos()"><span>📋 MOSTRAR TODOS OS PROCEDIMENTOS</span></button>
+                    <div id="proc-result-box" class="proc-result-box"></div>
                 </div>
-                <div class="form-group">
-                    <label>2️⃣ Selecione o Item para Consulta:</label>
-                    <select id="proc-subitem" disabled>
-                        <option value="">Primeiro selecione uma área...</option>
-                    </select>
-                </div>
-                <button class="btn-analisar" onclick="consultarProcedimento()">🔍 CONSULTAR PROCEDIMENTO</button>
-                <button class="btn-todos" onclick="mostrarTodosProcedimentos()">📋 MOSTRAR TODOS OS PROCEDIMENTOS</button>
-                <div id="proc-result-box" class="proc-result-box"></div>
-            </div>
-        </section>
+            </section>
 
-    </main>
-</div>
-```
+        </main>
+    </div>
 
 <script>
 // === HELPERS ===
@@ -652,6 +1346,5 @@ function carregarDadosLocal(){const s=localStorage.getItem('rumoInspeccaoDados')
 
 document.addEventListener('DOMContentLoaded',()=>{carregarDadosLocal();document.querySelectorAll('input:not([type="password"]),select').forEach(i=>{i.addEventListener('change',salvarDadosLocal);i.addEventListener('input',salvarDadosLocal)});window.onclick=e=>{if(e.target===$('modal-ajuda-visual'))fecharAjuda()}})
 </script>
-
 </body>
 </html>
