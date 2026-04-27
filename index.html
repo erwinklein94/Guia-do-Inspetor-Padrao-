@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#042D4F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Guia do Inspetor">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Guia do Inspetor Padrão - RUMO</title>
     <style>
         /* =====================================================================
@@ -503,7 +507,7 @@
         }
 
         .botoes-acao{
-         display:grid;grid-template-columns:1fr 1fr;gap:12px;
+         display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;
          margin-top:18px;
         }
         .btn-action{
@@ -789,6 +793,172 @@
          50%{box-shadow:0 0 0 12px rgba(165,210,51,0)}
         }
 
+
+        /* =====================================================================
+           MELHORIAS DE EXPERIÊNCIA — CONSULTA RÁPIDA / CHECKLIST / HISTÓRICO
+           ===================================================================== */
+        .hero-grid{
+         display:grid;grid-template-columns:1.15fr .85fr;gap:20px;margin-bottom:22px;
+        }
+        .hero-card{
+         background:var(--bg-panel);
+         border:1px solid var(--border-color);
+         border-radius:18px;
+         padding:28px;
+         box-shadow:var(--shadow-md);
+         position:relative;overflow:hidden;
+        }
+        .hero-card::before{
+         content:"";position:absolute;top:0;left:0;right:0;height:3px;
+         background:linear-gradient(90deg,var(--rumo-blue-500),var(--rumo-lime));
+        }
+        .hero-title{
+         font-family:'Barlow Condensed',sans-serif;
+         color:var(--text-title);
+         font-size:1.6rem;font-weight:700;margin-bottom:10px;
+        }
+        .hero-desc{color:var(--text-muted);line-height:1.65;font-size:.95rem}
+        .quick-grid{
+         display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px;
+        }
+        .quick-card{
+         background:var(--bg-input);
+         border:1px solid var(--border-color);
+         border-radius:14px;
+         padding:16px;
+         cursor:pointer;
+         transition:all .25s;
+         text-align:left;
+         color:var(--text-main);
+         font-family:inherit;
+        }
+        .quick-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--rumo-blue-500)}
+        .quick-card strong{
+         display:block;font-family:'Barlow Condensed',sans-serif;
+         color:var(--text-title);font-size:1.05rem;margin-bottom:4px;
+        }
+        .quick-card span{font-size:.8rem;color:var(--text-muted);line-height:1.35}
+        .meta-grid{
+         display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;
+        }
+        .search-box{
+         position:relative;margin-top:16px;
+        }
+        .search-box input{
+         width:100%;padding:16px 18px 16px 48px;
+         border-radius:14px;border:1.5px solid var(--border-color);
+         background:var(--bg-input);color:var(--text-main);
+         font-family:inherit;font-size:1rem;
+        }
+        .search-box::before{
+         content:"🔎";position:absolute;left:16px;top:50%;
+         transform:translateY(-50%);font-size:1.15rem;z-index:1;
+        }
+        .search-results{
+         margin-top:16px;display:none;
+         background:var(--bg-input);
+         border:1px solid var(--border-color);
+         border-radius:14px;padding:16px;
+         max-height:420px;overflow:auto;
+        }
+        .search-hit{
+         background:var(--bg-panel);border:1px solid var(--border-color);
+         border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;
+         transition:all .2s;
+        }
+        .search-hit:hover{border-color:var(--rumo-blue-500);transform:translateX(3px)}
+        .search-hit small{display:block;color:var(--text-muted);font-weight:700;margin-bottom:4px}
+        .search-hit strong{display:block;color:var(--text-title);margin-bottom:6px}
+        .search-hit p{font-size:.84rem;color:var(--text-muted);line-height:1.45}
+        .status-pill{
+         display:inline-flex;align-items:center;gap:6px;
+         border-radius:999px;padding:6px 10px;
+         font-size:.72rem;font-weight:700;text-transform:uppercase;
+         background:var(--bg-input);color:var(--text-muted);
+         border:1px solid var(--border-color);
+        }
+        .checklist-panel{
+         background:var(--bg-input);
+         border:1px solid var(--border-color);
+         border-radius:14px;padding:18px;margin-top:18px;
+        }
+        .check-item{
+         display:flex;gap:12px;align-items:flex-start;
+         padding:12px;background:var(--bg-panel);
+         border:1px solid var(--border-color);
+         border-radius:10px;margin-bottom:10px;
+        }
+        .check-item input{margin-top:3px;accent-color:var(--rumo-lime);width:18px;height:18px}
+        .check-item label{font-size:.9rem;line-height:1.45;color:var(--text-main);cursor:pointer}
+        .btn-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:14px}
+        .btn-small{
+         border:none;border-radius:10px;padding:12px 14px;
+         font-weight:700;font-family:'Barlow',sans-serif;cursor:pointer;
+         color:#fff;background:var(--rumo-navy-700);
+         transition:all .2s;
+        }
+        .btn-small:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+        .btn-small.secondary{background:var(--rumo-blue-500)}
+        .btn-small.warning{background:var(--rumo-orange)}
+        .btn-small.danger{background:var(--rumo-coral)}
+        .btn-export{background:#6B7280}
+        .btn-export:hover{background:#4B5563}
+        .input-error{
+         border-color:var(--rumo-coral)!important;
+         box-shadow:0 0 0 3px rgba(232,89,60,.14)!important;
+        }
+        .validation-list{
+         margin:10px 0 0 18px;
+         color:var(--text-refugo);
+        }
+        .hist-list{margin-top:18px}
+        .hist-item{
+         background:var(--bg-panel);
+         border:1px solid var(--border-color);
+         border-left:4px solid var(--rumo-blue-500);
+         border-radius:12px;
+         padding:16px;margin-bottom:12px;
+         box-shadow:var(--shadow-sm);
+        }
+        .hist-item.aceitavel{border-left-color:var(--border-aceitavel)}
+        .hist-item.reparar{border-left-color:var(--border-reparar)}
+        .hist-item.refugo{border-left-color:var(--border-refugo)}
+        .hist-head{
+         display:flex;justify-content:space-between;gap:12px;
+         font-weight:700;color:var(--text-title);margin-bottom:8px;flex-wrap:wrap;
+        }
+        .hist-body{
+         white-space:pre-wrap;color:var(--text-muted);
+         font-size:.86rem;line-height:1.55;
+         max-height:190px;overflow:auto;
+         background:var(--bg-input);padding:12px;border-radius:10px;
+        }
+        .mini-note{
+         margin-top:12px;padding:12px 14px;border-radius:10px;
+         background:var(--bg-input);border:1px dashed var(--border-color);
+         color:var(--text-muted);font-size:.82rem;line-height:1.5;
+        }
+        .fonte-tag{
+         display:inline-block;margin-top:10px;
+         background:rgba(43,165,219,.12);
+         color:var(--text-title);
+         border:1px solid rgba(43,165,219,.25);
+         border-radius:8px;padding:7px 10px;
+         font-size:.76rem;font-weight:700;
+        }
+        .offline-indicator{
+         margin-top:10px;font-size:.78rem;color:var(--text-muted);
+         display:flex;align-items:center;gap:8px;
+        }
+        .offline-indicator::before{
+         content:"";width:8px;height:8px;border-radius:50%;background:var(--rumo-lime);
+         box-shadow:0 0 8px var(--rumo-lime);
+        }
+        @media(max-width:768px){
+         .hero-grid,.quick-grid,.meta-grid{grid-template-columns:1fr}
+         .hero-card{padding:22px}
+        }
+
         /* =====================================================================
            RESPONSIVO — MOBILE
            ===================================================================== */
@@ -851,12 +1021,15 @@
                 <img src="https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg" alt="Rumo" class="sidebar-logo">
                 <div class="sidebar-subtitle">Coordenação de Qualidade e Homologação dos Materiais de Via Permanente</div>
                 <div class="menu-header">Guia de Procedimentos</div>
-                <div class="menu-item active" onclick="navegar(this,'sec-amv')">AMV & Componentes</div>
+                <div class="menu-item active" onclick="navegar(this,'sec-principal')">🏠 Principal</div>
+                <div class="menu-item" onclick="navegar(this,'sec-amv')">AMV & Componentes</div>
                 <div class="menu-item" onclick="navegar(this,'sec-brita')">Brita</div>
                 <div class="menu-item" onclick="navegar(this,'sec-concreto')">Dormente de Concreto</div>
                 <div class="menu-item" onclick="navegar(this,'sec-madeira')">Dormente de Madeira</div>
                 <div class="menu-item" onclick="navegar(this,'sec-sub')">Subcomponentes</div>
                 <div class="sidebar-divider"></div>
+                <div class="menu-item" onclick="navegar(this,'sec-checklist')">✅ Checklist de Campo</div>
+                <div class="menu-item" onclick="navegar(this,'sec-historico')">🗂️ Histórico</div>
                 <div class="menu-item" onclick="navegar(this,'sec-procedimentos')">📚 Procedimentos</div>
             </div>
             <div class="sidebar-bottom">
@@ -869,7 +1042,39 @@
         <main>
             <button id="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
 
-            <section id="sec-amv" class="content-section active">
+            <section id="sec-principal" class="content-section active">
+                <h1>Consulta Rápida de Campo <span class="proc-title">— Guia do Inspetor</span></h1>
+                <div class="hero-grid">
+                    <div class="hero-card">
+                        <div class="hero-title">O que você precisa consultar agora?</div>
+                        <p class="hero-desc">Use a busca para localizar rapidamente critérios, limites, ações e fontes. A ideia é reduzir dúvida em campo: medir, comparar, decidir e registrar.</p>
+                        <div class="search-box">
+                            <input type="search" id="busca-geral" placeholder="Buscar: jacaré, agulha, rolete, granulometria, fissura, ombreira..." oninput="buscarGeral()">
+                        </div>
+                        <div id="busca-resultados" class="search-results"></div>
+                        <div class="quick-grid">
+                            <button class="quick-card" onclick="irParaSecao('sec-amv')"><strong>⚙️ AMV</strong><span>Agulha, jacaré, roletes, fixação, cilindro e bate-fica.</span></button>
+                            <button class="quick-card" onclick="irParaSecao('sec-brita')"><strong>🪨 Brita</strong><span>Visual, forma, granulometria e ensaios físicos.</span></button>
+                            <button class="quick-card" onclick="irParaSecao('sec-checklist')"><strong>✅ Checklist</strong><span>Roteiro antes, durante e depois da inspeção.</span></button>
+                            <button class="quick-card" onclick="irParaSecao('sec-historico')"><strong>🗂️ Histórico</strong><span>Laudos salvos, exportação e rastreabilidade local.</span></button>
+                        </div>
+                    </div>
+                    <div class="hero-card">
+                        <div class="hero-title">Dados do registro</div>
+                        <p class="hero-desc">Preencha uma vez. Esses dados entram nos laudos, fotos e relatórios exportados.</p>
+                        <div class="meta-grid">
+                            <div class="form-group"><label>Local / pátio / trecho</label><input id="meta-local" type="text" placeholder="Ex.: Cavan, MRO, km..."></div>
+                            <div class="form-group"><label>Lote / NF / AMV</label><input id="meta-lote" type="text" placeholder="Ex.: lote, NF, AMV nº..."></div>
+                            <div class="form-group"><label>Responsável</label><input id="meta-responsavel" type="text" placeholder="Nome do fiscal"></div>
+                            <div class="form-group"><label>Observação rápida</label><input id="meta-observacao" type="text" placeholder="Ex.: recebido em campo..."></div>
+                        </div>
+                        <div class="mini-note">Os dados ficam salvos apenas neste navegador pelo armazenamento local. A autenticação permanece igual à do seu código original, conforme você pediu.</div>
+                        <div class="offline-indicator" id="offline-status">Pronto para uso em campo. Para PWA/offline completo, publique também o arquivo rumo-sw.js que acompanha este pacote.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-amv" class="content-section">
                 <h1>AMV (Aparelhos de Mudança de Via) <span class="proc-title">— Lote ETM-AMV</span></h1>
                 <div class="card">
                     <div class="form-group"><label>Componente Inspecionado:</label>
@@ -897,6 +1102,7 @@
                     <div id="botoes-acao-amv" class="botoes-acao escondido">
                         <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-amv','AMV')">📸 Registrar Foto com Laudo</button>
                         <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-amv','AMV')">💬 Enviar via WhatsApp</button>
+                        <button class="btn-action btn-export" onclick="baixarRelatorio('resultado-box-amv','AMV')">⬇️ Baixar Relatório</button>
                     </div>
                     <div class="aviso-normativo">Procedimentos sujeitos a alterações pela Engenharia Normativa da Rumo - Atualizados 14/04/2026</div>
                 </div>
@@ -937,6 +1143,7 @@
                     <div id="botoes-acao-brita" class="botoes-acao escondido">
                         <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-brita','Brita')">📸 Registrar Foto com Laudo</button>
                         <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-brita','Brita')">💬 Enviar via WhatsApp</button>
+                        <button class="btn-action btn-export" onclick="baixarRelatorio('resultado-box-brita','Brita')">⬇️ Baixar Relatório</button>
                     </div>
                 </div>
             </section>
@@ -962,6 +1169,7 @@
                     <div id="botoes-acao-concreto" class="botoes-acao escondido">
                         <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-concreto','Concreto')">📸 Registrar Foto com Laudo</button>
                         <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-concreto','Concreto')">💬 Enviar via WhatsApp</button>
+                        <button class="btn-action btn-export" onclick="baixarRelatorio('resultado-box-concreto','Concreto')">⬇️ Baixar Relatório</button>
                     </div>
                 </div>
             </section>
@@ -1027,6 +1235,7 @@
                     <div id="botoes-acao-madeira" class="botoes-acao escondido">
                         <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-madeira','Madeira')">📸 Registrar Foto com Laudo</button>
                         <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-madeira','Madeira')">💬 Enviar via WhatsApp</button>
+                        <button class="btn-action btn-export" onclick="baixarRelatorio('resultado-box-madeira','Madeira')">⬇️ Baixar Relatório</button>
                     </div>
                 </div>
             </section>
@@ -1052,7 +1261,49 @@
                     <div id="botoes-acao-sub" class="botoes-acao escondido">
                         <button class="btn-action btn-cam" onclick="abrirCamera('resultado-box-sub','Subcomponentes')">📸 Registrar Foto com Laudo</button>
                         <button class="btn-action btn-wpp" onclick="compartilharWhatsApp('resultado-box-sub','Subcomponentes')">💬 Enviar via WhatsApp</button>
+                        <button class="btn-action btn-export" onclick="baixarRelatorio('resultado-box-sub','Subcomponentes')">⬇️ Baixar Relatório</button>
                     </div>
+                </div>
+            </section>
+
+
+            <section id="sec-checklist" class="content-section">
+                <h1>✅ Checklist de Campo <span class="proc-title">— Antes, Durante e Depois</span></h1>
+                <div class="card">
+                    <div class="form-group">
+                        <label>Tipo de checklist:</label>
+                        <select id="checklist-tipo" onchange="renderChecklist()">
+                            <option value="amv_manutencao">Manutenção / inspeção preventiva e corretiva de AMV</option>
+                            <option value="amv_montagem">Montagem e desmontagem de AMV</option>
+                            <option value="brita_recebimento">Recebimento de brita para lastro</option>
+                            <option value="dormente_concreto_reparo">Inspeção de dormente de concreto — reparo/refugo</option>
+                            <option value="dormente_madeira_recebimento">Recebimento de dormentes de madeira</option>
+                            <option value="fast_clip_montagem">Conferência de conjunto Fast Clip em dormente de concreto</option>
+                            <option value="inspecao_material">Inspeção dimensional de materiais/subcomponentes</option>
+                        </select>
+                    </div>
+                    <div id="checklist-container" class="checklist-panel"></div>
+                    <div class="btn-row">
+                        <button class="btn-small secondary" onclick="marcarChecklist(true)">Marcar tudo</button>
+                        <button class="btn-small warning" onclick="marcarChecklist(false)">Limpar marcações</button>
+                        <button class="btn-small" onclick="gerarResumoChecklist()">Gerar resumo</button>
+                        <button class="btn-small" onclick="exportarChecklist()">Exportar checklist</button>
+                    </div>
+                    <div id="checklist-resultado" class="resultado-box"></div>
+                </div>
+            </section>
+
+            <section id="sec-historico" class="content-section">
+                <h1>🗂️ Histórico de Laudos <span class="proc-title">— Rastreabilidade Local</span></h1>
+                <div class="card">
+                    <p class="hero-desc">Os últimos laudos gerados ficam salvos neste navegador. Use para copiar, exportar ou revisar o que foi analisado no campo.</p>
+                    <div class="btn-row">
+                        <button class="btn-small secondary" onclick="renderHistorico()">Atualizar histórico</button>
+                        <button class="btn-small" onclick="exportarHistoricoCSV()">Exportar CSV</button>
+                        <button class="btn-small" onclick="exportarHistoricoTXT()">Exportar TXT</button>
+                        <button class="btn-small danger" onclick="limparHistorico()">Limpar histórico</button>
+                    </div>
+                    <div id="hist-list" class="hist-list"></div>
                 </div>
             </section>
 
@@ -1068,6 +1319,7 @@
                             <option value="concreto">Dormente de Concreto</option>
                             <option value="madeira">Dormente de Madeira</option>
                             <option value="sub">Subcomponentes</option>
+                            <option value="rotina">Rotinas de Campo / Execução</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -1087,17 +1339,77 @@
 
 <script>
 // === HELPERS ===
-const $=id=>document.getElementById(id), V=id=>parseFloat($(id).value)||0;
+const $=id=>document.getElementById(id);
+const V=id=>{const el=$(id);return el?parseFloat(String(el.value).replace(',','.')):NaN};
+const CATEGORIA_SECAO={amv:'AMV',brita:'Brita',concreto:'Dormente de Concreto',madeira:'Dormente de Madeira',sub:'Subcomponentes'};
 function hideAll(s){document.querySelectorAll(s).forEach(e=>e.classList.add('escondido'))}
 function showEl(id,t='block'){const e=$(id);if(e){e.classList.remove('escondido');e.style.display=t}}
 function hideEl(id){const e=$(id);if(e)e.classList.add('escondido')}
+function textoLimpo(v){return String(v??'').trim()}
+function nomeSelecionado(id){const el=$(id);return el&&el.selectedIndex>=0?el.options[el.selectedIndex].text.replace(/[📏🪵🪓🕳️📐❌─]/g,'').trim():''}
+function inputVisivel(id){const el=$(id);return !!el && !el.closest('.escondido') && el.offsetParent!==null}
+function limparErros(ids=[]){ids.forEach(id=>{const el=$(id);if(el)el.classList.remove('input-error')})}
+function validarNumero(id,label,erros){const el=$(id);if(!el)return NaN;const raw=textoLimpo(el.value);const v=parseFloat(raw.replace(',','.'));if(raw===''||Number.isNaN(v)){erros.push(label);el.classList.add('input-error')}else el.classList.remove('input-error');return v}
+function validarSelect(id,label,erros){const el=$(id);if(!el)return '';if(!textoLimpo(el.value)){erros.push(label);el.classList.add('input-error')}else el.classList.remove('input-error');return el.value}
+function mostrarErroValidacao(boxId,erros){
+    const box=$(boxId);if(!box)return;
+    const sec=boxId.split('-')[2] || (boxId.includes('checklist')?'checklist':'geral');hideEl(`botoes-acao-${sec}`);
+    box.className='resultado-box refugo';
+    box.style.display='block';
+    box.innerHTML=`⚠️ <strong>Preenchimento obrigatório</strong><br><br>Antes de gerar a análise, preencha:<ul class="validation-list">${erros.map(e=>`<li>${e}</li>`).join('')}</ul><br>Isso evita falso “conforme” quando um campo fica vazio.`;
+}
+function metaRegistro(){
+    return {
+        local:textoLimpo($('meta-local')?.value)||'Não informado',
+        lote:textoLimpo($('meta-lote')?.value)||'Não informado',
+        responsavel:textoLimpo($('meta-responsavel')?.value)||'Não informado',
+        observacao:textoLimpo($('meta-observacao')?.value)||'Sem observação',
+        data:new Date().toLocaleString('pt-BR')
+    }
+}
+function formatarLaudo(titulo,analise,acao,fonte,categoria,item){
+    const m=metaRegistro();
+    return `${titulo}
+
+📌 Categoria: ${categoria||'Inspeção'}
+🔎 Item: ${item||'Não informado'}
+📍 Local/Trecho: ${m.local}
+🏷️ Lote/NF/AMV: ${m.lote}
+👤 Responsável: ${m.responsavel}
+🕒 Registro: ${m.data}
+
+📏 Critério / Medida:
+${analise||'Sem análise informada.'}
+
+🚦 Decisão operacional:
+${acao||'Sem ação informada.'}
+
+🧾 Registro obrigatório:
+Fotografar evidência, manter rastreabilidade do lote/local e anexar ao relatório ou RNC quando aplicável.
+
+📝 Observação:
+${m.observacao}
+
+📄 Fonte normativa:
+${fonte||'Fonte não informada'}`;
+}
+function slugArquivo(txt){return textoLimpo(txt).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'_').replace(/^_|_$/g,'').toLowerCase()||'relatorio'}
+function baixarArquivo(nome,conteudo,tipo='text/plain;charset=utf-8'){
+    const blob=new Blob([conteudo],{type:tipo});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nome;
+    document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);document.body.removeChild(a)},0)
+}
 
 // === AUTH & NAV ===
 function validarAcesso(){if($('user-password').value.trim()==='1272'){hideEl('login-screen');showEl('main-layout','flex');if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}else showEl('error-msg')}
 function fazerLogout(){if(confirm("Deseja realmente sair e limpar os dados locais?")){localStorage.removeItem('rumoInspeccaoDados');location.reload()}}
 function sugerirMudanca(){const msg=encodeURIComponent("Olá Erwin, gostaria de sugerir uma mudança / melhoria para o Guia do Inspetor Padrão RUMO:\n\n");window.open(`https://wa.me/5541992581521?text=${msg}`,'_blank')}
-function navegar(el,sec){document.querySelectorAll('.content-section,.menu-item').forEach(e=>e.classList.remove('active'));$(sec).classList.add('active');el.classList.add('active');if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}
+function navegar(el,sec){document.querySelectorAll('.content-section,.menu-item').forEach(e=>e.classList.remove('active'));$(sec).classList.add('active');el.classList.add('active');if(sec==='sec-historico')renderHistorico();if(sec==='sec-checklist')renderChecklist();if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}
 function toggleSidebar(){$('sidebar').classList.remove('hidden');hideEl('toggle-sidebar-btn')}
+function irParaSecao(sec){
+    const item=[...document.querySelectorAll('.menu-item')].find(m=>m.getAttribute('onclick')?.includes(sec));
+    if(item)navegar(item,sec);
+}
 
 // === BANCO DE PROCEDIMENTOS ===
 const PROCEDIMENTOS={
@@ -1177,6 +1489,241 @@ const PROCEDIMENTOS={
     }
 };
 
+
+// Rotinas agregadas para consulta rápida de campo
+PROCEDIMENTOS.rotina={
+    nome:"Rotinas de Campo / Execução",
+    icone:"🛠️",
+    itens:{
+        manutencao_amv:{titulo:"Manutenção Preventiva e Corretiva de AMV",codigo:"MAN-VP-T-ETS-MV-0001-06",desc:"Roteiro operacional: confirmar recursos mínimos, EPI, ferramentas de medição, gabaritos, comunicação operacional, inspeção dos componentes críticos, registro fotográfico, ação corretiva e rastreabilidade do serviço."},
+        montagem_amv:{titulo:"Montagem e Desmontagem de AMV",codigo:"PO-SPE-147-01",desc:"Antes da atividade: plano de trabalho, APR, bloqueio/isolamento, comunicação com CCO, recursos humanos e equipamentos. Durante: desmontagem/montagem por etapas, segregação de componentes, gestão de resíduos e registro fotográfico. Depois: checklist final, medições, liberação e assinaturas."},
+        brita_campo:{titulo:"Inspeção de Brita em Campo",codigo:"MAN-VP-L-MTE-LT-0003-03 / MAN-VP-T-ETM-ES-0006-05",desc:"Separar inspeção visual, forma e granulometria. Registrar fotos da amostra, verificar contaminação, classificar forma das partículas e confrontar resultados laboratoriais com limites aplicáveis."},
+        rastreabilidade:{titulo:"Rastreabilidade mínima do laudo",codigo:"Padrão operacional do guia",desc:"Todo laudo deve trazer local, lote/NF/AMV, responsável, data/hora, medida encontrada, limite, ação definida, fonte normativa e evidência fotográfica quando aplicável."}
+    }
+};
+
+// === INFORMAÇÕES COMPLEMENTARES EXTRAÍDAS DOS ANEXOS MAIS RECENTES ===
+// Esta camada amplia a consulta rápida e a aba Procedimentos sem alterar os cálculos já existentes.
+Object.assign(PROCEDIMENTOS.concreto.itens,{
+    ferramentas_inspecao:{titulo:"Ferramentas para inspeção de dormente de concreto",codigo:"PO-SPE-160 R1 — Item 5",desc:"Instrumentos mínimos: trena, fissurômetro ou lupa para medir fissuras e paquímetro. Usar a metodologia dos eixos: X = comprimento, Y = altura e Z = profundidade. Sem medição confiável, não liberar o dormente."},
+    metodologia_eixos:{titulo:"Metodologia de medição por eixos X/Y/Z",codigo:"PO-SPE-160 R1 — Item 6.2",desc:"Classificar a ocorrência medindo comprimento (X), altura (Y) e profundidade (Z). O enquadramento deve considerar a pior medida: quando uma dimensão excede o limite de aceitação, aplica-se a condição seguinte: reparar ou refugar."},
+    material_reparo_cimenticio:{titulo:"Material recomendado para reparo superficial",codigo:"PO-SPE-160 R1 — Item 6.3",desc:"Reparos superficiais devem usar material adequado, preferencialmente à base cimentícia, validado entre fornecedor e Rumo. Exemplos citados: SIKA EMACO 488 CI, NAFUFILL CR/XYPEX, SIKATOP 122 PLUS, MC POWERTOP, MC QUICKTOP, SIKA MONOTOP 2500 ou similar. Proteger o reparo jovem do sol, garantir cura e evitar movimentação imediata até adquirir resistência suficiente."},
+    grandes_vazios_bolhas:{titulo:"Grandes vazios e bolhas alveoladas",codigo:"PO-SPE-160 R1 — Figuras 20 a 25",desc:"Grandes vazios, bolhas alveoladas e falhas aparentes de concretagem são indicativos de rejeição. Ação de campo: segregar o dormente, registrar fotos próximas e gerais, identificar lote/NF/local e abrir RNC para avaliação formal."},
+    armadura_exposta:{titulo:"Exposição de armadura ativa",codigo:"PO-SPE-160 R1 — Tabelas de quebras",desc:"Quando quebra ou defeito atingir armadura ativa, o dormente deve ser tratado como refugo. Não executar reparo liberatório em campo sem avaliação técnica formal. Registrar evidência fotográfica da exposição e segregar a peça."},
+    armadura_posicao:{titulo:"Posicionamento horizontal das armaduras ativas",codigo:"PO-SPE-160 R1 — Item 7",desc:"Tolerância de posicionamento horizontal das armaduras ativas de protensão: ±6 mm. Qualquer fio de protensão fora dos limites deve levar ao refugo do dormente, sem liberação para uso."},
+    usp_danos:{titulo:"Danos na USP — Under Sleeper Pad",codigo:"PO-SPE-160 R1 — Figuras 60 a 63",desc:"Danos, remoção ou descolamento da USP exigem avaliação e restauração/nivelamento quando aplicável. Registrar imagem do dano, localização no dormente, extensão e lote. Não liberar peça com USP comprometida sem correção validada."},
+    reparo_fissurado:{titulo:"Fissuras no reparo executado",codigo:"PO-SPE-160 R1 — Figura 35 / Item 6.3",desc:"Se o reparo apresentar fissuração, retornar às recomendações de preparo do substrato, material adequado, proteção do reparo jovem e cura. Ação: não liberar como reparado; reavaliar aderência, monoliticidade e necessidade de novo reparo ou refugo."}
+});
+Object.assign(PROCEDIMENTOS.madeira.itens,{
+    recebimento_ipT:{titulo:"Recebimento: inspeção IPT e documentação",codigo:"MAN-VP-T-MTE-DM-0001 — Págs. 4–5",desc:"Madeira nativa/madeira de lei: a carga deve ser 100% inspecionada pelo IPT; sem inspeção, não receber e devolver ao fornecedor. Eucalipto: verificar inspeção IPT; se não houver, exigir autorização impressa junto à nota fiscal. Sem autorização e sem identificação IPT, recusar a carga."},
+    prazo_rnc_garantia:{titulo:"Prazo de verificação para garantia e RNC",codigo:"MAN-VP-T-MTE-DM-0001 — Pág. 5",desc:"A verificação dos dormentes deve ser feita em até 7 dias corridos após a descarga para acionamento de garantia. Defeituosos devem ser separados para devolução ao fornecedor e abertura de RNC. Registrar NF, documento de isenção/autorização quando houver, fabricante, quantidade, fotos e descrição do defeito."},
+    segregacao_fabricante:{titulo:"Armazenamento separado por fabricante",codigo:"MAN-VP-T-MTE-DM-0001 — Pág. 4",desc:"Armazenar peças separadas por fabricante para facilitar rastreabilidade, identificação da nota fiscal, acionamento de garantia e devolução dos dormentes reprovados."},
+    tipos_dormente_madeira:{titulo:"Tipos de dormentes aceitos por aplicação",codigo:"MAN-VP-T-MTE-DM-0001 — Pág. 2",desc:"A cartilha cita três tipos: eucalipto prismático com 4 faces serradas, eucalipto semi-roliço e madeira de lei com 4 faces serradas. Dormentes de eucalipto semi-roliços são específicos para a métrica norte; demais localidades devem receber apenas dormentes prismáticos com 4 faces serradas."},
+    classe_propriedades:{titulo:"Propriedades mecânicas mínimas por classe",codigo:"ENG-DSV-VP-ETM-D006/06.00 — Tabela 1",desc:"1ª Classe: MOE 13.000 MPa, MOR 50 MPa, compressão normal 5 MPa, arranchamento lateral 10 kN, arranchamento normal 25 kN, dureza Janka 50 MPa e massa aparente mínima 750 kg/m³. 2ª Classe: MOE 10.000 MPa, MOR 40 MPa, compressão normal 4 MPa, arranchamento lateral 8 kN, arranchamento normal 20 kN, dureza Janka 40 MPa e massa aparente mínima 600 kg/m³."},
+    lote_primeira_classe:{titulo:"Composição mínima do lote por classe",codigo:"ENG-DSV-VP-ETM-D006/06.00 — Item 1.4.2",desc:"O lote de madeiras ofertado deve possuir, no mínimo, 50% de madeiras classificadas como primeira classe quanto à qualidade."},
+    alburno:{titulo:"Limite de alburno",codigo:"ENG-DSV-VP-ETM-D006/06.00 — Item 1.5.2",desc:"Dormentes de primeira e segunda classe podem ter no máximo 30% em volume de alburno. Acima desse limite, rejeitar o dormente/lote conforme plano de inspeção."},
+    acabamento_final:{titulo:"Acabamento final obrigatório",codigo:"ENG-DSV-VP-ETM-D006/06.00 — Item 1.7",desc:"Entregar sem casca, sem podridão, sem rachas anelares, sem rachas oblíquas na direção longitudinal e sem nós, saliências, reentrâncias, rachaduras ou fendas longitudinais na zona de fixação. Umidade máxima: 30%."},
+    ensaios_antes_tratamento:{titulo:"Ensaios antes do tratamento",codigo:"ENG-DSV-VP-ETM-D006/06.00 — Item 1.11.1",desc:"Antes do tratamento: conferir espécie da madeira, quantidade de alburno, dimensional, defeitos, presença de casca/podridão/saliências/reentrâncias/rachaduras/fendas na zona de fixação, análise macro/microscópica quando necessário, teor de umidade e dureza Janka."},
+    ensaios_pos_tratamento:{titulo:"Ensaios após tratamento",codigo:"ENG-DSV-VP-ETM-D006/06.00 — Item 1.11.2",desc:"Após tratamento: análise química quantitativa do preservativo e retenção. Para CCA/CCB, coletar baquetas conforme procedimento; retenção mínima: 9,6 kg/m³ de madeira tratável."},
+    identificacao_amv:{titulo:"Identificação de dormentes especiais para AMV",codigo:"ENG-DSV-VP-ETM-D006/06.00 — Item 1.3.2",desc:"Todos os dormentes especiais para AMV devem receber inscrição nos topos, em tinta branca a óleo, indicando o comprimento da peça. Sem identificação, registrar não conformidade de rastreabilidade."},
+    quinas_mortas_amv:{titulo:"Dormentes especiais para AMV: quinas mortas/esmoado",codigo:"ENG-DSV-VP-ETM-D006/06.00 — Item 1.4.4",desc:"Não são admitidos dormentes especiais para AMV com quinas mortas, desquinados ou esmoados. Ação: segregar a peça e registrar como não conforme."}
+});
+Object.assign(PROCEDIMENTOS.sub.itens,{
+    fastclip_objetivo:{titulo:"Fast Clip — finalidade das cores",codigo:"MAN-VP-T-INF-FX-0003-01",desc:"As cores de isoladores, capas e palmilhas servem para orientar as combinações corretas em campo para dormentes de concreto com trilhos TR-68 e UIC-60. Conferir perfil de trilho, material, cor, SAP e desenho antes de aplicar."},
+    fastclip_fibra_vidro:{titulo:"Uso obrigatório/recomendado de PA6FV",codigo:"MAN-VP-T-INF-FX-0003-01 — Itens 2.2 e 3.2",desc:"Conjuntos de isoladores e capas reforçados com fibra de vidro são obrigatórios para o Trecho 01 e recomendados para curvas com raio abaixo de 400 m."},
+    tr68_componentes:{titulo:"Conjunto TR-68 — componentes padrão",codigo:"MAN-VP-T-INF-FX-0003-01 — Itens 1.1 a 1.3",desc:"TR-68: isolador lateral PA 6.6 branco/natural SAP 121107 desenho ENG-DVP-D084 ou PA6FV preto SAP 147555 desenho ENG-DVP-D084; capa PA 6.6 branco/natural SAP 99685 ou PA6FV preto SAP 147556 desenho ENG-DVP-D019; palmilha PA 6.6 branco/natural SAP 109105 desenho ENG-DVP-D183."},
+    uic60_componentes:{titulo:"Conjunto UIC-60 — combinação de isoladores",codigo:"MAN-VP-T-INF-FX-0003-01 — Item 1.1",desc:"Para trilho UIC-60 deve ser usado isolador TR-68 no lado interno da via e isolador especial UIC-60 na parte externa. UIC-60 externo especial: PA 6.6 verde SAP 127551 ou PA6FV amarelo SAP 147554, desenho ENG-DVP-D136. Palmilha UIC-60: PA 6.6 verde SAP 127543, desenho ENG-DVP-D135."},
+    tr68_pa6fv_opcoes:{titulo:"TR-68 com PA6FV — opções de montagem",codigo:"MAN-VP-T-INF-FX-0003-01 — Item 2.2",desc:"Trecho 01: Opção 1: palmilha PA 6.6 branca SAP 109105 + isolador PA6FV preto SAP 147555 + capa PA6FV preta SAP 147556. Opção 2: palmilha PA 6.6 branca SAP 109105 + isolador PA6FV preto SAP 147555 + capa PA 6.6 branca SAP 99685."},
+    uic60_pa6fv_opcoes:{titulo:"UIC-60 com PA6FV — opções de montagem",codigo:"MAN-VP-T-INF-FX-0003-01 — Item 3.2",desc:"Trecho 01: Opção 1: palmilha verde PA 6.6 SAP 127543 + isolador interno PA6FV preto SAP 147555 + isolador externo PA6FV amarelo SAP 147554 + capa PA6FV preta SAP 147556. Opção 2: mesma composição, porém com capa PA 6.6 branca/natural SAP 99685."},
+    palmilha_resiliente:{titulo:"Palmilha resiliente TR-68",codigo:"MAN-VP-T-INF-FX-0003-01 — Item 1.3",desc:"Palmilha resiliente TR-68 possui cores azul/preta, SAP 126984/130444, desenho ENG-DVP-D132. Para aquisição e aplicação, a Engenharia de Via Permanente deve ser consultada."},
+    isolador_hidratacao:{titulo:"Isoladores PA 6.6 — hidratação controlada",codigo:"ENG-DVP-D084 / ENG-DVP-D136",desc:"Todo isolador em PA 6.6 deve passar por hidratação controlada em fábrica para garantir teor de umidade de 1,6% a 3,0%. Para isoladores em fibra de vidro, considerar metodologia/ensaios conforme ABNT NBR 17033 com carga de 9 toneladas, quando aplicável ao desenho."},
+    grampo_fastclip_material:{titulo:"Grampo Fast Clip — material, dureza e pressão",codigo:"ENG-DVP-T040",desc:"Grampo Fast Clip: material aço SAE 9254; dureza 44–48 HRC; pressão nominal 1.200 kgf ±300 kgf; peso aproximado 660 g; homologação conforme ABNT/NBR 17033 partes I e II; plano de amostragem NBR 5426, inspeção geral II, NQA 2,5%."},
+    ombreira_eclip_notas:{titulo:"Ombreira E-CLIP — notas de controle",codigo:"ENG-DVP-D139",desc:"Ombreira E-CLIP: dureza indicada 170 a 230 HB, peso aproximado 1,2 kg, sem proteção superficial. Homologação conforme ABNT/NBR 11709 e ABNT/NBR 17033 partes I e II. Medidas com tolerância são medidas de controle."},
+    usp_aplicacao:{titulo:"Under Sleeper Pad — aplicação",codigo:"ENG-DVP-D131",desc:"USP para bitola larga: dimensional e material conforme especificação indicada no desenho; aplicação somente para os dormentes ENG-DVP-D130 e ENG-DVP-D140. Medidas de campo já estão no módulo dimensional do guia."}
+});
+Object.assign(PROCEDIMENTOS.rotina.itens,{
+    recebimento_madeira:{titulo:"Roteiro de recebimento de dormentes de madeira",codigo:"MAN-VP-T-MTE-DM-0001 / ENG-DSV-VP-ETM-D006",desc:"1) Separar por fabricante. 2) Conferir NF, inspeção IPT/autorização e identificação no topo. 3) Inspecionar em até 7 dias após descarga. 4) Verificar dimensões, defeitos, casca, podridão, rachaduras, zona de fixação e amarração. 5) Separar reprovados e abrir RNC para acionamento de garantia."},
+    concreto_reparo_refugo:{titulo:"Roteiro de decisão para dormente de concreto",codigo:"PO-SPE-160 R1",desc:"1) Identificar defeito e região. 2) Medir X/Y/Z ou espessura/comprimento da fissura. 3) Verificar armadura exposta, ombreira e USP. 4) Classificar: aceitar, reparar ou refugar. 5) Em reparo, usar material validado e cura adequada. 6) Em refugo, segregar, fotografar, rastrear e abrir RNC."},
+    conferencia_fastclip:{titulo:"Roteiro de conferência Fast Clip",codigo:"MAN-VP-T-INF-FX-0003-01",desc:"1) Confirmar perfil do trilho: TR-68 ou UIC-60. 2) Conferir se é Trecho 01 ou curva R<400 m. 3) Selecionar isolador/capa/palmilha por cor, SAP e material. 4) Em UIC-60, usar isolador TR-68 no lado interno e isolador especial UIC-60 no lado externo. 5) Conferir dimensional dos subcomponentes críticos antes de liberar."}
+});
+
+// === CONSULTA RÁPIDA / BUSCA GERAL ===
+function buscarGeral(){
+    const q=textoLimpo($('busca-geral')?.value).toLowerCase();
+    const box=$('busca-resultados');if(!box)return;
+    if(q.length<2){box.style.display='none';box.innerHTML='';return}
+    let hits=[];
+    for(const areaKey in PROCEDIMENTOS){
+        const area=PROCEDIMENTOS[areaKey];
+        for(const itemKey in area.itens){
+            const it=area.itens[itemKey];
+            const hay=`${area.nome} ${it.titulo} ${it.codigo} ${it.desc}`.toLowerCase();
+            if(hay.includes(q))hits.push({areaKey,itemKey,area,it});
+        }
+    }
+    if(!hits.length){
+        box.innerHTML='<div class="proc-empty">Nenhum resultado encontrado. Tente outro termo: agulha, jacaré, rolete, granulometria, fissura, IPT, Fast Clip, USP, armadura...</div>';
+        box.style.display='block';return;
+    }
+    box.innerHTML=hits.slice(0,12).map(h=>`
+        <div class="search-hit" onclick="abrirProcedimentoDaBusca('${h.areaKey}','${h.itemKey}')">
+            <small>${h.area.icone} ${h.area.nome} · ${h.it.codigo}</small>
+            <strong>${h.it.titulo}</strong>
+            <p>${h.it.desc.slice(0,190)}${h.it.desc.length>190?'...':''}</p>
+        </div>`).join('');
+    box.style.display='block';
+}
+function abrirProcedimentoDaBusca(areaKey,itemKey){
+    irParaSecao('sec-procedimentos');
+    setTimeout(()=>{
+        if($('proc-area')){$('proc-area').value=areaKey;atualizarProcSubitem();$('proc-subitem').value=itemKey;consultarProcedimento();}
+    },30);
+}
+
+// === CHECKLISTS OPERACIONAIS ===
+const CHECKLISTS={
+    amv_manutencao:[
+        "Confirmar EPI, autorização de acesso, comunicação operacional e condições de segurança da via.",
+        "Conferir ferramentas mínimas: paquímetro, régua bitoladora, gabaritos, trena, esquadro, régua de nível e câmera.",
+        "Identificar AMV, local, sentido, trecho, data e responsável pela inspeção.",
+        "Medir componentes críticos: agulha, jacaré, contratrilho, roletes, aparelho de manobra e fixações.",
+        "Comparar medidas com os limites do guia antes de liberar o serviço.",
+        "Registrar fotos das não conformidades e das medições críticas.",
+        "Definir ação: liberar, monitorar, reparar, segregar, bloquear ou abrir RNC.",
+        "Salvar/compartilhar laudo com fonte normativa, medida encontrada e ação definida."
+    ],
+    amv_montagem:[
+        "Conferir plano de trabalho, APR, bloqueio/isolamento, comunicação com CCO e responsáveis presentes.",
+        "Validar recursos humanos, equipamentos de movimentação, ferramentas, gabaritos e instrumentos calibrados.",
+        "Identificar componentes do AMV antes da remoção/montagem e registrar fotos iniciais.",
+        "Executar desmontagem/montagem por etapas, mantendo organização e rastreabilidade dos componentes.",
+        "Segregar materiais reaproveitáveis, sucata e resíduos conforme orientação da atividade.",
+        "Realizar medições finais: bitola, alinhamento, nivelamento, folgas, agulhas, jacaré e fixações.",
+        "Registrar fotos finais, checklist de medição final, laudos e assinaturas.",
+        "Liberar somente após validação técnica e operacional."
+    ],
+    brita_recebimento:[
+        "Identificar origem/pedreira, NF, lote, vagão/caminhão e local de descarga.",
+        "Realizar inspeção visual: verificar argila, areia, pó excessivo, matéria orgânica ou material estranho.",
+        "Registrar foto geral do lote e foto aproximada da amostra.",
+        "Quando necessário, separar amostra para forma e granulometria.",
+        "Confrontar granulometria com Plano 24 AREMA e limites do procedimento.",
+        "Classificar resultado: liberar, rejeitar vagão/lote ou solicitar ensaio complementar.",
+        "Registrar evidência e observação no laudo."
+    ],
+    dormente_concreto_reparo:[
+        "Confirmar identificação do lote, fábrica, pátio/trecho, NF e responsável pela inspeção.",
+        "Separar instrumentos: trena, paquímetro, fissurômetro ou lupa para medir fissuras.",
+        "Identificar a ocorrência: vazio, quebra, fissura, armadura exposta, dano em USP ou falha no reparo.",
+        "Medir pelo método X/Y/Z: comprimento, altura/largura e profundidade; para fissura, medir espessura e comprimento.",
+        "Verificar se há armadura ativa exposta ou fio de protensão fora da tolerância de ±6 mm.",
+        "Classificar como aceitável, reparável ou refugo usando a pior dimensão medida.",
+        "Em reparo, validar material, preparo do substrato, cura e proteção contra sol; não movimentar antes de resistência suficiente.",
+        "Em refugo, segregar a peça, registrar fotos, local e lote e abrir RNC."
+    ],
+    dormente_madeira_recebimento:[
+        "Armazenar os dormentes separados por fabricante para facilitar garantia e devolução.",
+        "Conferir NF, fornecedor, lote, local de descarga e identificação no topo quando aplicável.",
+        "Para madeira nativa/madeira de lei, confirmar inspeção IPT 100%; sem IPT, recusar a carga.",
+        "Para eucalipto sem IPT, exigir autorização impressa junto com a NF; sem autorização, recusar a carga.",
+        "Realizar verificação em até 7 dias corridos após a descarga para permitir acionamento de garantia.",
+        "Inspecionar dimensões, empenamento, rachas, furos/nós, casca, podridão e defeitos na zona de fixação.",
+        "Confirmar umidade máxima de 30%, retenção mínima de 9,6 kg/m³ quando aplicável e acabamento final.",
+        "Separar peças reprovadas, fotografar defeitos e abrir RNC com NF, fabricante, quantidade e descrição."
+    ],
+    fast_clip_montagem:[
+        "Confirmar perfil do trilho: TR-68 ou UIC-60.",
+        "Confirmar se a aplicação é Trecho 01 ou curva com raio inferior a 400 m; nesses casos, priorizar/usar conjuntos com PA6FV conforme informativo.",
+        "Para TR-68, conferir isolador lateral, capa e palmilha por cor, SAP, material e desenho.",
+        "Para UIC-60, usar isolador TR-68 no lado interno e isolador externo especial UIC-60 no lado externo.",
+        "Conferir se a palmilha resiliente TR-68 foi previamente consultada/validada pela Engenharia de Via Permanente.",
+        "Verificar hidratação controlada de isoladores PA 6.6 quando aplicável.",
+        "Medir dimensional dos subcomponentes críticos no módulo de Subcomponentes antes da liberação.",
+        "Registrar foto do conjunto montado, etiqueta/SAP/lote e decisão de aprovação ou segregação."
+    ],
+    inspecao_material:[
+        "Confirmar desenho/procedimento aplicável e revisão utilizada.",
+        "Identificar lote, NF, fornecedor, local e quantidade inspecionada.",
+        "Conferir instrumento de medição adequado e condição de calibração quando aplicável.",
+        "Medir todos os pontos obrigatórios antes de concluir o laudo.",
+        "Não considerar campo vazio como zero: campo vazio deve bloquear a análise.",
+        "Comparar medida encontrada com limite mínimo/máximo.",
+        "Registrar foto da peça, da medição e da etiqueta/lote.",
+        "Definir ação: aprovar, segregar, abrir RNC ou solicitar avaliação técnica."
+    ]
+};
+function renderChecklist(){
+    const tipo=$('checklist-tipo')?.value||'amv_manutencao';
+    const itens=CHECKLISTS[tipo]||[];
+    const box=$('checklist-container');if(!box)return;
+    box.innerHTML=itens.map((txt,i)=>`
+        <div class="check-item">
+            <input type="checkbox" id="chk-${i}" onchange="salvarDadosLocal()">
+            <label for="chk-${i}">${txt}</label>
+        </div>`).join('');
+    hideEl('checklist-resultado');
+}
+function marcarChecklist(valor){
+    document.querySelectorAll('#checklist-container input[type="checkbox"]').forEach(c=>c.checked=valor);
+    salvarDadosLocal();
+}
+function gerarResumoChecklist(){
+    const checks=[...document.querySelectorAll('#checklist-container input[type="checkbox"]')];
+    if(!checks.length)renderChecklist();
+    const atual=[...document.querySelectorAll('#checklist-container input[type="checkbox"]')];
+    const total=atual.length, ok=atual.filter(c=>c.checked).length;
+    const pendentes=atual.filter(c=>!c.checked).map(c=>c.nextElementSibling.innerText);
+    const tipo=nomeSelecionado('checklist-tipo');
+    const s=pendentes.length?'reparar':'aceitavel';
+    const ti=pendentes.length?'⚠️ CHECKLIST INCOMPLETO':'✅ CHECKLIST CONCLUÍDO';
+    const d=pendentes.length?`Itens pendentes (${pendentes.length}/${total}):\n- ${pendentes.join('\n- ')}`:`Todos os ${total} itens foram marcados como concluídos.`;
+    const texto=formatarLaudo(ti,d,pendentes.length?'⚠️ AÇÃO: concluir pendências antes da liberação.':'✅ AÇÃO: checklist pronto para anexar ao registro.','Checklist operacional interno', 'Checklist de Campo', tipo);
+    animarTexto('checklist-resultado',texto,s);
+}
+function exportarChecklist(){
+    gerarResumoChecklist();
+    const box=$('checklist-resultado');
+    setTimeout(()=>baixarRelatorio('checklist-resultado','Checklist_Campo'),200);
+}
+
+// === HISTÓRICO E EXPORTAÇÃO ===
+function obterHistorico(){try{return JSON.parse(localStorage.getItem('rumoHistoricoLaudos')||'[]')}catch(e){return []}}
+function salvarHistoricoLaudo(categoria,texto,status){
+    if(!textoLimpo(texto)||texto.includes('Preenchimento obrigatório'))return;
+    const hist=obterHistorico();
+    const registro={id:Date.now(),data:new Date().toLocaleString('pt-BR'),categoria,status,texto};
+    hist.unshift(registro);
+    localStorage.setItem('rumoHistoricoLaudos',JSON.stringify(hist.slice(0,80)));
+}
+function renderHistorico(){
+    const box=$('hist-list');if(!box)return;
+    const hist=obterHistorico();
+    if(!hist.length){box.innerHTML='<div class="proc-empty">Nenhum laudo salvo ainda. Ao gerar uma análise, ela aparecerá aqui automaticamente.</div>';return}
+    box.innerHTML=hist.map(h=>`
+        <div class="hist-item ${h.status}">
+            <div class="hist-head"><span>${h.categoria}</span><span>${h.data}</span></div>
+            <div class="hist-body">${h.texto.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</div>
+            <div class="btn-row">
+                <button class="btn-small secondary" onclick="copiarTextoHistorico(${h.id})">Copiar</button>
+                <button class="btn-small" onclick="compartilharTextoHistorico(${h.id})">WhatsApp</button>
+            </div>
+        </div>`).join('');
+}
+function copiarTextoHistorico(id){const h=obterHistorico().find(x=>x.id===id);if(!h)return;navigator.clipboard?.writeText(h.texto);alert('Laudo copiado.')}
+function compartilharTextoHistorico(id){const h=obterHistorico().find(x=>x.id===id);if(!h)return;window.open(`https://wa.me/?text=${encodeURIComponent(h.texto)}`,'_blank')}
+function exportarHistoricoTXT(){const hist=obterHistorico();if(!hist.length)return alert('Não há histórico para exportar.');baixarArquivo(`historico_laudos_${Date.now()}.txt`,hist.map(h=>`===== ${h.data} | ${h.categoria} =====\n${h.texto}`).join('\n\n'),'text/plain;charset=utf-8')}
+function exportarHistoricoCSV(){
+    const hist=obterHistorico();if(!hist.length)return alert('Não há histórico para exportar.');
+    const esc=v=>`"${String(v).replace(/"/g,'""')}"`;
+    const csv=['data,categoria,status,laudo'].concat(hist.map(h=>[esc(h.data),esc(h.categoria),esc(h.status),esc(h.texto)].join(','))).join('\n');
+    baixarArquivo(`historico_laudos_${Date.now()}.csv`,csv,'text/csv;charset=utf-8');
+}
+function limparHistorico(){if(confirm('Deseja apagar o histórico local de laudos?')){localStorage.removeItem('rumoHistoricoLaudos');renderHistorico()}}
+function baixarRelatorio(boxId,cat){
+    const box=$(boxId);if(!box||!textoLimpo(box.innerText))return alert('Gere uma análise antes de baixar o relatório.');
+    const txt=`RELATÓRIO DE INSPEÇÃO - ${cat}\n\n${box.innerText}`;
+    baixarArquivo(`${slugArquivo(cat)}_${Date.now()}.txt`,txt,'text/plain;charset=utf-8');
+}
 function atualizarProcSubitem(){
     const area=$('proc-area').value,sel=$('proc-subitem');
     sel.innerHTML='<option value="">Selecione um item...</option>';
@@ -1210,7 +1757,7 @@ function mostrarTodosProcedimentos(){
 }
 
 // === AJUDA VISUAL ===
-const ajudas={agulha:['Ponta da Agulha (Perfil 5100)','Meça a espessura da ponta da agulha a exatos 15mm do início da usinagem. O desgaste não pode exceder o estipulado na norma AREMA.'],jacare_canal:['Jacaré - Canal','A profundidade do canal deve ser aferida no núcleo do jacaré de aço manganês, garantindo passagem segura do friso da roda.'],nao_cubica:['Britas Não-Cúbicas','Britas lamelares ou alongadas reduzem o intertravamento do lastro. Separe as pedras que visivelmente têm uma dimensão muito maior que as outras para amostragem.'],loc_dormente:['Localização do Defeito','Apoio: Área diretamente abaixo da chapa/trilho. Testeira: As extremidades do dormente. Fora de Apoio: Região central livre.'],def_madeira:['Tipos de Fenda','Fenda de Topo: Inicia na face externa e entra na madeira. Rachadura de Centro: Abertura longitudinal no meio do dormente, não alcançando as bordas.']};
+const ajudas={agulha:['Ponta da Agulha (Perfil 5100)','Meça a espessura da ponta da agulha a exatos 15mm do início da usinagem. O desgaste não pode exceder o estipulado na norma AREMA.'],jacare_canal:['Jacaré - Canal','A profundidade do canal deve ser aferida no núcleo do jacaré de aço manganês, garantindo passagem segura do friso da roda.'],nao_cubica:['Britas Não-Cúbicas','Britas lamelares ou alongadas reduzem o intertravamento do lastro. Separe as pedras que visivelmente têm uma dimensão muito maior que as outras para amostragem.'],loc_dormente:['Localização do Defeito','Apoio: Área diretamente abaixo da chapa/trilho. Testeira: As extremidades do dormente. Fora de Apoio: Região central livre. Use X=comprimento, Y=altura e Z=profundidade para classificar o defeito.'],def_madeira:['Tipos de Fenda','Fenda de Topo: Inicia na face externa e entra na madeira. Rachadura de Centro: Abertura longitudinal no meio do dormente, não alcançando as bordas.'],fastclip:['Fast Clip','Confirme perfil do trilho, cor, SAP e posição do isolador antes da montagem. Em UIC-60, o isolador TR-68 fica no lado interno e o especial UIC-60 no lado externo.']};
 function abrirAjuda(k){if(ajudas[k]){$('modal-titulo').innerText=ajudas[k][0];$('modal-desc').innerText=ajudas[k][1];showEl('modal-ajuda-visual','flex')}}
 function fecharAjuda(){hideEl('modal-ajuda-visual')}
 
@@ -1227,9 +1774,9 @@ function atualizarInterface(mod){
 // === ANIMAÇÃO LAUDO ===
 function animarTexto(boxId,texto,cls){
     const box=$(boxId);box.className=`resultado-box ${cls}`;box.style.display='block';box.innerHTML='';
-    const sec=boxId.split('-')[2];hideEl(`botoes-acao-${sec}`);
+    const sec=boxId.split('-')[2] || (boxId.includes('checklist')?'checklist':'geral');hideEl(`botoes-acao-${sec}`);
     const aviso=box.parentElement.querySelector('.aviso-normativo');if(aviso)aviso.style.display='none';
-    let i=0;(function dig(){if(i<texto.length){box.innerHTML+=texto.charAt(i)==='\n'?'<br>':texto.charAt(i);i++;setTimeout(dig,10)}else{showEl(`botoes-acao-${sec}`,'grid');if(aviso)aviso.style.display='block'}})()
+    let i=0;(function dig(){if(i<texto.length){box.innerHTML+=texto.charAt(i)==='\n'?'<br>':texto.charAt(i);i++;setTimeout(dig,4)}else{showEl(`botoes-acao-${sec}`,'grid');if(aviso)aviso.style.display='block';salvarHistoricoLaudo(CATEGORIA_SECAO[sec]||(sec==='checklist'?'Checklist de Campo':sec),texto,cls)}})()
 }
 
 // === CONCRETO ===
@@ -1238,17 +1785,29 @@ function atualizarOpcoes(){const t=$('tipo-defeito').value,s=$('localizacao');s.
 function atualizarCampos(){const t=$('tipo-defeito').value,l=$('localizacao').value;hideEl('dimensoes-inputs');hideEl('container-aco');hideAll('#dimensoes-inputs .form-group');if(!l)return;showEl('dimensoes-inputs','grid');if(t==='vazio'){showEl('div-profundidade');showEl('div-comprimento');showEl('div-largura');if(l==='testeira')showEl('container-aco','flex')}else if(t==='quebra'){showEl('div-profundidade');showEl('div-comprimento');showEl('div-largura');showEl('container-aco','flex')}else if(t==='fissura'){if(l==='lateral'||l==='transversal'){showEl('div-espessura');showEl('div-comprimento')}else hideEl('dimensoes-inputs')}}
 
 function analisarDefeito(){
-    const t=$('tipo-defeito').value,l=$('localizacao').value,p=V('val-profundidade'),c=V('val-comprimento'),la=V('val-largura'),e=V('val-espessura'),aco=$('aco-exposto').checked;
+    const erros=[];
+    const t=validarSelect('tipo-defeito','Tipo de defeito',erros);
+    const l=validarSelect('localizacao','Localização do defeito',erros);
+    let p=NaN,c=NaN,la=NaN,e=NaN;
+    if(t==='vazio'||t==='quebra'){p=validarNumero('val-profundidade','Profundidade',erros);c=validarNumero('val-comprimento','Comprimento',erros);la=validarNumero('val-largura','Largura/altura',erros)}
+    if(t==='fissura'&&(l==='lateral'||l==='transversal')){e=validarNumero('val-espessura','Espessura da fissura',erros);c=validarNumero('val-comprimento','Comprimento da fissura',erros)}
+    const aco=$('aco-exposto').checked;
+    if(erros.length){mostrarErroValidacao('resultado-box-concreto',erros);return}
     let s='aceitavel',ti='✅ ACEITÁVEL',d='',ref='',ac='✅ AÇÃO: Liberar lote para aplicação.';
     if(t==='vazio'){if(l==='apoio'){ref='Tabela 1';if(p<=2&&c<=3&&la<=3)d='Profundidade ≤2 mm | Comprimento ≤3 mm | Largura ≤3 mm';else if(p<=5&&c<=10&&la<=10){s='reparar';ti='🔧 REPARAR';d='Profundidade 3-5 mm | Comprimento 4-10 mm | Largura 4-10 mm';ac='⚠️ AÇÃO: Executar reparo com argamassa epóxi antes da liberação.'}else{s='refugo';ti='❌ REFUGO';d='Profundidade >6 mm | Comprimento >11 mm | Largura >11 mm';ac='🚫 AÇÃO: Segregar dormente e preencher RNC imediata.'}}else if(l==='fora_apoio'){ref='Tabela 2';if(p<=5&&c<=5&&la<=5)d='Profundidade ≤5 mm | Comprimento ≤5 mm | Altura ≤5 mm';else if(p<=10&&c<=20&&la<=20){s='reparar';ti='🔧 REPARAR';d='Profundidade 6-10 mm | Comprimento 6-20 mm | Altura 6-20 mm';ac='⚠️ AÇÃO: Executar reparo na superfície.'}else{s='refugo';ti='❌ REFUGO';d='Profundidade >11 mm | Comprimento >21 mm | Altura >21 mm';ac='🚫 AÇÃO: Segregar dormente e preencher RNC imediata.'}}else if(l==='testeira'){ref='Página 15-16';if(aco&&p>=31){s='refugo';ti='❌ REFUGO';d='Exposição de armadura tolerável: até 30 mm';ac='🚫 AÇÃO: Risco estrutural. Sucatar peça.'}else if(!aco&&p<=50){s='reparar';ti='🔧 REPARAR';d='Profundidade máxima reparável: 50 mm';ac='⚠️ AÇÃO: Necessário preenchimento da testeira.'}else{s='refugo';ti='❌ REFUGO';d='Profundidade >51 mm';ac='🚫 AÇÃO: Segregar dormente e preencher RNC.'}}}
     else if(t==='quebra'){ref=l==='lat_sup'?'Tabela 3':'Tabela 4';if(aco){s='refugo';ti='❌ REFUGO';d='Qualquer exposição de armadura ativa = refugo';ac='🚫 AÇÃO: Armadura comprometida. Refugar.'}else if(p<=10&&c<=49&&la<=29)d='Prof. ≤10 mm | Comp. ≤49 mm | Alt. ≤29 mm';else if(p<=20&&c<=200&&la<=150){s='reparar';ti='🔧 REPARAR';d='Prof. 11-20 mm | Comp. 50-200 mm | Alt. 30-150 mm';ac='⚠️ AÇÃO: Reparo mandatório da quebra.'}else{s='refugo';ti='❌ REFUGO';d='Prof. >21 mm | Comp. >201 mm | Alt. >151 mm';ac='🚫 AÇÃO: Quebra excessiva. Abrir RNC.'}}
     else if(t==='fissura'){ref='Tabela 5';if(l==='ombreira'){s='refugo';ti='❌ REFUGO';d='Fissura na ombreira = refugo';ac='🚫 AÇÃO: Refugo sumário.'}else if(l==='lateral'||l==='transversal'){if(e<=0.10&&c<=10)d='Espessura ≤0,10 mm | Comprimento ≤10 mm';else if(e<=0.50&&c<=100){s='reparar';ti='🔧 REPARAR';d='Espessura 0,15-0,50 mm | Comprimento 11-100 mm';ac='⚠️ AÇÃO: Injeção de epóxi necessária.'}else{s='refugo';ti='❌ REFUGO';d='Espessura ≥0,55 mm | Comprimento >101 mm';ac='🚫 AÇÃO: Fissura estrutural grave. Refugar.'}}}
-    animarTexto('resultado-box-concreto',`${ti}\n\n📏 Análise:\n${d}\n\n${ac}\n\n📄 PO-SPE-160 (${ref})`,s)
+    animarTexto('resultado-box-concreto',formatarLaudo(ti,d,ac,`PO-SPE-160 (${ref})`,'Dormente de Concreto',`${nomeSelecionado('tipo-defeito')} - ${nomeSelecionado('localizacao')}`),s)
 }
 
 // === AMV ===
 function analisarAMV(){
-    const comp=$('amv-componente').value;let s='aceitavel',ti='✅ CONFORME',d='',ref='',ac='✅ AÇÃO: Componente liberado para montagem/operação.';
+    const erros=[];
+    const comp=validarSelect('amv-componente','Componente inspecionado',erros);
+    const req={agulha:[['val-amv-ponta','Medida atual da ponta da agulha']],rolete:[['val-amv-altura-rolete','Altura máxima do rolete']],coxin:[['val-amv-coxin','Dureza do coxin']],jacare_canal:[['val-amv-jacare-canal','Profundidade do canal']],jacare_dureza:[['val-amv-jacare-dureza','Dureza Brinell']],fixacao_concreto:[['val-amv-fixacao','Pressão do grampo']],cilindro:[['val-amv-pressao','Pressão de travamento'],['val-amv-tempo','Tempo de acionamento']],batefica:[['val-amv-deslocamento','Deslocamento das agulhas']]};
+    (req[comp]||[]).forEach(([id,label])=>validarNumero(id,label,erros));
+    if(erros.length){mostrarErroValidacao('resultado-box-amv',erros);return}
+    let s='aceitavel',ti='✅ CONFORME',d='',ref='',ac='✅ AÇÃO: Componente liberado para montagem/operação.';
     if(comp==='agulha'){const p=V('val-amv-ponta');ref='ETMs 0005, 0007, 0008, 0009';if(p<=3.9){d='Ponta de agulha dentro da tolerância.\n(Nominal AREMA: 3.1mm + Tol: 0.8mm)';if(p>=3.7){d+='\n⚠️ ALERTA DE TENDÊNCIA: Desgaste próximo ao limite crítico.';ac='⚠️ AÇÃO: Liberado, mas programar monitoramento.'}}else{s='refugo';ti='❌ NÃO CONFORME';d='Ponta de agulha acima da tolerância máxima (3.9mm). Desgaste excessivo.';ac='🚫 AÇÃO: Risco de descarrilamento. Bloquear e substituir.'}}
     else if(comp==='rolete'){const a=V('val-amv-altura-rolete');ref='EM-SPE-072 (Item 5.2)';if(a<=2.0)d='Altura do rolete atende aos requisitos (≤ 2.0mm em relação à base da agulha).';else{s='reparar';ti='🔧 NECESSITA CALIBRAÇÃO';d='Altura superior a 2.0 mm.';ac='⚠️ AÇÃO: Acionar equipe de via para recalibrar a altura.'}}
     else if(comp==='coxin'){const du=V('val-amv-coxin');ref='EM-SPE-072 (Item 5.3.1)';if(du>=88&&du<=92)d='Dureza Shore A do coxin atende aos requisitos (88 a 92).';else{s='refugo';ti='❌ NÃO CONFORME';d='Dureza fora da tolerância exigida (Min: 88 | Max: 92).';ac='🚫 AÇÃO: Rejeitar lote de coxins. Retornar ao fornecedor.'}}
@@ -1257,22 +1816,41 @@ function analisarAMV(){
     else if(comp==='fixacao_concreto'){const p=V('val-amv-fixacao');ref='ENG-DSV-VP-ETM-A0019';if(p>=900&&p<=1500)d='Pressão do grampo atende aos requisitos (Exigido: 1200 ± 300 kgf).';else{s='reparar';ti='🔧 VERIFICAR FIXAÇÃO';d='Pressão do grampo fora da faixa (900 a 1500 kgf).';ac='⚠️ AÇÃO: Substituir grampos fadigados na região.'}}
     else if(comp==='cilindro'){const p=V('val-amv-pressao'),t=V('val-amv-tempo');ref='EM-SPE-026';if(p>=500&&t>=10&&t<=12)d='Pressão e tempo de acionamento em conformidade (Mín 500kgf, 10-12s).';else{s='reparar';ti='🔧 REGULAR CILINDRO';d='Parâmetros fora da norma estabelecida.';ac='⚠️ AÇÃO: Ajuste de válvula do cilindro pela manutenção.'}}
     else if(comp==='batefica'){const dl=V('val-amv-deslocamento');ref='EM-SPE-017';if(dl>=100&&dl<=121)d='Deslocamento da agulha operando adequadamente (100 a 121 mm).';else{s='reparar';ti='🔧 NECESSITA AJUSTE';d='Deslocamento fora da tolerância (100 mm a 121 mm).';ac='⚠️ AÇÃO: Calibrar hastes do aparelho Bate-Fica.'}}
-    animarTexto('resultado-box-amv',`${ti}\n\n📏 Análise:\n${d}\n\n${ac}\n\n📄 Lote ETM-AMV (${ref})`,s)
+    animarTexto('resultado-box-amv',formatarLaudo(ti,d,ac,`Lote ETM-AMV (${ref})`,'AMV',nomeSelecionado('amv-componente')),s)
 }
 
 // === BRITA ===
 function analisarBrita(){
-    const cat=$('brita-categoria').value,lito=$('brita-litologia').value;let s='aceitavel',ti='✅ CONFORME',d='',ac='✅ AÇÃO: Lote de brita liberado para lastramento.';
+    const erros=[];
+    const cat=validarSelect('brita-categoria','Categoria da inspeção',erros),lito=$('brita-litologia').value;
+    if(cat==='forma_lote')validarNumero('val-brita-nao-cubicas','Percentual de britas não-cúbicas',erros);
+    if(cat==='granulometria')[['val-brita-g3','Peneira 3”'],['val-brita-g250','Peneira 2.1/2”'],['val-brita-g150','Peneira 1.1/2”'],['val-brita-g075','Peneira 3/4”'],['val-brita-g050','Peneira 1/2”']].forEach(([id,label])=>validarNumero(id,label,erros));
+    if(cat==='laboratorio')[['val-brita-losangeles','Abrasão Los Angeles'],['val-brita-pulverulento','Material pulverulento'],['val-brita-argila','Torrões de argila']].forEach(([id,label])=>validarNumero(id,label,erros));
+    if(erros.length){mostrarErroValidacao('resultado-box-brita',erros);return}
+    let s='aceitavel',ti='✅ CONFORME',d='',ac='✅ AÇÃO: Lote de brita liberado para lastramento.';
     if(cat==='visual'){if($('brita-presenca-finos').checked){s='refugo';ti='❌ NÃO ACEITAR (REFUGO)';d='Lastro Contaminado: Presença visível de materiais finos.';ac='🚫 AÇÃO: Rejeitar vagão imediatamente.'}else d='Inspeção visual em conformidade. Sem contaminantes.'}
     else if(cat==='forma_lote'){const p=V('val-brita-nao-cubicas');if(p>15){s='refugo';ti='❌ NÃO ACEITAR (REFUGO)';d=`Amostra possui ${p}% de britas não-cúbicas (Max: 15%).`;ac='🚫 AÇÃO: Lote reprovado. Solicitar nova britagem.'}else d=`Índice de britas não-cúbicas (${p}%) dentro da tolerância (≤ 15%).`}
     else if(cat==='granulometria'){const g3=V('val-brita-g3'),g250=V('val-brita-g250'),g150=V('val-brita-g150'),g075=V('val-brita-g075'),g050=V('val-brita-g050');let er=[];if(g3!==0)er.push(`- 3": deve ser 0% (Atual: ${g3}%)`);if(g250<0||g250>10)er.push(`- 2.1/2": 0% a 10% (Atual: ${g250}%)`);if(g150<40||g150>75)er.push(`- 1.1/2": 40% a 75% (Atual: ${g150}%)`);if(g075<90||g075>100)er.push(`- 3/4": 90% a 100% (Atual: ${g075}%)`);if(g050<95||g050>100)er.push(`- 1/2": 95% a 100% (Atual: ${g050}%)`);if(er.length){s='refugo';ti='❌ NÃO ACEITAR (REFUGO)';d='Amostra fora da faixa granulométrica AREMA 24:\n'+er.join('\n');ac='🚫 AÇÃO: Lote reprovado.'}else d='Percentuais retidos em conformidade com o Plano 24 da AREMA.'}
     else if(cat==='laboratorio'){const la=V('val-brita-losangeles'),pu=V('val-brita-pulverulento'),ar=V('val-brita-argila');let er=[];const lim=lito==='granito'?35:30;if(la>lim)er.push(`- Abrasão Los Angeles: ${la}% (Max p/ ${lito}: ${lim}%)`);if(pu>1)er.push(`- Mat. Pulverulento: ${pu}% (Max: 1%)`);if(ar>0.5)er.push(`- Torrões de Argila: ${ar}% (Max: 0.5%)`);if(er.length){s='refugo';ti='❌ LAUDO REPROVADO';d='Falha nos ensaios mecânicos/físicos:\n'+er.join('\n');ac='🚫 AÇÃO: Bloquear pedreira/veio para fornecimento.'}else d=`Ensaios físicos em conformidade para Litologia: ${lito.toUpperCase()}.`}
-    animarTexto('resultado-box-brita',`${ti}\n\n📏 Análise:\n${d}\n\n${ac}\n\n📄 Procedimento: MAN-VP-T-ETM-ES-0006-05`,s)
+    animarTexto('resultado-box-brita',formatarLaudo(ti,d,ac,'MAN-VP-T-ETM-ES-0006-05','Brita para Lastro',nomeSelecionado('brita-categoria')),s)
 }
 
 // === MADEIRA ===
 function analisarMadeira(){
-    const cat=$('mad-categoria').value;let s='aceitavel',ti='✅ CONFORME',d='',ac='✅ AÇÃO: Lote liberado para via.';
+    const erros=[];
+    const cat=validarSelect('mad-categoria','Categoria da inspeção',erros);
+    if(cat==='fisico')[['val-mad-umidade','Umidade'],['val-mad-densidade','Densidade'],['val-mad-retencao','Retenção CCA']].forEach(([id,label])=>validarNumero(id,label,erros));
+    if(cat==='defeito'){
+        const tipo=validarSelect('mad-tipo-defeito','Tipo de defeito ou medição',erros);
+        if(tipo==='dimensoes')[['val-mad-dim-comp','Comprimento aferido'],['val-mad-dim-larg','Largura aferida'],['val-mad-dim-alt','Altura aferida'],['val-mad-nom-comp','Comprimento nominal'],['val-mad-nom-larg','Largura nominal'],['val-mad-nom-alt','Altura nominal']].forEach(([id,label])=>validarNumero(id,label,erros));
+        if(tipo==='esmoado')[['val-mad-esmoado-reta','Face reta'],['val-mad-esmoado-topo','Face superior/topo']].forEach(([id,label])=>validarNumero(id,label,erros));
+        if(tipo==='racha_topo')[['val-mad-comp-racha','Comprimento da fenda'],['val-mad-abert-racha','Abertura da fenda']].forEach(([id,label])=>validarNumero(id,label,erros));
+        if(tipo==='racha_centro')[['val-mad-comp-racha','Comprimento da rachadura'],['val-mad-abert-racha','Abertura da rachadura'],['val-mad-prof-racha','Profundidade da rachadura']].forEach(([id,label])=>validarNumero(id,label,erros));
+        if(tipo==='furos_nos')[['val-mad-diam-furo','Diâmetro do furo/nó'],['val-mad-prof-furo','Profundidade do furo/nó']].forEach(([id,label])=>validarNumero(id,label,erros));
+        if(tipo==='empenamento')validarNumero('val-mad-flecha','Flecha constatada',erros);
+    }
+    if(erros.length){mostrarErroValidacao('resultado-box-madeira',erros);return}
+    let s='aceitavel',ti='✅ CONFORME',d='',ac='✅ AÇÃO: Lote liberado para via.';
     if(cat==='fisico'){const cl=$('mad-classe').value,um=V('val-mad-umidade'),dn=V('val-mad-densidade'),rt=V('val-mad-retencao');let er=[];if(um>30)er.push('Teor de umidade excede o máximo de 30%.');if(cl==='1'&&dn>0&&dn<750)er.push('Densidade abaixo do mínimo p/ 1ª Classe (750 kg/m³).');if(cl==='2'&&dn>0&&dn<600)er.push('Densidade abaixo do mínimo p/ 2ª Classe (600 kg/m³).');if(rt>0&&rt<9.6)er.push('Retenção CCA abaixo do mínimo (9.6 kg/m³).');if(er.length){s='refugo';ti='❌ NÃO CONFORME';d=er.join('\n');ac='🚫 AÇÃO: Recusar recebimento. Falha no tratamento.'}else d='Propriedades físicas e de impregnação preservativa dentro dos limites normativos.'}
     else if(cat==='defeito'){const tipo=$('mad-tipo-defeito').value,fix=$('mad-zona-fixacao').checked;
         const refugoSumario={podre:'Dormente com aspecto de apodrecimento.',casca:'Presença de casca na madeira.',anti_rachante:'Proteção anti-rachante ausente ou menor que 70% na face do dormente.',amarracao:'Amarração deficiente (menos de 3 fitas ou sem pontaletes).'};
@@ -1285,7 +1863,7 @@ function analisarMadeira(){
         else if(tipo==='furos_nos'){const dm=V('val-mad-diam-furo'),p=V('val-mad-prof-furo');if(dm>2.5||p>=5){s='refugo';ti='❌ REFUGO';d='Dimensões excedem limite (Diâm máx: 2.5cm | Prof máx: < 5cm).';ac='🚫 AÇÃO: Segregar dormente.'}else d='Furo de broca ou nó cariado dentro das tolerâncias.'}
         else if(tipo==='empenamento'){const cd=parseFloat($('val-mad-comp-dormente').value),fl=V('val-mad-flecha'),mx=cd/2;if(fl>mx){s='refugo';ti='❌ REFUGO';d=`Flecha (${fl} cm) excede o limite de ${mx.toFixed(1)} cm para viga de ${cd.toFixed(2)}m.`;ac='🚫 AÇÃO: Segregar dormente para descarte.'}else d=`Empenamento/Arqueamento dentro do limite aceitável (Máx: ${mx.toFixed(1)} cm).`}
     }
-    animarTexto('resultado-box-madeira',`${ti}\n\n📏 Análise:\n${d}\n\n${ac}\n\n📄 Procedimento: MAN DM T MTE DM 0001`,s)
+    animarTexto('resultado-box-madeira',formatarLaudo(ti,d,ac,'MAN-DM-T-MTE-DM-0001','Dormente de Madeira',cat==='fisico'?nomeSelecionado('mad-categoria'):nomeSelecionado('mad-tipo-defeito')),s)
 }
 
 // === SUBCOMPONENTES ===
@@ -1306,10 +1884,14 @@ const subDados={
     pal_branca_almofada:{title:"Palmilha Branca Almofada 7552",ref:"ENG-DVP-D183",m:[{l:"Medida 1 (mm)",min:187.5,max:191.5},{l:"Medida 2 (mm)",min:151,max:155},{l:"Medida 3 (mm)",min:111.5,max:114.5},{l:"Medida 4 (mm)",min:5.5,max:7.5}]}
 };
 function analisarSub(){
-    const cat=$('sub-categoria').value;if(!cat||!subDados[cat])return;const item=subDados[cat];let s='aceitavel',ti='✅ CONFORME',d='',er=[],ac='✅ AÇÃO: Subcomponente aprovado. Lote liberado.';
+    const erros=[];
+    const cat=validarSelect('sub-categoria','Subcomponente inspecionado',erros);
+    if(cat&&subDados[cat])subDados[cat].m.forEach((m,i)=>validarNumero(`val-sub-m${i+1}`,m.l,erros));
+    if(erros.length){mostrarErroValidacao('resultado-box-sub',erros);return}
+    if(!cat||!subDados[cat])return;const item=subDados[cat];let s='aceitavel',ti='✅ CONFORME',d='',er=[],ac='✅ AÇÃO: Subcomponente aprovado. Lote liberado.';
     item.m.forEach((m,i)=>{const v=V(`val-sub-m${i+1}`);if(v<m.min||v>m.max)er.push(m.max===999999?`- ${m.l}: ${v}mm (Tol: Min ${m.min}mm)`:`- ${m.l}: ${v}mm (Tol: ${m.min} a ${m.max} mm)`)});
     if(er.length){s='refugo';ti='❌ NÃO CONFORME';d='Medidas fora das tolerâncias:\n'+er.join('\n');ac='🚫 AÇÃO: Lote dimensionalmente reprovado. Preencher RNC.'}else d='Todas as dimensões inspecionadas estão de acordo com o desenho técnico.';
-    animarTexto('resultado-box-sub',`${ti}\n\n${item.title}\n\n📏 Análise:\n${d}\n\n${ac}\n\n📄 Desenho Técnico: ${item.ref}`,s)
+    animarTexto('resultado-box-sub',formatarLaudo(ti,d,ac,`Desenho Técnico: ${item.ref}`,'Subcomponentes',item.title),s)
 }
 
 // === CÂMERA ===
@@ -1340,11 +1922,47 @@ function baixarFotoCarimbada(){if(!fotoDataUrl)return;const a=document.createEle
 async function compartilharFotoCarimbada(){if(!fotoDataUrl)return;const r=await fetch(fotoDataUrl),b=await r.blob(),f=new File([b],"laudo_inspecao.jpg",{type:"image/jpeg"});if(navigator.share&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Laudo Rumo',text:`Evidência de Inspeção - ${categoriaAtual}`})}catch(e){}}else alert("⚠️ Seu navegador não suporta envio direto de imagem. Clique em SALVAR e envie pelo WhatsApp.")}
 function compartilharWhatsApp(boxId,cat){const t=$(boxId).innerText,d=new Date().toLocaleDateString('pt-BR'),h=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});window.open(`https://wa.me/?text=${encodeURIComponent(`*INSPEÇÃO DE QUALIDADE - RUMO*\n📍 *Categoria:* ${cat}\n📅 *Data:* ${d} às ${h}\n\n${t}`)}`,'_blank')}
 
+
+// === PWA / OFFLINE ===
+// Para funcionamento offline completo, mantenha este HTML e o arquivo rumo-sw.js no mesmo diretório do site publicado em HTTPS.
+function registrarPWA(){
+    try{
+        const manifest={
+            name:'Guia do Inspetor Padrão',
+            short_name:'Guia Inspetor',
+            start_url:'./',
+            display:'standalone',
+            background_color:'#042D4F',
+            theme_color:'#042D4F',
+            icons:[]
+        };
+        const manifestBlob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
+        const link=document.createElement('link');
+        link.rel='manifest';link.href=URL.createObjectURL(manifestBlob);
+        document.head.appendChild(link);
+        if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+            navigator.serviceWorker.register('./rumo-sw.js').then(()=>{
+                const st=$('offline-status');if(st)st.textContent='PWA ativo: após o primeiro carregamento publicado, o guia pode abrir com cache offline.';
+            }).catch(()=>{
+                const st=$('offline-status');if(st)st.textContent='Modo local ativo. Para offline completo, publique junto o arquivo rumo-sw.js.';
+            });
+        }
+    }catch(e){}
+}
+
 // === STORAGE ===
 function salvarDadosLocal(){const inputs=document.querySelectorAll('input:not([type="password"]),select'),d={};inputs.forEach(i=>{if(i.id)d[i.id]=i.type==='checkbox'?i.checked:i.value});d.sessao_ativa=true;localStorage.setItem('rumoInspeccaoDados',JSON.stringify(d))}
 function carregarDadosLocal(){const s=localStorage.getItem('rumoInspeccaoDados');if(s){const d=JSON.parse(s);for(const id in d){const el=$(id);if(el){el.type==='checkbox'?el.checked=d[id]:el.value=d[id]}}if(d['tipo-defeito'])atualizarOpcoes();['amv-componente','mad-categoria','brita-categoria','sub-categoria','proc-area'].forEach(id=>{if(d[id]){const el=$(id);if(el)el.dispatchEvent(new Event('change'))}});if(d.sessao_ativa){hideEl('login-screen');showEl('main-layout','flex');if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}}}
 
-document.addEventListener('DOMContentLoaded',()=>{carregarDadosLocal();document.querySelectorAll('input:not([type="password"]),select').forEach(i=>{i.addEventListener('change',salvarDadosLocal);i.addEventListener('input',salvarDadosLocal)});window.onclick=e=>{if(e.target===$('modal-ajuda-visual'))fecharAjuda()}})
+document.addEventListener('DOMContentLoaded',()=>{
+    carregarDadosLocal();
+    renderChecklist();
+    carregarDadosLocal();
+    renderHistorico();
+    registrarPWA();
+    document.querySelectorAll('input:not([type="password"]),select').forEach(i=>{i.addEventListener('change',salvarDadosLocal);i.addEventListener('input',salvarDadosLocal)});
+    window.onclick=e=>{if(e.target===$('modal-ajuda-visual'))fecharAjuda()}
+})
 </script>
 </body>
 </html>
