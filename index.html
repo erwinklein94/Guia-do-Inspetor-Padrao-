@@ -1053,8 +1053,6 @@
                         </div>
                         <div id="busca-resultados" class="search-results"></div>
                         <div class="quick-grid">
-                            <button class="quick-card" onclick="irParaSecao('sec-amv')"><strong>⚙️ AMV</strong><span>Agulha, jacaré, roletes, fixação, cilindro e bate-fica.</span></button>
-                            <button class="quick-card" onclick="irParaSecao('sec-brita')"><strong>🪨 Brita</strong><span>Visual, forma, granulometria e ensaios físicos.</span></button>
                             <button class="quick-card" onclick="irParaSecao('sec-checklist')"><strong>✅ Checklist</strong><span>Roteiro antes, durante e depois da inspeção.</span></button>
                             <button class="quick-card" onclick="irParaSecao('sec-historico')"><strong>🗂️ Histórico</strong><span>Laudos salvos, exportação e rastreabilidade local.</span></button>
                         </div>
@@ -1944,7 +1942,7 @@ function registrarPWA(){
             navigator.serviceWorker.register('./rumo-sw.js').then(()=>{
                 const st=$('offline-status');if(st)st.textContent='PWA ativo: após o primeiro carregamento publicado, o guia pode abrir com cache offline.';
             }).catch(()=>{
-                const st=$('offline-status');if(st)st.textContent='Modo local ativo. Para offline completo, publique junto o arquivo rumo-sw.js.';
+                const st=$('offline-status');if(st)st.textContent='.';
             });
         }
     }catch(e){}
