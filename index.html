@@ -111,58 +111,9 @@
         .bold{font-weight:700}
 
         /* =====================================================================
-           TELA DE LOGIN
-           ===================================================================== */
-        #login-screen{
-         position:fixed;inset:0;z-index:1000;padding:20px;
-         display:flex;align-items:center;justify-content:center;
-         background:
-          radial-gradient(ellipse at top left,rgba(43,165,219,.18),transparent 50%),
-          radial-gradient(ellipse at bottom right,rgba(165,210,51,.12),transparent 50%),
-          linear-gradient(135deg,var(--rumo-navy-900) 0%,var(--rumo-navy-800) 100%);
-        }
-        #login-screen::before{
-         content:"";position:absolute;inset:0;pointer-events:none;
-         background-image:
-          linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px),
-          linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px);
-         background-size:48px 48px;
-        }
-        .login-card{
-         background:var(--bg-panel);
-         padding:48px 40px 36px;
-         border-radius:20px;
-         width:100%;max-width:420px;
-         text-align:center;
-         box-shadow:var(--shadow-lg);
-         position:relative;overflow:hidden;
-         animation:floatIn .6s cubic-bezier(.16,1,.3,1);
-        }
-        .login-card::before{
-         content:"";position:absolute;top:0;left:0;right:0;height:5px;
-         background:linear-gradient(90deg,var(--rumo-navy-800) 0%,var(--rumo-blue-500) 50%,var(--rumo-lime) 100%);
-        }
-        .login-logo{width:140px;margin-bottom:18px;filter:brightness(.15)}
-        body.dark .login-logo{filter:brightness(.95)}
-        .login-subtitle{
-         font-size:.72rem;color:var(--text-muted);
-         margin:-10px 0 28px;
-         font-weight:500;line-height:1.5;
-         letter-spacing:.02em;
-         text-transform:uppercase;
-        }
-        .login-label{
-         font-family:'Barlow Condensed',sans-serif;
-         font-weight:600;font-size:1.4rem;
-         margin-bottom:24px;
-         color:var(--text-title);
-         letter-spacing:.02em;
-        }
-
-        /* =====================================================================
            LAYOUT PRINCIPAL
            ===================================================================== */
-        #main-layout{display:none;width:100%;position:relative;z-index:1;min-height:100vh}
+        #main-layout{display:flex;width:100%;position:relative;z-index:1;min-height:100vh}
         #main-layout::before{
          content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
          background:url('https://inevitable-violet-aqhzqzsvkz.edgeone.app/transporte.jpg') center/cover no-repeat;
@@ -971,21 +922,10 @@
          .dimensoes-grid,.botoes-acao{grid-template-columns:1fr;gap:12px}
          h1{font-size:1.7rem}
          .card{padding:24px 20px}
-         .login-card{padding:36px 24px 28px}
         }
     </style>
 </head>
 <body>
-    <div id="login-screen">
-        <div class="login-card">
-            <img src="https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg" alt="Rumo" class="login-logo">
-            <div class="login-subtitle">Coordenação de Qualidade e Homologação dos Materiais de Via Permanente</div>
-            <p class="login-label">Guia de Procedimentos</p>
-            <div class="form-group"><input type="password" id="user-password" placeholder="Digite a senha de acesso"></div>
-            <button class="btn-analisar" onclick="validarAcesso()"><span>ENTRAR</span></button>
-            <p id="error-msg" class="error-msg">Senha incorreta</p>
-        </div>
-    </div>
     <div id="modal-ajuda-visual" class="modal-ajuda escondido">
         <div class="modal-ajuda-content">
             <span class="modal-ajuda-close" onclick="fecharAjuda()">&times;</span>
@@ -1398,8 +1338,7 @@ function baixarArquivo(nome,conteudo,tipo='text/plain;charset=utf-8'){
     document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);document.body.removeChild(a)},0)
 }
 
-// === AUTH & NAV ===
-function validarAcesso(){if($('user-password').value.trim()==='1272'){hideEl('login-screen');showEl('main-layout','flex');if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}else showEl('error-msg')}
+// === NAV ===
 function fazerLogout(){if(confirm("Deseja realmente sair e limpar os dados locais?")){localStorage.removeItem('rumoInspeccaoDados');location.reload()}}
 function sugerirMudanca(){const msg=encodeURIComponent("Olá Erwin, gostaria de sugerir uma mudança / melhoria para o Guia do Inspetor Padrão RUMO:\n\n");window.open(`https://wa.me/5541992581521?text=${msg}`,'_blank')}
 function navegar(el,sec){document.querySelectorAll('.content-section,.menu-item').forEach(e=>e.classList.remove('active'));$(sec).classList.add('active');el.classList.add('active');if(sec==='sec-historico')renderHistorico();if(sec==='sec-checklist')renderChecklist();if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}
@@ -1949,16 +1888,17 @@ function registrarPWA(){
 }
 
 // === STORAGE ===
-function salvarDadosLocal(){const inputs=document.querySelectorAll('input:not([type="password"]),select'),d={};inputs.forEach(i=>{if(i.id)d[i.id]=i.type==='checkbox'?i.checked:i.value});d.sessao_ativa=true;localStorage.setItem('rumoInspeccaoDados',JSON.stringify(d))}
-function carregarDadosLocal(){const s=localStorage.getItem('rumoInspeccaoDados');if(s){const d=JSON.parse(s);for(const id in d){const el=$(id);if(el){el.type==='checkbox'?el.checked=d[id]:el.value=d[id]}}if(d['tipo-defeito'])atualizarOpcoes();['amv-componente','mad-categoria','brita-categoria','sub-categoria','proc-area'].forEach(id=>{if(d[id]){const el=$(id);if(el)el.dispatchEvent(new Event('change'))}});if(d.sessao_ativa){hideEl('login-screen');showEl('main-layout','flex');if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}}}
+function salvarDadosLocal(){const inputs=document.querySelectorAll('input,select'),d={};inputs.forEach(i=>{if(i.id)d[i.id]=i.type==='checkbox'?i.checked:i.value});d.sessao_ativa=true;localStorage.setItem('rumoInspeccaoDados',JSON.stringify(d))}
+function carregarDadosLocal(){const s=localStorage.getItem('rumoInspeccaoDados');if(s){const d=JSON.parse(s);for(const id in d){const el=$(id);if(el){el.type==='checkbox'?el.checked=d[id]:el.value=d[id]}}if(d['tipo-defeito'])atualizarOpcoes();['amv-componente','mad-categoria','brita-categoria','sub-categoria','proc-area'].forEach(id=>{if(d[id]){const el=$(id);if(el)el.dispatchEvent(new Event('change'))}});if(d.sessao_ativa&&innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}}
 
 document.addEventListener('DOMContentLoaded',()=>{
     carregarDadosLocal();
+    if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}
     renderChecklist();
     carregarDadosLocal();
     renderHistorico();
     registrarPWA();
-    document.querySelectorAll('input:not([type="password"]),select').forEach(i=>{i.addEventListener('change',salvarDadosLocal);i.addEventListener('input',salvarDadosLocal)});
+    document.querySelectorAll('input,select').forEach(i=>{i.addEventListener('change',salvarDadosLocal);i.addEventListener('input',salvarDadosLocal)});
     window.onclick=e=>{if(e.target===$('modal-ajuda-visual'))fecharAjuda()}
 })
 </script>
