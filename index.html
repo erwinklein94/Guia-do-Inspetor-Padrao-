@@ -915,8 +915,8 @@
            ===================================================================== */
         .flashcards-section{
          max-width:none;
-         margin:0;
-         width:100%;
+         margin:0 -56px;
+         width:calc(100% + 112px);
          min-height:calc(100vh - 96px);
         }
         .flashcards-frame{
@@ -936,6 +936,7 @@
           left:0;top:0;width:282px;
          }
          main{padding:84px 20px 24px}
+         .flashcards-section{margin:0 -20px;width:calc(100% + 40px)}
          .dimensoes-grid,.botoes-acao{grid-template-columns:1fr;gap:12px}
          h1{font-size:1.7rem}
          .card{padding:24px 20px}
