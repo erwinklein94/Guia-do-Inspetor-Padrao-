@@ -405,3 +405,46 @@ label { display: grid; gap: 7px; color: var(--text); font-size: 14px; font-weigh
     align-items: stretch;
   }
 }
+
+/* Supabase Auth */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.auth-status {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: var(--muted);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 800;
+}
+.auth-message {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: var(--surface-strong);
+}
+.auth-message.error {
+  color: var(--red);
+  border-color: rgba(255,26,18,.35);
+  background: var(--red-soft);
+}
+.auth-message.success {
+  color: var(--green-2);
+  border-color: rgba(8,178,78,.35);
+  background: var(--green-soft);
+}
+
+@media (max-width: 760px) {
+  .topbar-actions {
+    justify-content: stretch;
+  }
+  .topbar-actions > * {
+    flex: 1;
+  }
+}

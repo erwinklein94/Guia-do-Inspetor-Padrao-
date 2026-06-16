@@ -2,6 +2,9 @@ const STORAGE_KEY = 'rumo_flashcards_quality_registration_v1';
 const PROGRESS_KEY = 'rumo_flashcards_quality_progress_v1';
 const STUDENT_AREA_OPTIONS = ['Dormente de concreto', 'Dormente de madeira', 'AMV', 'Brita', 'Subcomponentes'];
 
+let TRAINING_DATA = [];
+let supabaseClient = null;
+
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
@@ -13,10 +16,20 @@ const state = {
   currentCardIndex: 0,
   flipped: false,
   graded: false,
+  currentUser: null,
+  profile: null,
 };
 
 const elements = {
   themeToggle: $('#themeToggle'),
+  loginPanel: $('#loginPanel'),
+  loginForm: $('#loginForm'),
+  loginEmail: $('#loginEmail'),
+  loginPassword: $('#loginPassword'),
+  loginBtn: $('#loginBtn'),
+  loginMessage: $('#loginMessage'),
+  authStatus: $('#authStatus'),
+  logoutBtn: $('#logoutBtn'),
   landingPanels: $('#landingPanels'),
   registrationPanel: $('#registrationPanel'),
   registrationForm: $('#registrationForm'),
@@ -57,12 +70,41 @@ const elements = {
   resetAllBtn: $('#resetAllBtn'),
 };
 
-function init() {
+async function init() {
   hydrateTheme();
-  renderStudentAreaOptions();
-  renderAreaOptions();
   attachEvents();
-  restoreRegistration();
+  showLogin('Conectando ao Supabase...', 'info');
+
+  try {
+    setupSupabaseClient();
+    const { data, error } = await supabaseClient.auth.getSession();
+    if (error) throw error;
+
+    if (data?.session?.user) {
+      await loadSignedUser(data.session.user);
+    } else {
+      showLogin('Informe e-mail e senha para acessar.', 'info');
+    }
+  } catch (error) {
+    console.error(error);
+    showLogin(error.message || 'Erro ao iniciar autenticação do Supabase.', 'error');
+  }
+}
+
+function setupSupabaseClient() {
+  const cfg = window.SUPABASE_CONFIG || {};
+  const url = cfg.url;
+  const key = cfg.publishableKey || cfg.anonKey;
+
+  if (!window.supabase?.createClient) {
+    throw new Error('Biblioteca Supabase não carregou. Verifique sua conexão ou o script CDN no HTML.');
+  }
+
+  if (!url || !key || url.includes('COLE_AQUI') || key.includes('COLE_AQUI')) {
+    throw new Error('Configure o arquivo supabase-config.js com o Project URL e a Publishable/anon key do seu projeto.');
+  }
+
+  supabaseClient = window.supabase.createClient(url, key);
 }
 
 function hydrateTheme() {
@@ -77,6 +119,175 @@ function toggleTheme() {
   document.body.setAttribute('data-theme', next);
   localStorage.setItem('rumo_flashcards_theme', next);
   elements.themeToggle.textContent = next === 'dark' ? '☀️ Tema claro' : '🌙 Tema escuro';
+}
+
+function attachEvents() {
+  elements.themeToggle.addEventListener('click', toggleTheme);
+  elements.loginForm.addEventListener('submit', handleLogin);
+  elements.logoutBtn.addEventListener('click', handleLogout);
+  elements.registrationForm.addEventListener('submit', handleRegistration);
+  elements.flashcard.addEventListener('click', flipCard);
+  elements.flipCardBtn.addEventListener('click', flipCard);
+  elements.prevCardBtn.addEventListener('click', () => moveCard(-1));
+  elements.nextCardBtn.addEventListener('click', () => moveCard(1));
+  elements.goQuizBtn.addEventListener('click', showQuiz);
+  elements.backToCardsBtn.addEventListener('click', showCards);
+  elements.gradeQuizBtn.addEventListener('click', gradeQuiz);
+  elements.clearQuizBtn.addEventListener('click', clearQuizAnswers);
+  elements.printResultBtn.addEventListener('click', () => window.print());
+  elements.retryQuizBtn.addEventListener('click', retryQuiz);
+  elements.restartCourseBtn.addEventListener('click', restartCourse);
+  elements.backToRegisterBtn.addEventListener('click', backToRegister);
+  elements.resetAllBtn.addEventListener('click', resetAll);
+}
+
+function showLogin(message = '', type = 'info') {
+  elements.loginPanel.classList.remove('hidden');
+  elements.landingPanels.classList.add('hidden');
+  elements.coursePanel.classList.add('hidden');
+  elements.logoutBtn.classList.add('hidden');
+  elements.authStatus.textContent = 'Não conectado';
+
+  setLoginMessage(message, type);
+}
+
+function showApp() {
+  elements.loginPanel.classList.add('hidden');
+  elements.landingPanels.classList.remove('hidden');
+  elements.coursePanel.classList.add('hidden');
+  elements.logoutBtn.classList.remove('hidden');
+
+  const name = state.profile?.nome || state.currentUser?.email || 'Usuário';
+  const role = state.profile?.perfil || 'consulta';
+  elements.authStatus.textContent = `${name} • ${role}`;
+}
+
+function setLoginMessage(message, type = 'info') {
+  elements.loginMessage.innerHTML = message || '';
+  elements.loginMessage.classList.remove('error', 'success');
+  if (type === 'error') elements.loginMessage.classList.add('error');
+  if (type === 'success') elements.loginMessage.classList.add('success');
+}
+
+async function handleLogin(event) {
+  event.preventDefault();
+
+  const email = elements.loginEmail.value.trim();
+  const password = elements.loginPassword.value;
+
+  if (!email || !password) {
+    setLoginMessage('Preencha e-mail e senha.', 'error');
+    return;
+  }
+
+  elements.loginBtn.disabled = true;
+  elements.loginBtn.textContent = 'Entrando...';
+  setLoginMessage('Validando acesso...', 'info');
+
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    await loadSignedUser(data.user);
+  } catch (error) {
+    console.error(error);
+    setLoginMessage(error.message || 'Falha no login. Confira e-mail e senha.', 'error');
+  } finally {
+    elements.loginBtn.disabled = false;
+    elements.loginBtn.textContent = 'Entrar';
+  }
+}
+
+async function handleLogout() {
+  await supabaseClient.auth.signOut();
+  state.currentUser = null;
+  state.profile = null;
+  state.registration = null;
+  TRAINING_DATA = [];
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(PROGRESS_KEY);
+  elements.registrationForm.reset();
+  showLogin('Sessão encerrada.', 'success');
+}
+
+async function loadSignedUser(user) {
+  if (!user) {
+    showLogin('Sessão não encontrada. Faça login novamente.', 'error');
+    return;
+  }
+
+  state.currentUser = user;
+  await loadProfile();
+  await loadTrainingData();
+  renderStudentAreaOptions();
+  renderAreaOptions();
+  showApp();
+  restoreRegistration();
+}
+
+async function loadProfile() {
+  const { data, error } = await supabaseClient
+    .from('profiles')
+    .select('id,nome,email,perfil,ativo')
+    .eq('id', state.currentUser.id)
+    .maybeSingle();
+
+  if (error) throw error;
+
+  if (!data) {
+    throw new Error('Usuário autenticado, mas sem profile. Rode o SQL de schema ou crie uma linha na tabela profiles.');
+  }
+
+  if (!data.ativo) {
+    await supabaseClient.auth.signOut();
+    throw new Error('Usuário desativado. Peça liberação ao administrador.');
+  }
+
+  state.profile = data;
+}
+
+async function loadTrainingData() {
+  const [areasResponse, cardsResponse, quizResponse] = await Promise.all([
+    supabaseClient.from('areas').select('id,nome,nome_curto,documento,source_label,ordem,ativo').eq('ativo', true).order('ordem', { ascending: true }),
+    supabaseClient.from('flashcards').select('area_id,categoria,frente,verso,ordem,ativo').eq('ativo', true).order('ordem', { ascending: true }),
+    supabaseClient.from('quiz_questions').select('area_id,pergunta,opcoes,resposta_correta,explicacao,ordem,ativo').eq('ativo', true).order('ordem', { ascending: true })
+  ]);
+
+  if (areasResponse.error) throw areasResponse.error;
+  if (cardsResponse.error) throw cardsResponse.error;
+  if (quizResponse.error) throw quizResponse.error;
+
+  const areas = areasResponse.data || [];
+  const cards = cardsResponse.data || [];
+  const quiz = quizResponse.data || [];
+
+  TRAINING_DATA = areas.map((area) => ({
+    id: area.id,
+    area: area.nome,
+    shortName: area.nome_curto,
+    document: area.documento,
+    sourceLabel: area.source_label,
+    flashcards: cards
+      .filter((card) => card.area_id === area.id)
+      .sort((a, b) => a.ordem - b.ordem)
+      .map((card) => ({
+        category: card.categoria,
+        front: card.frente,
+        back: card.verso
+      })),
+    quiz: quiz
+      .filter((question) => question.area_id === area.id)
+      .sort((a, b) => a.ordem - b.ordem)
+      .map((question) => ({
+        question: question.pergunta,
+        options: Array.isArray(question.opcoes) ? question.opcoes : [],
+        answer: question.resposta_correta,
+        explanation: question.explicacao
+      }))
+  }));
+
+  if (!TRAINING_DATA.length) {
+    throw new Error('Nenhum conteúdo ativo encontrado no Supabase. Rode o arquivo 02_seed_flashcards.sql.');
+  }
 }
 
 function renderAreaOptions() {
@@ -107,24 +318,6 @@ function renderStudentAreaOptions() {
     option.textContent = area;
     elements.studentArea.appendChild(option);
   });
-}
-
-function attachEvents() {
-  elements.themeToggle.addEventListener('click', toggleTheme);
-  elements.registrationForm.addEventListener('submit', handleRegistration);
-  elements.flashcard.addEventListener('click', flipCard);
-  elements.flipCardBtn.addEventListener('click', flipCard);
-  elements.prevCardBtn.addEventListener('click', () => moveCard(-1));
-  elements.nextCardBtn.addEventListener('click', () => moveCard(1));
-  elements.goQuizBtn.addEventListener('click', showQuiz);
-  elements.backToCardsBtn.addEventListener('click', showCards);
-  elements.gradeQuizBtn.addEventListener('click', gradeQuiz);
-  elements.clearQuizBtn.addEventListener('click', clearQuizAnswers);
-  elements.printResultBtn.addEventListener('click', () => window.print());
-  elements.retryQuizBtn.addEventListener('click', retryQuiz);
-  elements.restartCourseBtn.addEventListener('click', restartCourse);
-  elements.backToRegisterBtn.addEventListener('click', backToRegister);
-  elements.resetAllBtn.addEventListener('click', resetAll);
 }
 
 function handleRegistration(event) {
@@ -321,7 +514,7 @@ function getSelectedAnswers() {
   });
 }
 
-function gradeQuiz() {
+async function gradeQuiz() {
   const answers = getSelectedAnswers();
   const unanswered = answers.filter((answer) => answer === null).length;
   if (unanswered > 0) {
@@ -329,12 +522,22 @@ function gradeQuiz() {
     return;
   }
 
-  const score = answers.reduce((total, answer, index) => total + (answer === state.quiz[index].answer ? 1 : 0), 0);
+  const total = state.quiz.length;
+  const score = answers.reduce((sum, answer, index) => sum + (answer === state.quiz[index].answer ? 1 : 0), 0);
+  const percentage = Math.round((score / total) * 100);
+  const status = percentage >= 70 ? 'Aproveitamento satisfatório' : 'Recomenda-se reforço no estudo';
+
   state.graded = true;
   markQuestions(answers);
-  renderResult(score, answers);
+  renderResult(score, answers, percentage, status);
   elements.resultPanel.classList.remove('hidden');
   window.scrollTo({ top: elements.resultPanel.offsetTop - 12, behavior: 'smooth' });
+
+  try {
+    await saveCourseAttempt(score, total, percentage, status, answers);
+  } catch (error) {
+    console.error('Erro ao salvar resultado no Supabase:', error);
+  }
 }
 
 function markQuestions(answers) {
@@ -344,12 +547,10 @@ function markQuestions(answers) {
   });
 }
 
-function renderResult(score, answers) {
+function renderResult(score, answers, percentage, status) {
   const total = state.quiz.length;
-  const percentage = Math.round((score / total) * 100);
   const now = new Date();
   const content = getSelectedContent(state.selectedArea);
-  const status = percentage >= 70 ? 'Aproveitamento satisfatório' : 'Recomenda-se reforço no estudo';
 
   elements.resultSummary.innerHTML = '';
   const summaryItems = [
@@ -383,6 +584,36 @@ function renderResult(score, answers) {
     `;
     elements.answerReview.appendChild(row);
   });
+}
+
+async function saveCourseAttempt(score, total, percentage, status, answers) {
+  if (!supabaseClient || !state.currentUser || !state.registration) return;
+
+  const respostas = state.quiz.map((question, index) => ({
+    area: question.area,
+    document: question.document,
+    pergunta: question.question,
+    resposta_marcada_indice: answers[index],
+    resposta_marcada: question.options[answers[index]],
+    resposta_correta_indice: question.answer,
+    resposta_correta: question.options[question.answer],
+    acertou: answers[index] === question.answer,
+    explicacao: question.explanation,
+  }));
+
+  const { error } = await supabaseClient.from('course_attempts').insert({
+    user_id: state.currentUser.id,
+    fiscal_nome: state.registration.name,
+    student_area: state.registration.studentArea,
+    training_area: state.selectedArea,
+    score,
+    total,
+    percentage,
+    status,
+    respostas,
+  });
+
+  if (error) throw error;
 }
 
 function clearQuizAnswers() {

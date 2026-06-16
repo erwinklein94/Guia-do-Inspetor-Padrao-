@@ -941,9 +941,61 @@
          h1{font-size:1.7rem}
          .card{padding:24px 20px}
         }
+
+
+        /* Supabase Auth Gate */
+        #auth-gate{
+         position:fixed;inset:0;z-index:99999;
+         display:flex;align-items:center;justify-content:center;
+         padding:24px;
+         background:linear-gradient(135deg,var(--rumo-navy-900),var(--rumo-navy-800));
+         color:#fff;
+        }
+        #auth-gate.auth-hidden{display:none!important}
+        .auth-card{
+         width:min(460px,100%);
+         background:rgba(255,255,255,.08);
+         border:1px solid rgba(255,255,255,.16);
+         border-radius:24px;
+         padding:28px;
+         box-shadow:0 24px 70px rgba(0,0,0,.35);
+         backdrop-filter:blur(12px);
+        }
+        .auth-card h1{font-family:'Barlow Condensed',sans-serif;font-size:2.4rem;margin-bottom:8px;color:#fff}
+        .auth-card p{color:rgba(255,255,255,.76);line-height:1.5;margin-bottom:18px}
+        .auth-card label{display:block;font-weight:700;margin:14px 0 7px;color:#fff}
+        .auth-card input{
+         width:100%;border:1px solid rgba(255,255,255,.18);
+         border-radius:12px;padding:13px 14px;
+         background:rgba(255,255,255,.1);color:#fff;
+        }
+        .auth-card input::placeholder{color:rgba(255,255,255,.55)}
+        .auth-card button{
+         width:100%;margin-top:18px;padding:13px 16px;
+         border:0;border-radius:12px;font-weight:800;cursor:pointer;
+         background:var(--rumo-lime);color:var(--rumo-navy-900);
+        }
+        #auth-main-message{margin-top:12px;font-size:.9rem;color:rgba(255,255,255,.8)}
+        #auth-main-message.error{color:#ffb4a8}
+        #auth-main-message.success{color:#d9ff8f}
+        #main-layout.auth-locked{display:none!important}
     </style>
 </head>
 <body>
+
+    <div id="auth-gate">
+        <form id="auth-main-form" class="auth-card">
+            <h1>Guia do Inspetor Padrão</h1>
+            <p>Acesso via Supabase Auth. Entre com o usuário criado no projeto Supabase.</p>
+            <label for="auth-main-email">E-mail</label>
+            <input id="auth-main-email" type="email" autocomplete="email" placeholder="seu.email@empresa.com" required>
+            <label for="auth-main-password">Senha</label>
+            <input id="auth-main-password" type="password" autocomplete="current-password" placeholder="Digite sua senha" required>
+            <button id="auth-main-btn" type="submit">Entrar</button>
+            <div id="auth-main-message">Configure o arquivo supabase-config.js antes de publicar.</div>
+        </form>
+    </div>
+
     <div id="modal-ajuda-visual" class="modal-ajuda escondido">
         <div class="modal-ajuda-content">
             <span class="modal-ajuda-close" onclick="fecharAjuda()">&times;</span>
@@ -973,7 +1025,7 @@
             </div>
         </div>
     </div>
-    <div id="main-layout">
+    <div id="main-layout" class="auth-locked">
         <aside id="sidebar">
             <div class="sidebar-top">
                 <img src="https://www.rumolog.com/wp-content/themes/rumo/assets/img/home/logo.svg" alt="Rumo" class="sidebar-logo">
@@ -1298,6 +1350,9 @@
         </main>
     </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="auth-main.js"></script>
 <script>
 // === HELPERS ===
 const $=id=>document.getElementById(id);
