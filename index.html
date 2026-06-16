@@ -979,6 +979,37 @@
         #auth-main-message.error{color:#ffb4a8}
         #auth-main-message.success{color:#d9ff8f}
         #main-layout.auth-locked{display:none!important}
+
+        /* ===== Controle de acesso por perfil ===== */
+        .menu-item-auditoria{display:none}
+        body.role-admin .menu-item-auditoria{display:block}
+        body:not(.role-admin) #sec-auditoria{display:none!important}
+        /* Consulta e editor: comparam medidas, mas não emitem laudo/foto nem têm histórico */
+        body.role-consulta .botoes-acao,
+        body.role-editor .botoes-acao{display:none!important}
+        body.role-consulta .menu-item-historico,
+        body.role-editor .menu-item-historico{display:none}
+        .perfil-badge{margin:14px 18px 6px;padding:7px 12px;border-radius:9px;font-size:.72rem;font-weight:700;text-align:center;background:rgba(255,255,255,.10);color:#cfe3f5;letter-spacing:.02em;line-height:1.3}
+
+        /* ===== Página de Auditoria ===== */
+        .aud-intro{color:var(--text-muted);font-size:.9rem;margin:0 0 16px}
+        .aud-filtros{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center}
+        .aud-filtros select,.aud-filtros input{flex:1 1 160px;min-width:140px;padding:10px 12px;border:1px solid var(--border-color);border-radius:9px;background:var(--bg-input);color:var(--text-main);font-size:.86rem}
+        .aud-resumo{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+        .aud-kpi{padding:8px 14px;border-radius:999px;background:var(--bg-input);border:1px solid var(--border-color);font-weight:700;font-size:.82rem;color:var(--text-title)}
+        .aud-kpi.ok{background:var(--bg-aceitavel);color:var(--text-aceitavel);border-color:var(--border-aceitavel)}
+        .aud-kpi.rep{background:var(--bg-reparar);color:var(--text-reparar);border-color:var(--border-reparar)}
+        .aud-kpi.ref{background:var(--bg-refugo);color:var(--text-refugo);border-color:var(--border-refugo)}
+        .aud-meta{display:flex;flex-wrap:wrap;gap:8px 16px;margin:8px 0;font-size:.82rem;color:var(--text-muted)}
+        .aud-status{font-weight:700;padding:2px 10px;border-radius:6px}
+        .aud-status.aceitavel{background:var(--bg-aceitavel);color:var(--text-aceitavel)}
+        .aud-status.reparar{background:var(--bg-reparar);color:var(--text-reparar)}
+        .aud-status.refugo{background:var(--bg-refugo);color:var(--text-refugo)}
+        .aud-corpo{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+        .aud-thumb{width:140px;height:140px;object-fit:cover;border-radius:10px;border:1px solid var(--border-color);flex:0 0 auto}
+        .aud-sem-foto{display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--text-proc);background:var(--bg-input)}
+        .aud-corpo .hist-body{flex:1 1 240px;font-size:.8rem;line-height:1.5}
+        @media(max-width:768px){.aud-thumb{width:100%;height:auto;max-height:260px}}
     </style>
 </head>
 <body>
@@ -1039,9 +1070,10 @@
                 <div class="menu-item" onclick="navegar(this,'sec-sub')">Subcomponentes</div>
                 <div class="sidebar-divider"></div>
                 <div class="menu-item" onclick="navegar(this,'sec-checklist')">✅ Checklist de Campo</div>
-                <div class="menu-item" onclick="navegar(this,'sec-historico')">🗂️ Histórico</div>
+                <div class="menu-item menu-item-historico" onclick="navegar(this,'sec-historico')">🗂️ Histórico</div>
                 <div class="menu-item" onclick="navegar(this,'sec-procedimentos')">📚 Procedimentos</div>
                 <div class="menu-item" onclick="navegar(this,'sec-flashcards')">Flash-Cards</div>
+                <div class="menu-item menu-item-auditoria" onclick="navegar(this,'sec-auditoria')">🛡️ Auditoria</div>
             </div>
             <div class="sidebar-bottom">
                 <button onclick="document.body.classList.toggle('dark')" class="dark-toggle"><span class="icon-moon">🌙</span><span class="icon-sun">☀️</span></button>
@@ -1347,6 +1379,28 @@
                 <iframe id="flashcards-frame" class="flashcards-frame" data-src="flash-cards/index.html" title="Flash-Cards de Qualidade"></iframe>
             </section>
 
+            <section id="sec-auditoria" class="content-section">
+                <h1>🛡️ Auditoria <span class="proc-title">— Laudos recebidos do campo</span></h1>
+                <div class="card">
+                    <p class="aud-intro">Todos os laudos e fotos enviados pelos fiscais aparecem aqui. Visível apenas para o perfil Administrador.</p>
+                    <div class="aud-filtros">
+                        <select id="aud-f-categoria" onchange="renderAuditoria()"><option value="">Todas as categorias</option></select>
+                        <select id="aud-f-status" onchange="renderAuditoria()">
+                            <option value="">Todos os status</option>
+                            <option value="aceitavel">✅ Aceitável</option>
+                            <option value="reparar">🔧 Reparar</option>
+                            <option value="refugo">❌ Refugo</option>
+                        </select>
+                        <input id="aud-f-fiscal" type="text" placeholder="Filtrar por fiscal" oninput="renderAuditoria()">
+                        <input id="aud-f-busca" type="text" placeholder="Buscar local, lote, item ou texto" oninput="renderAuditoria()">
+                        <button class="btn-small secondary" onclick="carregarAuditoria()">🔄 Atualizar</button>
+                        <button class="btn-small" onclick="exportarAuditoriaCSV()">⬇️ Exportar CSV</button>
+                    </div>
+                    <div id="aud-resumo" class="aud-resumo"></div>
+                    <div id="aud-lista"><div class="proc-empty">Clique em “Atualizar” para carregar os laudos.</div></div>
+                </div>
+            </section>
+
         </main>
     </div>
 
@@ -1430,7 +1484,7 @@ async function fazerLogout(){
     }
 }
 function sugerirMudanca(){const msg=encodeURIComponent("Olá Erwin, gostaria de sugerir uma mudança / melhoria para o Guia do Inspetor Padrão RUMO:\n\n");window.open(`https://wa.me/5541992581521?text=${msg}`,'_blank')}
-function navegar(el,sec){document.querySelectorAll('.content-section,.menu-item').forEach(e=>e.classList.remove('active'));$(sec).classList.add('active');el.classList.add('active');if(sec==='sec-historico')renderHistorico();if(sec==='sec-checklist')renderChecklist();if(sec==='sec-flashcards')carregarFlashCards();if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}
+function navegar(el,sec){document.querySelectorAll('.content-section,.menu-item').forEach(e=>e.classList.remove('active'));$(sec).classList.add('active');el.classList.add('active');if(sec==='sec-historico')renderHistorico();if(sec==='sec-checklist')renderChecklist();if(sec==='sec-flashcards')carregarFlashCards();if(sec==='sec-auditoria'&&window.carregarAuditoria)carregarAuditoria();if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}
 function carregarFlashCards(){const f=$('flashcards-frame');if(f&&!f.getAttribute('src'))f.src=f.dataset.src}
 function toggleSidebar(){$('sidebar').classList.remove('hidden');hideEl('toggle-sidebar-btn')}
 function irParaSecao(sec){
@@ -1438,8 +1492,8 @@ function irParaSecao(sec){
     if(item)navegar(item,sec);
 }
 
-// === BANCO DE PROCEDIMENTOS ===
-const PROCEDIMENTOS={
+// === BANCO DE PROCEDIMENTOS (fallback offline; guia-supabase.js substitui pelo Supabase) ===
+var PROCEDIMENTOS={
     amv:{
         nome:"AMV & Componentes",
         icone:"⚙️",
@@ -1717,10 +1771,13 @@ function exportarChecklist(){
 function obterHistorico(){try{return JSON.parse(localStorage.getItem('rumoHistoricoLaudos')||'[]')}catch(e){return []}}
 function salvarHistoricoLaudo(categoria,texto,status){
     if(!textoLimpo(texto)||texto.includes('Preenchimento obrigatório'))return;
+    const perfil=(window.guiaUserProfile&&window.guiaUserProfile.perfil)||'consulta';
+    if(perfil==='consulta'||perfil==='editor')return; // consulta/editor comparam, mas não geram relatórios
     const hist=obterHistorico();
     const registro={id:Date.now(),data:new Date().toLocaleString('pt-BR'),categoria,status,texto};
     hist.unshift(registro);
     localStorage.setItem('rumoHistoricoLaudos',JSON.stringify(hist.slice(0,80)));
+    if(window.guiaEnviarInspecao)window.guiaEnviarInspecao(categoria,texto,status);
 }
 function renderHistorico(){
     const box=$('hist-list');if(!box)return;
@@ -1945,8 +2002,8 @@ function tirarFoto(){
     x.fillStyle="#fff";x.font=`bold ${Math.floor(fb)}px sans-serif`;lines.forEach(l=>{x.fillText(l,cx,ty,mw);ty+=lh});
     fotoDataUrl=c.toDataURL('image/jpeg',.85);$('foto-capturada').src=fotoDataUrl;showEl('foto-capturada');hideEl('video-preview');$('overlay-texto-visual').style.display='none';hideEl('controles-camera');showEl('controles-pos-captura','flex')
 }
-function baixarFotoCarimbada(){if(!fotoDataUrl)return;const a=document.createElement('a');a.href=fotoDataUrl;a.download=`Laudo_${categoriaAtual}_${Date.now()}.jpg`;document.body.appendChild(a);a.click();document.body.removeChild(a);alert("✅ Foto salva na sua galeria!")}
-async function compartilharFotoCarimbada(){if(!fotoDataUrl)return;const r=await fetch(fotoDataUrl),b=await r.blob(),f=new File([b],"laudo_inspecao.jpg",{type:"image/jpeg"});if(navigator.share&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Laudo Rumo',text:`Evidência de Inspeção - ${categoriaAtual}`})}catch(e){}}else alert("⚠️ Seu navegador não suporta envio direto de imagem. Clique em SALVAR e envie pelo WhatsApp.")}
+function baixarFotoCarimbada(){if(!fotoDataUrl)return;const a=document.createElement('a');a.href=fotoDataUrl;a.download=`Laudo_${categoriaAtual}_${Date.now()}.jpg`;document.body.appendChild(a);a.click();document.body.removeChild(a);if(window.guiaUploadEvidencia)window.guiaUploadEvidencia(fotoDataUrl,categoriaAtual);alert("✅ Foto salva na sua galeria!")}
+async function compartilharFotoCarimbada(){if(!fotoDataUrl)return;if(window.guiaUploadEvidencia)window.guiaUploadEvidencia(fotoDataUrl,categoriaAtual);const r=await fetch(fotoDataUrl),b=await r.blob(),f=new File([b],"laudo_inspecao.jpg",{type:"image/jpeg"});if(navigator.share&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Laudo Rumo',text:`Evidência de Inspeção - ${categoriaAtual}`})}catch(e){}}else alert("⚠️ Seu navegador não suporta envio direto de imagem. Clique em SALVAR e envie pelo WhatsApp.")}
 function compartilharWhatsApp(boxId,cat){const t=$(boxId).innerText,d=new Date().toLocaleDateString('pt-BR'),h=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});window.open(`https://wa.me/?text=${encodeURIComponent(`*INSPEÇÃO DE QUALIDADE - RUMO*\n📍 *Categoria:* ${cat}\n📅 *Data:* ${d} às ${h}\n\n${t}`)}`,'_blank')}
 
 
@@ -1992,5 +2049,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     window.onclick=e=>{if(e.target===$('modal-ajuda-visual'))fecharAjuda()}
 })
 </script>
+<script src="guia-supabase.js"></script>
 </body>
 </html>

@@ -49,6 +49,10 @@
     if (!data) throw new Error('Usuário autenticado, mas sem profile. Rode o SQL de schema ou crie o profile.');
     if (!data.ativo) throw new Error('Usuário desativado.');
     window.guiaUserProfile = data;
+    // Avisa a camada de perfis/auditoria (guia-supabase.js) que o usuário está pronto.
+    try {
+      document.dispatchEvent(new CustomEvent('guia:perfil', { detail: data }));
+    } catch (e) { /* navegadores muito antigos */ }
     return data;
   }
 
