@@ -1417,7 +1417,18 @@ function baixarArquivo(nome,conteudo,tipo='text/plain;charset=utf-8'){
 }
 
 // === NAV ===
-function fazerLogout(){if(confirm("Deseja realmente sair e limpar os dados locais?")){localStorage.removeItem('rumoInspeccaoDados');location.reload()}}
+async function fazerLogout(){
+    if(window.guiaAuthLogout){
+        await window.guiaAuthLogout();
+        return;
+    }
+    if(confirm("Deseja realmente sair e encerrar a sessão neste navegador?")){
+        localStorage.removeItem('rumoInspeccaoDados');
+        Object.keys(localStorage).forEach(k=>{const n=String(k).toLowerCase();if(n.startsWith('sb-')||n.includes('supabase')||n.includes('auth-token'))localStorage.removeItem(k)});
+        Object.keys(sessionStorage).forEach(k=>{const n=String(k).toLowerCase();if(n.startsWith('sb-')||n.includes('supabase')||n.includes('auth-token'))sessionStorage.removeItem(k)});
+        location.replace(`${location.origin}${location.pathname}?logout=${Date.now()}`);
+    }
+}
 function sugerirMudanca(){const msg=encodeURIComponent("Olá Erwin, gostaria de sugerir uma mudança / melhoria para o Guia do Inspetor Padrão RUMO:\n\n");window.open(`https://wa.me/5541992581521?text=${msg}`,'_blank')}
 function navegar(el,sec){document.querySelectorAll('.content-section,.menu-item').forEach(e=>e.classList.remove('active'));$(sec).classList.add('active');el.classList.add('active');if(sec==='sec-historico')renderHistorico();if(sec==='sec-checklist')renderChecklist();if(sec==='sec-flashcards')carregarFlashCards();if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}
 function carregarFlashCards(){const f=$('flashcards-frame');if(f&&!f.getAttribute('src'))f.src=f.dataset.src}

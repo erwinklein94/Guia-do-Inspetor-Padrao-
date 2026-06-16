@@ -107,6 +107,36 @@ function setupSupabaseClient() {
   supabaseClient = window.supabase.createClient(url, key);
 }
 
+function clearAuthStorage() {
+  const appKeys = [
+    STORAGE_KEY,
+    PROGRESS_KEY,
+    'rumoInspeccaoDados'
+  ];
+
+  appKeys.forEach((key) => {
+    localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
+  });
+
+  const shouldRemoveKey = (key) => {
+    const normalized = String(key || '').toLowerCase();
+    return (
+      normalized.startsWith('sb-') ||
+      normalized.includes('supabase') ||
+      normalized.includes('auth-token') ||
+      normalized.includes('owegcqrlxbdjhkfxprfx')
+    );
+  };
+
+  [localStorage, sessionStorage].forEach((storage) => {
+    Object.keys(storage).forEach((key) => {
+      if (shouldRemoveKey(key)) storage.removeItem(key);
+    });
+  });
+}
+
+
 function hydrateTheme() {
   const storedTheme = localStorage.getItem('rumo_flashcards_theme') || 'dark';
   document.body.setAttribute('data-theme', storedTheme);
@@ -198,15 +228,22 @@ async function handleLogin(event) {
 }
 
 async function handleLogout() {
-  await supabaseClient.auth.signOut();
-  state.currentUser = null;
-  state.profile = null;
-  state.registration = null;
-  TRAINING_DATA = [];
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(PROGRESS_KEY);
-  elements.registrationForm.reset();
-  showLogin('Sessão encerrada.', 'success');
+  if (!confirm('Deseja realmente sair e encerrar a sessão neste navegador?')) return;
+
+  try {
+    const { error } = await supabaseClient.auth.signOut({ scope: 'global' });
+    if (error) throw error;
+  } catch (error) {
+    console.warn('Falha ao encerrar sessão no servidor. Limpando sessão local mesmo assim.', error);
+  } finally {
+    state.currentUser = null;
+    state.profile = null;
+    state.registration = null;
+    TRAINING_DATA = [];
+    clearAuthStorage();
+    elements.registrationForm.reset();
+    showLogin('Sessão encerrada. Entre novamente para acessar.', 'success');
+  }
 }
 
 async function loadSignedUser(user) {

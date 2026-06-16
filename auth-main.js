@@ -93,13 +93,55 @@
     }
   }
 
+  function clearAuthStorage() {
+    const appKeys = [
+      'rumoInspeccaoDados',
+      'rumo_flashcards_quality_registration_v1',
+      'rumo_flashcards_quality_progress_v1'
+    ];
+
+    appKeys.forEach((key) => {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    });
+
+    const shouldRemoveKey = (key) => {
+      const normalized = String(key || '').toLowerCase();
+      return (
+        normalized.startsWith('sb-') ||
+        normalized.includes('supabase') ||
+        normalized.includes('auth-token') ||
+        normalized.includes('owegcqrlxbdjhkfxprfx')
+      );
+    };
+
+    [localStorage, sessionStorage].forEach((storage) => {
+      Object.keys(storage).forEach((key) => {
+        if (shouldRemoveKey(key)) storage.removeItem(key);
+      });
+    });
+  }
+
   window.guiaAuthLogout = async function guiaAuthLogout() {
-    if (!confirm('Deseja realmente sair e limpar os dados locais?')) return;
-    localStorage.removeItem('rumoInspeccaoDados');
+    if (!confirm('Deseja realmente sair e encerrar a sessão neste navegador?')) return;
+
+    setMessage('Encerrando sessão...', null);
+
     try {
-      if (client) await client.auth.signOut();
+      if (!client) setupClient();
+      if (client) {
+        const { error } = await client.auth.signOut({ scope: 'global' });
+        if (error) throw error;
+      }
+    } catch (error) {
+      console.warn('Falha ao encerrar sessão no servidor. Limpando sessão local mesmo assim.', error);
     } finally {
-      location.reload();
+      window.guiaUserProfile = null;
+      clearAuthStorage();
+      lock('Sessão encerrada. Entre novamente para acessar.', 'success');
+      getEl('auth-main-password') && (getEl('auth-main-password').value = '');
+      const cleanUrl = `${window.location.origin}${window.location.pathname}`;
+      window.location.replace(`${cleanUrl}?logout=${Date.now()}`);
     }
   };
 
