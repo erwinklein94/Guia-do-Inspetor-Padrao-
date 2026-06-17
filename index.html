@@ -874,6 +874,7 @@
         .hist-item.aceitavel{border-left-color:var(--border-aceitavel)}
         .hist-item.reparar{border-left-color:var(--border-reparar)}
         .hist-item.refugo{border-left-color:var(--border-refugo)}
+        .hist-pendente{font-size:.72rem;font-weight:700;color:var(--text-reparar);background:var(--bg-reparar);padding:1px 7px;border-radius:999px;margin-left:6px;white-space:nowrap}
         .hist-head{
          display:flex;justify-content:space-between;gap:12px;
          font-weight:700;color:var(--text-title);margin-bottom:8px;flex-wrap:wrap;
@@ -1850,41 +1851,119 @@ function exportarChecklist(){
 }
 
 // === HISTÓRICO E EXPORTAÇÃO ===
-function obterHistorico(){try{return JSON.parse(localStorage.getItem('rumoHistoricoLaudos')||'[]')}catch(e){return []}}
+// ---- Histórico de laudos: Supabase (durável) + cópia local (offline) ----
+const HIST_KEY='rumoHistoricoLaudos';
+let histExibido=[];          // o que está na tela agora (copiar/compartilhar/exportar usam isto)
+let syncEmAndamento=false;   // trava para não enviar o mesmo laudo duas vezes
+
+function obterHistoricoLocal(){try{return JSON.parse(localStorage.getItem(HIST_KEY)||'[]')}catch(e){return []}}
+function salvarHistoricoLocal(arr){try{localStorage.setItem(HIST_KEY,JSON.stringify(arr.slice(0,120)))}catch(e){}}
+function escHist(s){return String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+
 function salvarHistoricoLaudo(categoria,texto,status){
     if(!textoLimpo(texto)||texto.includes('Preenchimento obrigatório'))return;
     const perfil=(window.guiaUserProfile&&window.guiaUserProfile.perfil)||'consulta';
-    if(perfil==='consulta'||perfil==='editor')return; // consulta/editor comparam, mas não geram relatórios
-    const hist=obterHistorico();
-    const registro={id:Date.now(),data:new Date().toLocaleString('pt-BR'),categoria,status,texto};
-    hist.unshift(registro);
-    localStorage.setItem('rumoHistoricoLaudos',JSON.stringify(hist.slice(0,80)));
-    if(window.guiaEnviarInspecao)window.guiaEnviarInspecao(categoria,texto,status);
+    if(perfil==='consulta'||perfil==='editor')return; // consulta/editor comparam, mas não geram laudos
+    const localId='loc_'+Date.now();
+    const payload=window.guiaMontarRegistroInspecao?window.guiaMontarRegistroInspecao(categoria,texto,status):null;
+    const hist=obterHistoricoLocal();
+    hist.unshift({id:localId,data:new Date().toLocaleString('pt-BR'),categoria,status,texto,sincronizado:false,enviando:true,payload:payload||undefined});
+    salvarHistoricoLocal(hist);
+    enviarLaudoVivo(localId); // envia o laudo recém-gerado na hora (e libera o vínculo da foto)
 }
-function renderHistorico(){
+
+// Envia ao Supabase o laudo recém-criado e marca-o como sincronizado.
+async function enviarLaudoVivo(localId){
+    if(!window.guiaInserirInspecao){liberarEnviando(localId);return;}
+    let item=obterHistoricoLocal().find(x=>x.id===localId);
+    if(!item||!item.payload){liberarEnviando(localId);return;}
+    const r=await window.guiaInserirInspecao(item.payload);
+    const h=obterHistoricoLocal();const it=h.find(x=>x.id===localId);
+    if(it){
+        it.enviando=false;
+        if(r&&r.ok){it.sincronizado=true;it.remote_id=r.id;delete it.payload;if(window.guiaSetUltimaInspecao)window.guiaSetUltimaInspecao(r.id);}
+        salvarHistoricoLocal(h);
+    }
+    if($('sec-historico')&&$('sec-historico').classList.contains('active'))renderHistorico();
+}
+function liberarEnviando(localId){const h=obterHistoricoLocal();const it=h.find(x=>x.id===localId);if(it){it.enviando=false;salvarHistoricoLocal(h);}}
+
+// Reenvia ao Supabase os laudos locais ainda não sincronizados (offline ou antigos de antes da correção).
+async function sincronizarHistorico(){
+    if(syncEmAndamento)return 0;
+    if(!window.guiaInserirInspecao||!(window.guiaUserProfile&&window.guiaUserProfile.id))return 0;
+    const perfil=window.guiaUserProfile.perfil;
+    if(perfil==='consulta'||perfil==='editor')return 0;
+    syncEmAndamento=true;let enviados=0;
+    try{
+        const pendentes=obterHistoricoLocal().filter(x=>!x.sincronizado&&!x.enviando);
+        for(const item of pendentes){
+            const payload=item.payload||{
+                user_id:window.guiaUserProfile.id,
+                fiscal_nome:window.guiaUserProfile.nome||'Não informado',
+                fiscal_email:window.guiaUserProfile.email||null,
+                categoria:item.categoria||'Inspeção',
+                status:item.status,
+                veredito:(String(item.texto||'').split('\n').find(l=>l.trim())||'').trim()||null,
+                laudo_texto:item.texto||'',
+                origem:'campo'
+            };
+            if(['aceitavel','reparar','refugo'].indexOf(payload.status)===-1)continue;
+            const r=await window.guiaInserirInspecao(payload);
+            if(r&&r.ok){
+                const h=obterHistoricoLocal();const it=h.find(x=>x.id===item.id);
+                if(it){it.sincronizado=true;it.remote_id=r.id;delete it.payload;}
+                salvarHistoricoLocal(h);enviados++;
+            }
+        }
+    }finally{syncEmAndamento=false;}
+    return enviados;
+}
+
+async function renderHistorico(){
     const box=$('hist-list');if(!box)return;
-    const hist=obterHistorico();
-    if(!hist.length){box.innerHTML='<div class="proc-empty">Nenhum laudo salvo ainda. Ao gerar uma análise, ela aparecerá aqui automaticamente.</div>';return}
-    box.innerHTML=hist.map(h=>`
+    box.innerHTML='<div class="proc-empty">Carregando histórico…</div>';
+    await sincronizarHistorico();                 // 1) sobe os pendentes
+    let registros=[],doBanco=false;
+    if(window.guiaHistoricoDoUsuario){
+        const res=await window.guiaHistoricoDoUsuario(); // 2) lê a fonte durável (Supabase)
+        if(res&&res.ok){
+            doBanco=true;
+            const pendentes=obterHistoricoLocal().filter(x=>!x.sincronizado)
+                .map(x=>({key:x.id,data:x.data,categoria:x.categoria,status:x.status,texto:x.texto,sincronizado:false}));
+            registros=pendentes.concat(res.registros);
+        }
+    }
+    if(!doBanco){ // offline: usa a cópia local
+        registros=obterHistoricoLocal().map(x=>({key:x.id,data:x.data,categoria:x.categoria,status:x.status,texto:x.texto,sincronizado:!!x.sincronizado}));
+    }
+    histExibido=registros;
+    if(!registros.length){box.innerHTML='<div class="proc-empty">Nenhum laudo salvo ainda. Ao gerar uma análise, ela aparecerá aqui automaticamente.</div>';return}
+    box.innerHTML=registros.map(h=>`
         <div class="hist-item ${h.status}">
-            <div class="hist-head"><span>${h.categoria}</span><span>${h.data}</span></div>
-            <div class="hist-body">${h.texto.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</div>
+            <div class="hist-head"><span>${escHist(h.categoria)}${h.sincronizado?'':' <span class="hist-pendente">⏳ não enviado</span>'}</span><span>${escHist(h.data)}</span></div>
+            <div class="hist-body">${escHist(h.texto).replace(/\n/g,'<br>')}</div>
             <div class="btn-row">
-                <button class="btn-small secondary" onclick="copiarTextoHistorico(${h.id})">Copiar</button>
-                <button class="btn-small" onclick="compartilharTextoHistorico(${h.id})">WhatsApp</button>
+                <button class="btn-small secondary" onclick="copiarTextoHistorico('${h.key}')">Copiar</button>
+                <button class="btn-small" onclick="compartilharTextoHistorico('${h.key}')">WhatsApp</button>
             </div>
         </div>`).join('');
 }
-function copiarTextoHistorico(id){const h=obterHistorico().find(x=>x.id===id);if(!h)return;navigator.clipboard?.writeText(h.texto);alert('Laudo copiado.')}
-function compartilharTextoHistorico(id){const h=obterHistorico().find(x=>x.id===id);if(!h)return;window.open(`https://wa.me/?text=${encodeURIComponent(h.texto)}`,'_blank')}
-function exportarHistoricoTXT(){const hist=obterHistorico();if(!hist.length)return alert('Não há histórico para exportar.');baixarArquivo(`historico_laudos_${Date.now()}.txt`,hist.map(h=>`===== ${h.data} | ${h.categoria} =====\n${h.texto}`).join('\n\n'),'text/plain;charset=utf-8')}
+function copiarTextoHistorico(key){const h=histExibido.find(x=>String(x.key)===String(key));if(!h)return;navigator.clipboard?.writeText(h.texto);alert('Laudo copiado.')}
+function compartilharTextoHistorico(key){const h=histExibido.find(x=>String(x.key)===String(key));if(!h)return;window.open(`https://wa.me/?text=${encodeURIComponent(h.texto)}`,'_blank')}
+function exportarHistoricoTXT(){const hist=histExibido;if(!hist.length)return alert('Não há histórico para exportar.');baixarArquivo(`historico_laudos_${Date.now()}.txt`,hist.map(h=>`===== ${h.data} | ${h.categoria} =====\n${h.texto}`).join('\n\n'),'text/plain;charset=utf-8')}
 function exportarHistoricoCSV(){
-    const hist=obterHistorico();if(!hist.length)return alert('Não há histórico para exportar.');
+    const hist=histExibido;if(!hist.length)return alert('Não há histórico para exportar.');
     const esc=v=>`"${String(v).replace(/"/g,'""')}"`;
     const csv=['data,categoria,status,laudo'].concat(hist.map(h=>[esc(h.data),esc(h.categoria),esc(h.status),esc(h.texto)].join(','))).join('\n');
     baixarArquivo(`historico_laudos_${Date.now()}.csv`,csv,'text/csv;charset=utf-8');
 }
-function limparHistorico(){if(confirm('Deseja apagar o histórico local de laudos?')){localStorage.removeItem('rumoHistoricoLaudos');renderHistorico()}}
+async function limparHistorico(){
+    if(!confirm('Isto limpa apenas a CÓPIA LOCAL deste aparelho. Os laudos já enviados continuam salvos no sistema e voltam a aparecer aqui. Deseja continuar?'))return;
+    await sincronizarHistorico(); // garante que nada pendente se perca antes de limpar
+    localStorage.removeItem(HIST_KEY);
+    renderHistorico();
+}
 function baixarRelatorio(boxId,cat){
     const box=$(boxId);if(!box||!textoLimpo(box.innerText))return alert('Gere uma análise antes de baixar o relatório.');
     const txt=`RELATÓRIO DE INSPEÇÃO - ${cat}\n\n${box.innerText}`;

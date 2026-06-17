@@ -85,37 +85,68 @@
     return '';
   }
 
-  window.guiaEnviarInspecao = async function (categoria, texto, status) {
+  // Monta o registro do laudo a partir do formulário (lê os campos meta-*).
+  // Retorna null se o usuário não pode emitir ou o status não é de conformidade.
+  window.guiaMontarRegistroInspecao = function (categoria, texto, status) {
+    if (!podeEmitir()) return null;
+    if (['aceitavel', 'reparar', 'refugo'].indexOf(status) === -1) return null;
+    var primeiraLinha = String(texto || '').split('\n').find(function (l) { return l.trim(); }) || '';
+    return {
+      user_id: perfilObj() ? perfilObj().id : null,
+      fiscal_nome: valDom('meta-responsavel') || (perfilObj() && perfilObj().nome) || 'Não informado',
+      fiscal_email: perfilObj() ? perfilObj().email : null,
+      categoria: categoria || 'Inspeção',
+      item: extrair(texto, '🔎 Item:') || null,
+      status: status,
+      veredito: primeiraLinha.trim() || null,
+      local: valDom('meta-local') || extrair(texto, '📍 Local/Trecho:') || null,
+      lote: valDom('meta-lote') || extrair(texto, '🏷️ Lote/NF/AMV:') || null,
+      observacao: valDom('meta-observacao') || null,
+      fonte: extrair(texto, '📄 Fonte normativa:') || null,
+      laudo_texto: texto,
+      origem: 'campo'
+    };
+  };
+
+  // Insere um registro já montado em inspecoes. Retorna { ok, id }.
+  window.guiaInserirInspecao = async function (registro) {
     try {
-      if (!podeEmitir()) return;                         // consulta/editor não emitem laudo
-      if (['aceitavel', 'reparar', 'refugo'].indexOf(status) === -1) return; // só laudos de conformidade
       var c = client();
-      if (!c) return;
-
-      var primeiraLinha = String(texto || '').split('\n').find(function (l) { return l.trim(); }) || '';
-      var registro = {
-        user_id: perfilObj() ? perfilObj().id : null,
-        fiscal_nome: valDom('meta-responsavel') || (perfilObj() && perfilObj().nome) || 'Não informado',
-        fiscal_email: perfilObj() ? perfilObj().email : null,
-        categoria: categoria || 'Inspeção',
-        item: extrair(texto, '🔎 Item:') || null,
-        status: status,
-        veredito: primeiraLinha.trim() || null,
-        local: valDom('meta-local') || extrair(texto, '📍 Local/Trecho:') || null,
-        lote: valDom('meta-lote') || extrair(texto, '🏷️ Lote/NF/AMV:') || null,
-        observacao: valDom('meta-observacao') || null,
-        fonte: extrair(texto, '📄 Fonte normativa:') || null,
-        laudo_texto: texto,
-        origem: 'campo'
-      };
-
+      if (!c || !registro || !registro.user_id) return { ok: false };
       var res = await c.from('inspecoes').insert(registro).select('id').single();
-      if (res.error) { console.warn('Falha ao enviar laudo p/ auditoria:', res.error.message); return; }
-      ultimaInspecaoId = res.data ? res.data.id : null;
-      ultimaFotoEnviada = '';
-    } catch (e) {
-      console.warn('guiaEnviarInspecao:', e);
-    }
+      if (res.error) { console.warn('Falha ao enviar laudo p/ auditoria:', res.error.message); return { ok: false }; }
+      return { ok: true, id: res.data ? res.data.id : null };
+    } catch (e) { console.warn('guiaInserirInspecao:', e); return { ok: false }; }
+  };
+
+  // Define qual laudo recém-criado receberá a próxima foto carimbada.
+  window.guiaSetUltimaInspecao = function (id) { ultimaInspecaoId = id || null; ultimaFotoEnviada = ''; };
+
+  // Carrega os laudos do PRÓPRIO usuário direto do Supabase (fonte durável do histórico).
+  window.guiaHistoricoDoUsuario = async function () {
+    try {
+      var c = client();
+      var uid = perfilObj() ? perfilObj().id : null;
+      if (!c || !uid) return { ok: false, registros: [] };
+      var res = await c.from('inspecoes')
+        .select('id,categoria,status,laudo_texto,created_at')
+        .eq('user_id', uid)
+        .order('created_at', { ascending: false })
+        .limit(300);
+      if (res.error) { console.warn('guiaHistoricoDoUsuario:', res.error.message); return { ok: false, registros: [] }; }
+      var regs = (res.data || []).map(function (d) {
+        return {
+          key: 'db_' + d.id,
+          remote_id: d.id,
+          data: new Date(d.created_at).toLocaleString('pt-BR'),
+          categoria: d.categoria,
+          status: d.status,
+          texto: d.laudo_texto || '',
+          sincronizado: true
+        };
+      });
+      return { ok: true, registros: regs };
+    } catch (e) { console.warn('guiaHistoricoDoUsuario:', e); return { ok: false, registros: [] }; }
   };
 
   // ---------------------------------------------------------
