@@ -472,10 +472,29 @@
     var c = client();
     try {
       var r = await c.functions.invoke('criar-usuario', { body: { nome: nome, email: email, password: senha, perfil: perfilNovo } });
-      if (r.error) return { ok: false, msg: r.error.message || 'Falha ao chamar a função criar-usuario.' };
+      if (r.error) {
+        // Em respostas non-2xx, o supabase-js NÃO coloca o corpo em r.data:
+        // a Response real fica em r.error.context. É de lá que tiramos a mensagem
+        // de verdade que a função enviou (ex.: "Legacy API keys are disabled").
+        var detalhe = '';
+        var status = '';
+        var ctx = r.error.context;
+        if (ctx) {
+          if (typeof ctx.status === 'number') status = ' [HTTP ' + ctx.status + ']';
+          try {
+            if (typeof ctx.clone === 'function') {
+              var corpo = await ctx.clone().json();
+              detalhe = (corpo && corpo.error) ? corpo.error : '';
+            }
+          } catch (eJson) {
+            try { if (typeof ctx.text === 'function') detalhe = (await ctx.text()).slice(0, 300); } catch (eTxt) { /* ignora */ }
+          }
+        }
+        return { ok: false, msg: (detalhe || r.error.message || 'Falha ao chamar a função criar-usuario.') + status };
+      }
       if (r.data && r.data.error) return { ok: false, msg: r.data.error };
       return { ok: true, precisaConfirmar: false };
-    } catch (e) { return { ok: false, msg: String(e) }; }
+    } catch (e) { return { ok: false, msg: String((e && e.message) || e) }; }
   }
 
   window.criarUsuario = async function () {
