@@ -67,3 +67,32 @@ O app lê essa tabela ao abrir; se estiver offline, usa a cópia embutida como r
 
 Nunca coloque `service_role`, `secret key` ou senha do banco no HTML/JS/GitHub.
 Use somente a **Publishable key** (ou anon/public, se o painel for legado).
+
+---
+
+## Páginas de Perfil e de Usuários (no app)
+
+- **👤 Meu Perfil** (todos os perfis): mostra nome, e-mail, **perfil atual**, status e ID da conta, lendo direto do Supabase. Tem o botão **🔄 Atualizar do servidor** — use-o depois de mudar um perfil para confirmar a alteração sem precisar deslogar.
+- **👥 Usuários** (só admin): lista todos os cadastros, permite **trocar o perfil** e **ativar/desativar** cada usuário, e **cadastrar novos usuários** já com o perfil escolhido.
+
+### Trocar perfil / ativar-desativar
+Funciona direto pelo navegador (a policy `profiles_admin_all` deixa o admin gerenciar). Escolha o perfil no seletor, marque/desmarque “Ativo” e clique em **Salvar**.
+
+### Cadastrar novo usuário — dois caminhos
+
+O frontend tem um seletor no topo do `guia-supabase.js`:
+```js
+var CRIAR_USUARIO_VIA = 'funcao'; // já vem assim (seguro); alternativa: 'signup'
+```
+
+**1) `funcao` (padrão deste projeto — recomendado):** usa a Edge Function `criar-usuario` (em `supabase/functions/criar-usuario/index.ts`).
+- Não precisa habilitar cadastro público e o novo usuário **já entra ativo**, sem confirmar e-mail.
+- **Para o botão “Criar usuário” funcionar, faça o deploy da Function:** **Edge Functions → Deploy a new function**, nome `criar-usuario`, cole o arquivo e publique (ou `supabase functions deploy criar-usuario`).
+- A função usa a `service_role` que o Supabase injeta sozinho nas Functions — **não** coloque essa chave no site.
+- Enquanto a Function não for publicada, criar usuário dá erro (mas **Meu Perfil**, listar, trocar perfil e ativar/desativar continuam funcionando normalmente).
+
+**2) `signup` (alternativa — sem deploy):** cria pelo próprio navegador, sem deslogar o admin. Troque o seletor para `'signup'` se preferir não usar a Function.
+- Exige **cadastro habilitado** no projeto: Authentication → Sign In / Providers → Email → *Allow new users to sign up* (atenção: isso permite que qualquer pessoa se cadastre como `consulta`).
+- Se a opção **Confirm email** estiver ligada, o novo usuário precisa confirmar o e-mail antes do primeiro acesso (o app avisa).
+
+> Em ambos os casos, só **admin** consegue abrir a página e criar usuários (verificado na tela e nas policies/Function).

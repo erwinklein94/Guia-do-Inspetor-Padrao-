@@ -1010,6 +1010,41 @@
         .aud-sem-foto{display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--text-proc);background:var(--bg-input)}
         .aud-corpo .hist-body{flex:1 1 240px;font-size:.8rem;line-height:1.5}
         @media(max-width:768px){.aud-thumb{width:100%;height:auto;max-height:260px}}
+
+        /* ===== Página Usuários (admin) ===== */
+        .menu-item-usuarios{display:none}
+        body.role-admin .menu-item-usuarios{display:block}
+        body:not(.role-admin) #sec-usuarios{display:none!important}
+        .usuarios-sub{margin:0 0 4px;color:var(--text-title);font-size:1rem}
+        .usuarios-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+        .novo-usuario-form{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+        .novo-usuario-form input,.novo-usuario-form select{flex:1 1 180px;min-width:150px;padding:11px 12px;border:1px solid var(--border-color);border-radius:9px;background:var(--bg-input);color:var(--text-main);font-size:.88rem}
+        .novo-msg{margin-top:12px;font-size:.86rem;font-weight:600;min-height:1.1em}
+        .novo-msg.ok{color:var(--text-aceitavel)}
+        .novo-msg.erro{color:var(--text-refugo)}
+        .u-card{display:flex;justify-content:space-between;align-items:center;gap:12px 18px;flex-wrap:wrap;background:var(--bg-panel);border:1px solid var(--border-color);border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow-sm)}
+        .u-info{display:flex;flex-direction:column;min-width:160px}
+        .u-info strong{color:var(--text-title)}
+        .u-info span{color:var(--text-muted);font-size:.82rem}
+        .u-voce{color:var(--rumo-blue-500);font-weight:600;font-size:.78rem}
+        .u-controles{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+        .u-controles select{padding:9px 10px;border:1px solid var(--border-color);border-radius:8px;background:var(--bg-input);color:var(--text-main);font-size:.84rem}
+        .u-ativo{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--text-muted)}
+        .u-status{font-size:.8rem;font-weight:700;min-width:54px}
+        .u-status.ok{color:var(--text-aceitavel)}
+        .u-status.erro{color:var(--text-refugo)}
+
+        /* ===== Página Meu Perfil ===== */
+        .perfil-grande{display:inline-block;padding:10px 20px;border-radius:12px;font-size:1.15rem;font-weight:800;margin-bottom:10px;background:var(--bg-input);color:var(--text-title);border:2px solid var(--border-color)}
+        .perfil-grande.admin{background:var(--bg-reparar);color:var(--text-reparar);border-color:var(--border-reparar)}
+        .perfil-grande.fiscal{background:#E7F2FB;color:var(--rumo-navy-700);border-color:var(--rumo-blue-500)}
+        .perfil-grande.consulta{background:var(--bg-aceitavel);color:var(--text-aceitavel);border-color:var(--border-aceitavel)}
+        .perfil-grande.editor{background:#F0ECFA;color:#5b3fa0;border-color:#8B6FD0}
+        .perfil-desc{color:var(--text-muted);font-size:.9rem;margin:0 0 18px}
+        .perfil-linha{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--border-color);font-size:.9rem;flex-wrap:wrap}
+        .perfil-linha span{color:var(--text-muted)}
+        .perfil-linha strong,.perfil-linha code{color:var(--text-title);text-align:right;word-break:break-all}
+        .perfil-linha code{font-size:.78rem;background:var(--bg-input);padding:2px 8px;border-radius:6px}
     </style>
 </head>
 <body>
@@ -1074,6 +1109,9 @@
                 <div class="menu-item" onclick="navegar(this,'sec-procedimentos')">📚 Procedimentos</div>
                 <div class="menu-item" onclick="navegar(this,'sec-flashcards')">Flash-Cards</div>
                 <div class="menu-item menu-item-auditoria" onclick="navegar(this,'sec-auditoria')">🛡️ Auditoria</div>
+                <div class="menu-item menu-item-usuarios" onclick="navegar(this,'sec-usuarios')">👥 Usuários</div>
+                <div class="sidebar-divider"></div>
+                <div class="menu-item" onclick="navegar(this,'sec-perfil')">👤 Meu Perfil</div>
             </div>
             <div class="sidebar-bottom">
                 <button onclick="document.body.classList.toggle('dark')" class="dark-toggle"><span class="icon-moon">🌙</span><span class="icon-sun">☀️</span></button>
@@ -1401,6 +1439,42 @@
                 </div>
             </section>
 
+            <section id="sec-perfil" class="content-section">
+                <h1>👤 Meu Perfil <span class="proc-title">— Seus dados e nível de acesso</span></h1>
+                <div class="card">
+                    <div id="perfil-detalhe"><div class="proc-empty">Carregando…</div></div>
+                    <button class="btn-small secondary" style="margin-top:18px" onclick="carregarMeuPerfil()">🔄 Atualizar do servidor</button>
+                </div>
+            </section>
+
+            <section id="sec-usuarios" class="content-section">
+                <h1>👥 Usuários <span class="proc-title">— Cadastro e perfis (admin)</span></h1>
+                <div class="card">
+                    <h3 class="usuarios-sub">➕ Cadastrar novo usuário</h3>
+                    <p class="aud-intro">Crie o acesso e já escolha o perfil. O usuário entra com o e-mail e a senha definidos aqui.</p>
+                    <div class="novo-usuario-form">
+                        <input id="novo-nome" type="text" placeholder="Nome completo">
+                        <input id="novo-email" type="email" placeholder="email@empresa.com" autocomplete="off">
+                        <input id="novo-senha" type="text" placeholder="Senha (mín. 6 caracteres)" autocomplete="off">
+                        <select id="novo-perfil">
+                            <option value="consulta">🔎 Consulta</option>
+                            <option value="fiscal">🦺 Fiscalização</option>
+                            <option value="editor">✏️ Editor</option>
+                            <option value="admin">🛡️ Administrador</option>
+                        </select>
+                        <button id="btn-criar-usuario" class="btn-small" onclick="criarUsuario()">Criar usuário</button>
+                    </div>
+                    <div id="novo-msg" class="novo-msg"></div>
+                </div>
+                <div class="card" style="margin-top:18px">
+                    <div class="usuarios-head">
+                        <h3 class="usuarios-sub">Usuários cadastrados</h3>
+                        <button class="btn-small secondary" onclick="carregarUsuarios()">🔄 Atualizar</button>
+                    </div>
+                    <div id="usuarios-lista"><div class="proc-empty">Carregando…</div></div>
+                </div>
+            </section>
+
         </main>
     </div>
 
@@ -1484,7 +1558,7 @@ async function fazerLogout(){
     }
 }
 function sugerirMudanca(){const msg=encodeURIComponent("Olá Erwin, gostaria de sugerir uma mudança / melhoria para o Guia do Inspetor Padrão RUMO:\n\n");window.open(`https://wa.me/5541992581521?text=${msg}`,'_blank')}
-function navegar(el,sec){document.querySelectorAll('.content-section,.menu-item').forEach(e=>e.classList.remove('active'));$(sec).classList.add('active');el.classList.add('active');if(sec==='sec-historico')renderHistorico();if(sec==='sec-checklist')renderChecklist();if(sec==='sec-flashcards')carregarFlashCards();if(sec==='sec-auditoria'&&window.carregarAuditoria)carregarAuditoria();if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}
+function navegar(el,sec){document.querySelectorAll('.content-section,.menu-item').forEach(e=>e.classList.remove('active'));$(sec).classList.add('active');el.classList.add('active');if(sec==='sec-historico')renderHistorico();if(sec==='sec-checklist')renderChecklist();if(sec==='sec-flashcards')carregarFlashCards();if(sec==='sec-auditoria'&&window.carregarAuditoria)carregarAuditoria();if(sec==='sec-perfil'&&window.carregarMeuPerfil)carregarMeuPerfil();if(sec==='sec-usuarios'&&window.carregarUsuarios)carregarUsuarios();if(innerWidth<=768){$('sidebar').classList.add('hidden');showEl('toggle-sidebar-btn','flex')}}
 function carregarFlashCards(){const f=$('flashcards-frame');if(f&&!f.getAttribute('src'))f.src=f.dataset.src}
 function toggleSidebar(){$('sidebar').classList.remove('hidden');hideEl('toggle-sidebar-btn')}
 function irParaSecao(sec){

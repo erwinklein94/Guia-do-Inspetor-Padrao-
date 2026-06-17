@@ -333,6 +333,186 @@
   };
 
   // ---------------------------------------------------------
+  // 5b) Meu Perfil + Gerenciamento de usuários
+  // ---------------------------------------------------------
+
+  // 'signup' = cria pelo navegador (precisa de cadastro habilitado no projeto);
+  // 'funcao' = cria pela Edge Function "criar-usuario" (mais seguro, sem habilitar cadastro público).
+  var CRIAR_USUARIO_VIA = 'funcao';
+
+  var ROTULO_PERFIL = {
+    admin: '🛡️ Administrador', editor: '✏️ Editor',
+    fiscal: '🦺 Fiscalização', consulta: '🔎 Consulta'
+  };
+  var DESC_PERFIL = {
+    admin: 'Vê a Auditoria, gerencia usuários e conteúdo.',
+    editor: 'Gerencia procedimentos e flashcards. No campo, só consulta.',
+    fiscal: 'Emite laudos e tira fotos (enviados para a Auditoria).',
+    consulta: 'Consulta e compara medidas. Não emite laudo nem foto.'
+  };
+  var usuariosCache = [];
+
+  // ----- Meu Perfil (todos os perfis) -----
+  window.carregarMeuPerfil = async function () {
+    var box = document.getElementById('perfil-detalhe');
+    if (!box) return;
+    box.innerHTML = '<div class="proc-empty">Carregando seu perfil…</div>';
+    try {
+      var c = client();
+      var uid = perfilObj() ? perfilObj().id : null;
+      if (!c || !uid) { box.innerHTML = '<div class="proc-empty">Sessão não encontrada.</div>'; return; }
+      var res = await c.from('profiles').select('id,nome,email,perfil,ativo').eq('id', uid).single();
+      if (res.error) { box.innerHTML = '<div class="proc-empty">Erro: ' + res.error.message + '</div>'; return; }
+      var p = res.data;
+      // mantém a interface em dia caso o perfil tenha mudado no banco
+      if (perfilObj()) { perfilObj().perfil = p.perfil; perfilObj().nome = p.nome; perfilObj().ativo = p.ativo; }
+      aplicarPermissoesPerfil();
+      box.innerHTML =
+        '<div class="perfil-grande ' + esc(p.perfil) + '">' + esc(ROTULO_PERFIL[p.perfil] || p.perfil) + '</div>' +
+        '<p class="perfil-desc">' + esc(DESC_PERFIL[p.perfil] || '') + '</p>' +
+        '<div class="perfil-linha"><span>Nome</span><strong>' + esc(p.nome || '—') + '</strong></div>' +
+        '<div class="perfil-linha"><span>E-mail</span><strong>' + esc(p.email || '—') + '</strong></div>' +
+        '<div class="perfil-linha"><span>Perfil</span><strong>' + esc(p.perfil) + '</strong></div>' +
+        '<div class="perfil-linha"><span>Status</span><strong>' + (p.ativo ? '✅ Ativo' : '⛔ Desativado') + '</strong></div>' +
+        '<div class="perfil-linha"><span>ID da conta</span><code>' + esc(p.id) + '</code></div>';
+    } catch (e) {
+      box.innerHTML = '<div class="proc-empty">Erro ao carregar perfil.</div>';
+      console.warn(e);
+    }
+  };
+
+  // ----- Gerenciar usuários (somente admin) -----
+  window.carregarUsuarios = async function () {
+    if (!ehAdmin()) return;
+    var lista = document.getElementById('usuarios-lista');
+    if (!lista) return;
+    lista.innerHTML = '<div class="proc-empty">Carregando usuários…</div>';
+    try {
+      var c = client();
+      var res = await c.from('profiles').select('id,nome,email,perfil,ativo').order('perfil', { ascending: true }).order('nome', { ascending: true });
+      if (res.error) { lista.innerHTML = '<div class="proc-empty">Erro: ' + res.error.message + '</div>'; return; }
+      usuariosCache = res.data || [];
+      renderUsuarios();
+    } catch (e) {
+      lista.innerHTML = '<div class="proc-empty">Erro ao carregar usuários.</div>';
+      console.warn(e);
+    }
+  };
+
+  function opcoesPerfil(sel) {
+    return ['admin', 'fiscal', 'consulta', 'editor'].map(function (r) {
+      return '<option value="' + r + '"' + (r === sel ? ' selected' : '') + '>' + ROTULO_PERFIL[r] + '</option>';
+    }).join('');
+  }
+
+  function renderUsuarios() {
+    var lista = document.getElementById('usuarios-lista');
+    if (!lista) return;
+    if (!usuariosCache.length) { lista.innerHTML = '<div class="proc-empty">Nenhum usuário cadastrado.</div>'; return; }
+    var meu = perfilObj() ? perfilObj().id : null;
+    lista.innerHTML = usuariosCache.map(function (u) {
+      var euMesmo = (u.id === meu) ? ' <span class="u-voce">(você)</span>' : '';
+      return '' +
+        '<div class="u-card">' +
+          '<div class="u-info"><strong>' + esc(u.nome || '—') + euMesmo + '</strong><span>' + esc(u.email || '') + '</span></div>' +
+          '<div class="u-controles">' +
+            '<select id="u-perfil-' + u.id + '">' + opcoesPerfil(u.perfil) + '</select>' +
+            '<label class="u-ativo"><input type="checkbox" id="u-ativo-' + u.id + '"' + (u.ativo ? ' checked' : '') + '> Ativo</label>' +
+            '<button class="btn-small" onclick="salvarPerfilUsuario(\'' + u.id + '\')">Salvar</button>' +
+            '<span class="u-status" id="u-status-' + u.id + '"></span>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  window.salvarPerfilUsuario = async function (id) {
+    var c = client();
+    var sel = document.getElementById('u-perfil-' + id);
+    var chk = document.getElementById('u-ativo-' + id);
+    var st = document.getElementById('u-status-' + id);
+    if (!sel) return;
+    if (st) { st.textContent = 'Salvando…'; st.className = 'u-status'; }
+    var up = await c.from('profiles').update({ perfil: sel.value, ativo: chk ? chk.checked : true }).eq('id', id);
+    if (up.error) { if (st) { st.textContent = 'Erro: ' + up.error.message; st.className = 'u-status erro'; } return; }
+    if (st) { st.textContent = 'Salvo ✓'; st.className = 'u-status ok'; setTimeout(function () { st.textContent = ''; }, 2500); }
+    // atualiza o cache local
+    usuariosCache.forEach(function (u) { if (u.id === id) { u.perfil = sel.value; u.ativo = chk ? chk.checked : true; } });
+    // se o admin mudou o PRÓPRIO perfil, reaplica permissões na hora
+    if (perfilObj() && id === perfilObj().id) { perfilObj().perfil = sel.value; aplicarPermissoesPerfil(); }
+  };
+
+  function clienteSecundario() {
+    var cfg = window.SUPABASE_CONFIG || {};
+    if (!window.supabase || !window.supabase.createClient) return null;
+    return window.supabase.createClient(cfg.url, cfg.publishableKey || cfg.anonKey, {
+      auth: { persistSession: false, autoRefreshToken: false, storageKey: 'guia-admin-signup' }
+    });
+  }
+
+  async function criarViaSignup(nome, email, senha, perfilNovo) {
+    var tmp = clienteSecundario();
+    if (!tmp) return { ok: false, msg: 'Supabase indisponível.' };
+    var r = await tmp.auth.signUp({ email: email, password: senha, options: { data: { nome: nome } } });
+    if (r.error) {
+      var m = r.error.message || '';
+      if (/signup|disabled|not allowed/i.test(m)) {
+        return { ok: false, msg: 'O cadastro automático está desativado no projeto. Ative em Authentication → Sign In / Providers (Email) ou use a Edge Function (veja o README).' };
+      }
+      return { ok: false, msg: m };
+    }
+    var novoId = (r.data && r.data.user) ? r.data.user.id : null;
+    if (!novoId) return { ok: false, msg: 'Usuário criado, mas sem ID retornado.' };
+    var c = client();
+    var up = await c.from('profiles').update({ nome: nome, email: email, perfil: perfilNovo, ativo: true }).eq('id', novoId);
+    if (up.error) return { ok: false, msg: 'Usuário criado, mas falhou ao definir o perfil: ' + up.error.message };
+    return { ok: true, precisaConfirmar: !(r.data && r.data.session) };
+  }
+
+  async function criarViaFuncao(nome, email, senha, perfilNovo) {
+    var c = client();
+    try {
+      var r = await c.functions.invoke('criar-usuario', { body: { nome: nome, email: email, password: senha, perfil: perfilNovo } });
+      if (r.error) return { ok: false, msg: r.error.message || 'Falha ao chamar a função criar-usuario.' };
+      if (r.data && r.data.error) return { ok: false, msg: r.data.error };
+      return { ok: true, precisaConfirmar: false };
+    } catch (e) { return { ok: false, msg: String(e) }; }
+  }
+
+  window.criarUsuario = async function () {
+    if (!ehAdmin()) return;
+    var nome = (document.getElementById('novo-nome') || {}).value || '';
+    var email = (document.getElementById('novo-email') || {}).value || '';
+    var senha = (document.getElementById('novo-senha') || {}).value || '';
+    var perfilNovo = (document.getElementById('novo-perfil') || {}).value || 'consulta';
+    var msg = document.getElementById('novo-msg');
+    var btn = document.getElementById('btn-criar-usuario');
+    nome = nome.trim(); email = email.trim().toLowerCase();
+
+    function aviso(txt, tipo) { if (msg) { msg.textContent = txt; msg.className = 'novo-msg ' + (tipo || ''); } }
+
+    if (!nome) return aviso('Informe o nome.', 'erro');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return aviso('E-mail inválido.', 'erro');
+    if (senha.length < 6) return aviso('A senha precisa ter ao menos 6 caracteres.', 'erro');
+    if (usuariosCache.some(function (u) { return (u.email || '').toLowerCase() === email; })) {
+      return aviso('Já existe um usuário com esse e-mail.', 'erro');
+    }
+
+    if (btn) btn.disabled = true;
+    aviso('Criando usuário…', '');
+    var res = (CRIAR_USUARIO_VIA === 'funcao')
+      ? await criarViaFuncao(nome, email, senha, perfilNovo)
+      : await criarViaSignup(nome, email, senha, perfilNovo);
+    if (btn) btn.disabled = false;
+
+    if (!res.ok) return aviso(res.msg, 'erro');
+    aviso(res.precisaConfirmar
+      ? '✅ Usuário criado como ' + (ROTULO_PERFIL[perfilNovo] || perfilNovo) + '. Ele precisa confirmar o e-mail antes do primeiro acesso.'
+      : '✅ Usuário criado como ' + (ROTULO_PERFIL[perfilNovo] || perfilNovo) + '. Já pode entrar.', 'ok');
+    ['novo-nome', 'novo-email', 'novo-senha'].forEach(function (id) { var el = document.getElementById(id); if (el) el.value = ''; });
+    carregarUsuarios();
+  };
+
+  // ---------------------------------------------------------
   // 6) Inicialização (após o perfil estar disponível)
   // ---------------------------------------------------------
   function iniciar() {
