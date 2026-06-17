@@ -659,6 +659,48 @@
         }
         .btn-secundario:hover{transform:translateY(-2px)}
 
+        /* Botão de virar câmera + espaçador (mantém o botão de captura centralizado) */
+        .btn-flip,.btn-flip-spacer{width:48px;height:48px;flex:0 0 auto}
+        .btn-flip{
+         border-radius:50%;background:rgba(255,255,255,.12);
+         border:1px solid rgba(255,255,255,.25);color:#fff;font-size:1.2rem;
+         cursor:pointer;display:flex;align-items:center;justify-content:center;
+         backdrop-filter:blur(8px);transition:transform .25s;
+        }
+        .btn-flip:active{transform:rotate(180deg)}
+
+        /* Carregando a câmera */
+        .camera-loading{
+         position:absolute;inset:0;z-index:3;
+         display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+         background:rgba(2,19,36,.6);color:#fff;
+         font-family:'Barlow',sans-serif;font-weight:600;font-size:.9rem;letter-spacing:.02em;
+        }
+        .cam-spinner{
+         width:46px;height:46px;border-radius:50%;
+         border:4px solid rgba(255,255,255,.2);border-top-color:var(--rumo-lime);
+         animation:camSpin .8s linear infinite;
+        }
+        @keyframes camSpin{to{transform:rotate(360deg)}}
+
+        /* Falha de câmera + atalho para câmera nativa */
+        .camera-erro{
+         position:absolute;inset:0;z-index:4;
+         display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+         padding:32px;text-align:center;background:rgba(2,19,36,.93);
+        }
+        .cam-erro-ico{font-size:2.6rem}
+        .camera-erro p{
+         color:#E6EDF3;font-family:'Barlow',sans-serif;font-size:1rem;line-height:1.5;
+         max-width:340px;margin:0;
+        }
+        .camera-erro .btn-secundario{max-width:280px;width:100%;flex-grow:0}
+
+        /* Flash ao capturar */
+        .camera-flash{position:absolute;inset:0;z-index:5;background:#fff;opacity:0;pointer-events:none}
+        .camera-flash.ativo{animation:camFlash .35s ease-out}
+        @keyframes camFlash{0%{opacity:.9}100%{opacity:0}}
+
         /* =====================================================================
            PROCEDIMENTOS
            ===================================================================== */
@@ -1096,12 +1138,24 @@
             <span>Evidência de Inspeção</span>
         </div>
         <div class="video-container">
-            <video id="video-preview" autoplay playsinline></video>
+            <video id="video-preview" autoplay playsinline muted></video>
             <img id="foto-capturada" class="escondido" alt="Laudo Final">
             <div class="overlay-texto" id="overlay-texto-visual"></div>
+            <div id="camera-loading" class="camera-loading escondido"><div class="cam-spinner"></div><span>Abrindo câmera…</span></div>
+            <div id="camera-erro" class="camera-erro escondido">
+                <div class="cam-erro-ico">📷</div>
+                <p id="camera-erro-msg">Não foi possível acessar a câmera.</p>
+                <button class="btn-secundario" style="background:var(--rumo-lime);color:#021324" onclick="document.getElementById('foto-fallback-input').click()">📱 Usar câmera do celular</button>
+                <button class="btn-secundario" onclick="fecharCamera()">Fechar</button>
+            </div>
+            <div id="camera-flash" class="camera-flash"></div>
             <canvas id="canvas-render" style="display:none"></canvas>
         </div>
-        <div class="camera-controls" id="controles-camera"><button class="btn-capturar" onclick="tirarFoto()"></button></div>
+        <div class="camera-controls" id="controles-camera">
+            <button class="btn-flip" onclick="trocarCamera()" title="Virar câmera" aria-label="Virar câmera">🔄</button>
+            <button class="btn-capturar" onclick="tirarFoto()"></button>
+            <span class="btn-flip-spacer" aria-hidden="true"></span>
+        </div>
         <div class="camera-controls escondido" id="controles-pos-captura">
             <div class="botoes-pos-captura">
                 <button class="btn-secundario" onclick="retomarCamera()">🔄 Refazer</button>
@@ -1109,6 +1163,7 @@
                 <button class="btn-secundario" style="background:#25D366" onclick="compartilharFotoCarimbada()">📲 Enviar</button>
             </div>
         </div>
+        <input type="file" id="foto-fallback-input" accept="image/*" capture="environment" class="escondido" onchange="onArquivoSelecionado(this)">
     </div>
     <div id="main-layout" class="auth-locked">
         <aside id="sidebar">
@@ -2155,31 +2210,171 @@ function analisarSub(){
 }
 
 // === CÂMERA ===
-let currentStream=null,laudoAtualTexto="",categoriaAtual="",fotoDataUrl="";
+let currentStream=null,laudoAtualTexto="",categoriaAtual="",fotoDataUrl="",facingAtual="environment",modoFallback=false;
+const ehIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+
+// Polyfill p/ roundRect (aparelhos/navegadores antigos não têm e quebrariam o carimbo)
+if(window.CanvasRenderingContext2D&&!CanvasRenderingContext2D.prototype.roundRect){
+    CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+        if(typeof r==='number')r=[r,r,r,r];else if(r.length===2)r=[r[0],r[1],r[0],r[1]];
+        const[tl,tr,br,bl]=r;
+        this.moveTo(x+tl,y);this.lineTo(x+w-tr,y);this.arcTo(x+w,y,x+w,y+tr,tr);
+        this.lineTo(x+w,y+h-br);this.arcTo(x+w,y+h,x+w-br,y+h,br);
+        this.lineTo(x+bl,y+h);this.arcTo(x,y+h,x,y+h-bl,bl);
+        this.lineTo(x,y+tl);this.arcTo(x,y,x+tl,y,tl);
+        this.closePath();return this;
+    };
+}
+
+function nomeArquivoFoto(){
+    const d=new Date(),p=n=>String(n).padStart(2,'0');
+    const cat=(categoriaAtual||'laudo').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'_').replace(/^_|_$/g,'');
+    return `Laudo_${cat}_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.jpg`;
+}
+
+// Quebra o texto do laudo em linhas que cabem na placa (em vez de espremer a fonte)
+function quebrarTexto(x,texto,maxW){
+    const palavras=String(texto).split(/\s+/).filter(Boolean),linhas=[];let atual='';
+    palavras.forEach(p=>{
+        const teste=atual?atual+' '+p:p;
+        if(x.measureText(teste).width>maxW&&atual){linhas.push(atual);atual=p;}else atual=teste;
+    });
+    if(atual)linhas.push(atual);
+    return linhas.length?linhas:[''];
+}
+
 async function abrirCamera(boxId,cat){
-    const box=$(boxId);laudoAtualTexto=box.innerText;categoriaAtual=cat;
+    const box=$(boxId);laudoAtualTexto=box.innerText;categoriaAtual=cat;fotoDataUrl="";modoFallback=false;
     const st=laudoAtualTexto.match(/✅|❌|🔧|⚠️|🚫/),icon=st?st[0]:'',dt=new Date().toLocaleDateString('pt-BR')+' '+new Date().toLocaleTimeString('pt-BR');
     $('overlay-texto-visual').innerHTML=`<strong>${icon} LAUDO RUMO - ${cat}</strong><br><span style="font-size:.7rem;opacity:.8">Data: ${dt}</span><br>${laudoAtualTexto.split('\n').slice(0,3).join('<br>')}...`;
-    showEl('camera-modal','flex');hideEl('foto-capturada');showEl('video-preview');showEl('controles-camera','flex');hideEl('controles-pos-captura');
-    try{currentStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});$('video-preview').srcObject=currentStream}catch(e){alert("Erro ao acessar a câmera.");fecharCamera()}
+    $('overlay-texto-visual').style.display='block';
+    showEl('camera-modal','flex');hideEl('foto-capturada');showEl('video-preview');showEl('controles-camera','flex');hideEl('controles-pos-captura');esconderErroCamera();
+    iniciarStream();
 }
-function fecharCamera(){if(currentStream){currentStream.getTracks().forEach(t=>t.stop());currentStream=null}hideEl('camera-modal')}
-function retomarCamera(){hideEl('foto-capturada');showEl('video-preview');showEl('controles-camera','flex');hideEl('controles-pos-captura');$('overlay-texto-visual').style.display='block'}
+
+async function iniciarStream(){
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+        mostrarErroCamera(window.isSecureContext===false
+            ?'A câmera só abre em conexão segura (HTTPS). Use a câmera do celular para anexar a foto.'
+            :'Este navegador não permite abrir a câmera aqui. Use a câmera do celular para anexar a foto.');
+        return;
+    }
+    if(currentStream){currentStream.getTracks().forEach(t=>t.stop());currentStream=null;}
+    showEl('camera-loading','flex');
+    try{
+        currentStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facingAtual},audio:false});
+        const v=$('video-preview');v.srcObject=currentStream;
+        v.onloadedmetadata=()=>hideEl('camera-loading');
+        try{await v.play();}catch(e){}
+        setTimeout(()=>hideEl('camera-loading'),1500);
+    }catch(e){
+        hideEl('camera-loading');
+        let msg='Não foi possível acessar a câmera.';
+        if(e&&(e.name==='NotAllowedError'||e.name==='SecurityError'))msg='Permissão de câmera negada. Libere o acesso à câmera nas configurações do navegador e tente de novo.';
+        else if(e&&(e.name==='NotFoundError'||e.name==='DevicesNotFoundError'))msg='Nenhuma câmera encontrada neste aparelho.';
+        else if(e&&e.name==='NotReadableError')msg='A câmera está em uso por outro aplicativo. Feche-o e tente novamente.';
+        mostrarErroCamera(msg);
+    }
+}
+
+function trocarCamera(){facingAtual=facingAtual==='environment'?'user':'environment';iniciarStream();}
+
+function mostrarErroCamera(msg){
+    modoFallback=true;
+    $('camera-erro-msg').textContent=msg;
+    showEl('camera-erro','flex');hideEl('camera-loading');hideEl('controles-camera');hideEl('controles-pos-captura');
+    $('overlay-texto-visual').style.display='none';
+}
+function esconderErroCamera(){hideEl('camera-erro');}
+
+function fecharCamera(){if(currentStream){currentStream.getTracks().forEach(t=>t.stop());currentStream=null}hideEl('camera-modal');hideEl('camera-loading');esconderErroCamera();}
+
+function retomarCamera(){
+    hideEl('foto-capturada');hideEl('controles-pos-captura');$('overlay-texto-visual').style.display='block';
+    if(modoFallback){$('foto-fallback-input').click();return;}
+    showEl('video-preview');showEl('controles-camera','flex');
+    if(!currentStream)iniciarStream();
+}
+
+function flashCaptura(){const f=$('camera-flash');if(!f)return;f.classList.remove('ativo');void f.offsetWidth;f.classList.add('ativo');}
+
+function mostrarPosCaptura(){
+    showEl('foto-capturada');hideEl('video-preview');$('overlay-texto-visual').style.display='none';
+    hideEl('controles-camera');showEl('controles-pos-captura','flex');
+}
+
+// Desenha o frame/imagem + a placa do laudo (carimbo legível, com quebra de linha)
+function carimbarFonte(fonte,w,h){
+    const c=$('canvas-render'),x=c.getContext('2d');
+    c.width=w;c.height=h;x.drawImage(fonte,0,0,w,h);
+    const u=w,ft=Math.floor(u*.030),fd=Math.floor(u*.020),fb=Math.floor(u*.024),pd=Math.round(u*.028),lh=Math.round(fb*1.32),barra=Math.max(5,u*.010);
+    const dt=new Date().toLocaleDateString('pt-BR')+' '+new Date().toLocaleTimeString('pt-BR');
+    const margem=Math.round(u*.03),bw=u-margem*2,tx=margem+pd+barra,mw=bw-pd*2-barra;
+    x.textAlign='left';x.textBaseline='top';
+    x.font=`600 ${fb}px sans-serif`;
+    let corpo=[];laudoAtualTexto.split('\n').map(l=>l.trim()).filter(Boolean).slice(0,8).forEach(l=>{corpo=corpo.concat(quebrarTexto(x,l,mw));});
+    corpo=corpo.slice(0,12);
+    const bh=pd*2+ft+Math.round(pd*.5)+fd+Math.round(pd*.6)+corpo.length*lh;
+    const sx=margem;let sy=h-bh-margem;if(sy<margem)sy=margem;
+    // Placa escura legível (antes era rgba(0,0,0,0.05) = praticamente invisível)
+    x.fillStyle='rgba(2,19,36,0.82)';x.beginPath();x.roundRect(sx,sy,bw,bh,16);x.fill();
+    x.fillStyle='#A5D233';x.beginPath();x.roundRect(sx,sy,barra,bh,[16,0,0,16]);x.fill();
+    x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=3;x.shadowOffsetX=0;x.shadowOffsetY=1;
+    let ty=sy+pd;
+    x.fillStyle='#fff';x.font=`bold ${ft}px sans-serif`;x.fillText(`INSPEÇÃO RUMO · ${categoriaAtual}`,tx,ty,mw);
+    ty+=ft+Math.round(pd*.5);
+    x.fillStyle='#A5D233';x.font=`600 ${fd}px sans-serif`;x.fillText(dt,tx,ty,mw);
+    ty+=fd+Math.round(pd*.6);
+    x.fillStyle='#fff';x.font=`600 ${fb}px sans-serif`;corpo.forEach(l=>{x.fillText(l,tx,ty,mw);ty+=lh;});
+    x.shadowColor='transparent';
+    fotoDataUrl=c.toDataURL('image/jpeg',.9);$('foto-capturada').src=fotoDataUrl;
+}
+
 function tirarFoto(){
-    const v=$('video-preview'),c=$('canvas-render'),x=c.getContext('2d');c.width=v.videoWidth;c.height=v.videoHeight;x.drawImage(v,0,0,c.width,c.height);
-    const u=c.width,ft=u*.028,fd=u*.0168,fb=u*.02016,pd=u*.02,lh=fb*1.5,dt=new Date().toLocaleDateString('pt-BR')+' '+new Date().toLocaleTimeString('pt-BR');
-    const lines=laudoAtualTexto.split('\n').filter(l=>l.trim()).slice(0,10),bh=lines.length*lh+ft+fd+pd*4,bw=u*.94,sx=u*.03,sy=c.height-bh-u*.03;
-    x.fillStyle="rgba(0,0,0,0.05)";x.beginPath();x.roundRect(sx,sy,bw,bh,15);x.fill();
-    x.fillStyle="#FFD600";x.beginPath();x.roundRect(sx,sy,u*.01,bh,[15,0,0,15]);x.fill();
-    x.shadowColor="rgba(0,0,0,1)";x.shadowBlur=6;x.shadowOffsetX=2;x.shadowOffsetY=2;x.textAlign="center";
-    const cx=c.width/2,mw=bw-pd*2;let ty=sy+pd+ft;
-    x.fillStyle="#fff";x.font=`bold ${Math.floor(ft)}px sans-serif`;x.fillText(`INSPEÇÃO RUMO - ${categoriaAtual}`,cx,ty,mw);
-    ty+=ft+pd/2;x.font=`${Math.floor(fd)}px sans-serif`;x.fillStyle="#FFD600";x.fillText(dt,cx,ty,mw);ty+=pd;
-    x.fillStyle="#fff";x.font=`bold ${Math.floor(fb)}px sans-serif`;lines.forEach(l=>{x.fillText(l,cx,ty,mw);ty+=lh});
-    fotoDataUrl=c.toDataURL('image/jpeg',.85);$('foto-capturada').src=fotoDataUrl;showEl('foto-capturada');hideEl('video-preview');$('overlay-texto-visual').style.display='none';hideEl('controles-camera');showEl('controles-pos-captura','flex')
+    const v=$('video-preview');
+    if(!v.videoWidth){alert('Aguarde a câmera carregar e tente novamente.');return;}
+    flashCaptura();
+    carimbarFonte(v,v.videoWidth,v.videoHeight);
+    mostrarPosCaptura();
 }
-function baixarFotoCarimbada(){if(!fotoDataUrl)return;const a=document.createElement('a');a.href=fotoDataUrl;a.download=`Laudo_${categoriaAtual}_${Date.now()}.jpg`;document.body.appendChild(a);a.click();document.body.removeChild(a);if(window.guiaUploadEvidencia)window.guiaUploadEvidencia(fotoDataUrl,categoriaAtual);alert("✅ Foto salva na sua galeria!")}
-async function compartilharFotoCarimbada(){if(!fotoDataUrl)return;if(window.guiaUploadEvidencia)window.guiaUploadEvidencia(fotoDataUrl,categoriaAtual);const r=await fetch(fotoDataUrl),b=await r.blob(),f=new File([b],"laudo_inspecao.jpg",{type:"image/jpeg"});if(navigator.share&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Laudo Rumo',text:`Evidência de Inspeção - ${categoriaAtual}`})}catch(e){}}else alert("⚠️ Seu navegador não suporta envio direto de imagem. Clique em SALVAR e envie pelo WhatsApp.")}
+
+// Fallback: usa a foto da câmera nativa do celular quando getUserMedia falha
+function onArquivoSelecionado(input){
+    const file=input.files&&input.files[0];if(!file)return;
+    const img=new Image();
+    img.onload=()=>{
+        let w=img.naturalWidth,h=img.naturalHeight;const max=2000;
+        if(Math.max(w,h)>max){const s=max/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s);}
+        esconderErroCamera();
+        carimbarFonte(img,w,h);
+        mostrarPosCaptura();
+        URL.revokeObjectURL(img.src);
+    };
+    img.onerror=()=>alert('Não foi possível ler a imagem selecionada.');
+    img.src=URL.createObjectURL(file);
+    input.value='';
+}
+
+function baixarFotoCarimbada(){
+    if(!fotoDataUrl)return;
+    if(window.guiaUploadEvidencia)window.guiaUploadEvidencia(fotoDataUrl,categoriaAtual);
+    if(ehIOS&&navigator.share){compartilharFotoCarimbada();return;}
+    const a=document.createElement('a');a.href=fotoDataUrl;a.download=nomeArquivoFoto();document.body.appendChild(a);a.click();document.body.removeChild(a);
+    alert('✅ Imagem salva! Verifique em Downloads (ou na galeria).');
+}
+
+async function compartilharFotoCarimbada(){
+    if(!fotoDataUrl)return;
+    if(window.guiaUploadEvidencia)window.guiaUploadEvidencia(fotoDataUrl,categoriaAtual);
+    try{
+        const r=await fetch(fotoDataUrl),b=await r.blob(),f=new File([b],nomeArquivoFoto(),{type:'image/jpeg'});
+        if(navigator.share&&navigator.canShare&&navigator.canShare({files:[f]})){
+            await navigator.share({files:[f],title:'Laudo Rumo',text:`Evidência de Inspeção - ${categoriaAtual}`});
+        }else{
+            alert('⚠️ Seu navegador não permite enviar a imagem direto. Toque em "Salvar" e compartilhe pela galeria/WhatsApp.');
+        }
+    }catch(e){}
+}
 function compartilharWhatsApp(boxId,cat){const t=$(boxId).innerText,d=new Date().toLocaleDateString('pt-BR'),h=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});window.open(`https://wa.me/?text=${encodeURIComponent(`*INSPEÇÃO DE QUALIDADE - RUMO*\n📍 *Categoria:* ${cat}\n📅 *Data:* ${d} às ${h}\n\n${t}`)}`,'_blank')}
 
 
